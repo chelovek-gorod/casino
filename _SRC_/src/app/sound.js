@@ -1,0 +1,161 @@
+import { Sound } from '@pixi/sound'
+import { EventHub, events } from './events'
+
+const SETTINGS = {
+    sound: {
+        isOnByDefault: true, // true
+        storageKey: 'soundOn',
+    },
+    music: {
+        isOnByDefault: true, // true
+        storageKey: 'musicOn',
+    }
+}
+
+let isSoundOn = getStoredValue(SETTINGS.sound)
+let isMusicOn = getStoredValue(SETTINGS.music)
+
+function getStoredValue(storageData) {
+    const saved = localStorage.getItem(storageData.storageKey)
+    if (saved) return !!JSON.parse(saved)
+    return storageData.isOnByDefault
+}
+
+function setStoredValue(storageData, isOn) {
+    localStorage.setItem(storageData.storageKey, !!isOn)
+}
+
+let isSoundAvailable = true // is game in focus
+
+EventHub.on( events.changeFocus, changeFocus )
+function changeFocus( isOnFocus ) {
+    isSoundAvailable = isOnFocus
+    if (isOnFocus) playMusic()
+    else {
+        stopMusic()
+        stopVoices()
+    }
+}
+
+// sound control
+export function soundTurnOn() {
+    isSoundOn = true
+    setStoredValue(SETTINGS.sound, isSoundOn)
+}
+export function soundTurnOff() {
+    isSoundOn = false
+    setStoredValue(SETTINGS.sound, isSoundOn)
+}
+export function soundGetState() {
+    return isSoundOn
+}
+
+// music control
+export function musicTurnOn() {
+    isMusicOn = true
+    setStoredValue(SETTINGS.music, isMusicOn)
+}
+export function musicTurnOff() {
+    isMusicOn = false
+    setStoredValue(SETTINGS.music, isMusicOn)
+}
+export function musicGetState() {
+    return isMusicOn
+}
+
+// 
+
+const voicesSet = new Set()
+let voiceInstance = null
+export function playVoice( vs ) {
+    if (!isSoundOn || !isSoundAvailable) return
+
+    if (voiceInstance) return voicesSet.add(vs)
+
+    voiceInstance = vs.play()
+    voiceInstance.on('end', () => {
+        voiceInstance = null
+        if (voicesSet.size === 0) return
+        
+        const nextVoice = voicesSet.values().next().value
+        voicesSet.delete( nextVoice )
+        playVoice( nextVoice )
+    })
+}
+export function stopVoices() {
+    if (voiceInstance) voiceInstance.stop()
+    voiceInstance = null
+    voicesSet.clear()
+}
+
+export function playSound( se ) {
+    if (!isSoundOn || !isSoundAvailable) return
+    // se.stop()
+    se.play()
+}
+
+let bgMusicSound = null
+let bgMusicAudio = null
+let bgMusicList = null
+let bgMusicIndex = 0
+let bgMusicToken = 0 // use for remove unused music
+
+export function setMusic(music, startIndex = null) {
+    if (!music) return
+  
+    bgMusicList = Array.isArray(music) ? music : (typeof music === 'object' ? Object.values(music) : [music])
+    
+    if (!bgMusicList.length) return
+  
+    if (startIndex && startIndex < bgMusicList.length) bgMusicIndex = startIndex
+    else bgMusicIndex = Math.floor(Math.random() * bgMusicList.length)
+
+    bgMusicToken++
+    loadBgMusic()
+}
+
+export function stopMusic() {
+    isSoundAvailable = false
+    if (!bgMusicAudio) return
+
+    if (bgMusicAudio.isPlaying) bgMusicAudio.pause()
+    else bgMusicAudio.stop()
+}
+
+export function playMusic() {
+    isSoundAvailable = true
+    if (!isMusicOn || !bgMusicAudio || !bgMusicList) return
+
+    if (bgMusicAudio.paused) bgMusicAudio.resume()
+    else bgMusicAudio.play()
+}
+
+function loadBgMusic() {
+    const token = bgMusicToken
+    
+    if (bgMusicAudio) {
+        bgMusicAudio.stop()
+        bgMusicAudio.destroy()
+        bgMusicAudio = null
+    }
+
+    bgMusicSound = Sound.from({
+        url: bgMusicList[bgMusicIndex],
+        preload: true,
+        loaded: function(err, sound) {
+            if (token !== bgMusicToken) return sound.destroy()
+
+            bgMusicAudio = sound
+            sound.play({ volume: 0.36 }).on('end', nextBgMusic)
+            if (!isSoundAvailable || !isMusicOn) stopMusic()
+        }
+    })
+}
+
+function nextBgMusic() {
+    if (!bgMusicList?.length) return
+  
+    bgMusicIndex = (bgMusicIndex + 1) % bgMusicList.length
+    bgMusicToken++
+    loadBgMusic()
+}
