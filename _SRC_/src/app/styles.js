@@ -1,5 +1,5 @@
 import { TextStyle } from "pixi.js"
-import { LOGS } from "../game/constants"
+import { LOGS, MESSAGE } from "../game/constants"
 import { fonts } from "./assets"
 
 export let styles = {
@@ -25,6 +25,10 @@ export let styles = {
     logRestsRed: null,
     logRestsBlack: null,
     logRestsWhite: null,
+
+    messageRed: null,
+    messageBlack: null,
+    messageGreen: null,
 
     betsTotal: null,
     betsCurrent: null,
@@ -151,6 +155,22 @@ export function initFontStyles() {
         fontFamily: fonts.Manrope800,
         fontSize: LOGS.fontSizes[2],
         fill: '#ffffff',
+    })
+
+    styles.messageRed = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: MESSAGE.fontSize,
+        fill: '#ee0000',
+    })
+    styles.messageBlack = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: MESSAGE.fontSize,
+        fill: '#000000',
+    })
+    styles.messageGreen = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: MESSAGE.fontSize,
+        fill: '#007700',
     })
 
     styles.betsTotal = new TextStyle({

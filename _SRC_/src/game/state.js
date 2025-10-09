@@ -1,5 +1,5 @@
-import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber } from "../app/events"
-import { REAL_RESULTS } from "./constants"
+import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber,
+    showMessage } from "../app/events"
 
 export let isLangRu = true
 
@@ -9,6 +9,12 @@ export let betsTotal = 0
 export let betCurrent = 10
 export let betNearest = 2
 export let results = []
+
+export let betsData = {
+    numbers: {}, // key = "number"
+    splits: {},  // key = "n1_n2_n3..."
+    sectors: {}, // key = "sector_name"
+}
 
 export function setBet() {
     if (money < betCurrent || isOnSpin) return false
@@ -66,4 +72,5 @@ export function setSpin( isSpin ) {
 export function setSpinResult( number ) {
     results.unshift(number)
     addLog(number)
+    showMessage(number)
 }

@@ -2,7 +2,7 @@ import { Container, Sprite } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../../app/application";
 import { images } from "../../../app/assets";
 import { getLinesIntersectionPoint } from "../../../utils/functions";
-import { BUTTON_TEXT, GAME_CONTAINERS, WHEEL, BALL, NUMBERS } from "../../constants";
+import { BUTTON_TEXT, GAME_CONTAINERS, WHEEL, BALL, NUMBERS, SHOW_RESULT_DELAY } from "../../constants";
 import { isLangRu, isOnSpin, setSpin, setSpinResult } from "../../state";
 import Button from './UI/Button'
 
@@ -210,7 +210,7 @@ export default class Wheel extends Container {
 
         // get index and set result
         const sectorIndex = Math.floor(adjustedAngle / WHEEL.sectorStep)
-        setTimeout( setSpinResult, 0, NUMBERS[sectorIndex] )
+        setTimeout( setSpinResult, SHOW_RESULT_DELAY, NUMBERS[sectorIndex] )
 
         // get angle to target sector
         this.ballTargetAngle = -HalfPI + (sectorIndex * WHEEL.sectorStep)
@@ -287,19 +287,24 @@ export default class Wheel extends Container {
             break
 
             case STATE.slowdown :
+                if (this.rotationSpeed === 0) {
+                    this.state = STATE.stop
+                    this.stop()
+                    return
+                }
+
+                const test = this.rotationSpeed > 0 && this.rotationSpeed !== 0
+                
                 if (this.rotationSpeed > 0) {
-                    this.rotationSpeed = Math.max(0, (this.rotationSpeed - WHEEL.slowdown) * time.deltaTime)
+                    this.rotationSpeed = Math.max(0, this.rotationSpeed - (WHEEL.slowdown * time.deltaTime))
                 } else {
-                    this.rotationSpeed = Math.min(0, (this.rotationSpeed + WHEEL.slowdown) * time.deltaTime)
+                    this.rotationSpeed = Math.min(0, this.rotationSpeed + (WHEEL.slowdown * time.deltaTime))
                 }
                 this.center.rotation += this.rotationSpeed
                 this.ballMoveAngle += this.rotationSpeed
                 this.updateBallPosition()
-                
-                if (this.rotationSpeed === 0) {
-                    this.state = STATE.stop
-                    this.stop()
-                }
+
+                console.log('NEW', test, this.state, this.rotationSpeed.toFixed(2))
             break
 
             default : return

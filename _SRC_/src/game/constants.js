@@ -316,12 +316,14 @@ export const BALL = {
     speedMax: 0.048,
     speedBias: 0.024, // speed for start resize rotation radius
     friction: 0.00006,
-    gravity: 2.7,
+    gravity: 3.6,
     speedJump: 0.006, // final move speed to target number
     rotationRadiusStart: 326,
     rotationRadiusStop: 256,
     rotationRadiusEnd: 162
 }
+
+export const SHOW_RESULT_DELAY = 1200
 
 export const WHEEL = {
     borderSize: 728,
@@ -329,7 +331,7 @@ export const WHEEL = {
 
     speedMin: 0.009, // 0.008 -  sec 6, 4, 8, 21, 9
     speedMax: 0.018,
-    acceleration: 0.0006,
+    acceleration: 0.0003,
     slowdown: 0.00007, // speed -= slowdown * deltaTime
     
     sectorStep: (2 * Math.PI) / 37,
@@ -504,3 +506,15 @@ LOGS.max = LOGS.lines * LOGS.piecesInRow
 LOGS.stepX = Math.ceil(POPUP.width / (LOGS.piecesInRow + 2))
 LOGS.stepY = LOGS.stepX + 4
 LOGS.x += Math.ceil(-POPUP.width * 0.5 + LOGS.stepX)
+
+
+export const MESSAGE = {
+    y: 0,
+    height: 160,
+    fontSize: 120,
+    bg: 0xffffff,
+    alpha: 0.6,
+    showDuration: 1200,
+    inOutDuration: 300,
+}
+MESSAGE.y = -MESSAGE.height * 0.5

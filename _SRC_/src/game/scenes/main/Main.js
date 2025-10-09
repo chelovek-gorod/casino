@@ -9,6 +9,7 @@ import Popup from './popup/Popup'
 import RightMenu from './UI/RightMenu'
 import TopBarMenu from './UI/TopBarMenu'
 import Wheel from './Wheel'
+import Message from './UI/Message'
 
 export default class Main extends Container {
     constructor() {
@@ -39,7 +40,9 @@ export default class Main extends Container {
 
         this.popup = new Popup()
 
-        this.addChild(this.leftUI, this.rightUI, this.topUI, this.popup)
+        this.message = new Message()
+
+        this.addChild(this.leftUI, this.rightUI, this.topUI, this.popup, this.message)
 
         // done
         setMusic([music.bgm_casino])
@@ -59,6 +62,9 @@ export default class Main extends Container {
 
         // update popup
         this.popup.screenResize(screenData)
+
+        // update message
+        this.message.screenResize(screenData)
 
         // get sizes without UI
         const gameWidth = screenData.isLandscape

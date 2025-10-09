@@ -15,6 +15,7 @@ export const events = {
 
     startSpin: 'startSpin',
     addLog: 'addLog',
+    showMessage: 'showMessage',
 
     showPopup: 'showPopup',
 }
@@ -48,6 +49,9 @@ export function startSpin( ) {
 }
 export function addLog( number ) {
     EventHub.emit( events.addLog, number )
+}
+export function showMessage(number) {
+    EventHub.emit( events.showMessage, number )
 }
 
 export function showPopup( type ) {
