@@ -54,17 +54,38 @@ export const HELP_TEXT = {
     setBet: {ru: 'Изменить ставку', en: 'Set bet'},
     repeatBets: {ru: 'Повторить последние ставки', en: 'Repeat all recent bets'},
     clearBets: {ru: 'Очистить все ставки', en: 'Clear all bets'},
+
+    betOnHover: {ru: 'Размер ставки:', en: 'Bet Size:'},
+}
+
+export const MESSAGE_TEXT = {
+    lowMoney: {ru: 'Сумма ставки\nпревышает баланс', en: 'Bet amount\nexceeds balance'},
+    winMoney: {ru: 'Вы выиграли', en: 'You win'},
 }
 
 export const POPUP_TEXT = {
     bet: {ru: 'РЕДАКТОР СТАВОК', en: 'BET EDITOR'},
     nearest: {ru: 'Число соседей:', en: 'Nearest count:'},
+    spielSplits: {ru: 'Ставки на секторах:', en: 'Sector-based bets:'},
+    spielSplitsValues: [
+        {ru: 'в номера', en: 'straight'},
+        {ru: 'сплитами', en: ' splits '}
+    ],
     logs: {ru: 'ИСТОРИЯ РЕЗУЛЬТАТОВ', en: 'LAST RESULTS'},
 }
 
 export const BUTTON_TEXT = {
     done: {ru: 'Готово', en: 'Done'},
-    spin: {ru: 'Крутим', en: 'Spin'},
+    spin: {ru: 'КРУТИМ', en: 'SPIN'},
+}
+
+export const SECTOR_SPLIT_NUMBERS = {
+    [SECTOR.zero]: [ [0, 3], [12, 15], [32, 35], [26] ],
+    [SECTOR.vois]: [ [0, 2], [0, 3], [12, 15], [32, 35], [4, 5, 6], [7, 8, 9],
+            [25, 26, 27, 28, 29, 30], [19, 20, 21, 22, 23, 24], [17, 18, 20, 21]
+        ],
+    [SECTOR.orph]: [ [6, 9], [14, 17], [17, 20], [31, 34], [1] ] ,
+    [SECTOR.tier]: [ [5, 8], [10, 11], [13, 16], [23, 24], [27, 30], [33, 36] ]
 }
 
 export const SECTOR_NUMBERS = {
@@ -512,6 +533,7 @@ export const MESSAGE = {
     y: 0,
     height: 160,
     fontSize: 120,
+    fontSizeForText: 48,
     bg: 0xffffff,
     alpha: 0.6,
     showDuration: 1200,

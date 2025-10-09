@@ -29,14 +29,15 @@ export default class Message extends Container {
         this.speed = 1 / MESSAGE.inOutDuration
     }
  
-    show(number) {
+    show(text) {
         this.delay = MESSAGE.showDuration
         this.alpha = 0
         this.position.set(-this.offset, 0)
 
-        this.text.text = number
-        if (SECTOR_NUMBERS[SECTOR.black].includes(number)) this.text.style = styles.messageBlack
-        else if (SECTOR_NUMBERS[SECTOR.red].includes(+number)) this.text.style = styles.messageRed
+        this.text.text = text
+        if (isNaN(Number(text))) this.text.style = styles.messageText
+        else if (SECTOR_NUMBERS[SECTOR.black].includes(text)) this.text.style = styles.messageBlack
+        else if (SECTOR_NUMBERS[SECTOR.red].includes(text)) this.text.style = styles.messageRed
         else this.text.style = styles.messageGreen
 
         this.addChild(this.bg, this.text)

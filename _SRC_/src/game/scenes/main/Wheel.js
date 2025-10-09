@@ -223,11 +223,11 @@ export default class Wheel extends Container {
             case STATE.start :
                 if (this.targetSpeed > 0) {
                     this.rotationSpeed = Math.min(
-                        this.targetSpeed, (this.rotationSpeed + WHEEL.acceleration) * time.deltaTime
+                        this.targetSpeed, this.rotationSpeed + (WHEEL.acceleration * time.deltaTime)
                     )
                 } else {
                     this.rotationSpeed = Math.max(
-                        this.targetSpeed, (this.rotationSpeed - WHEEL.acceleration) * time.deltaTime
+                        this.targetSpeed, this.rotationSpeed - (WHEEL.acceleration * time.deltaTime)
                     )
                 }
                 this.center.rotation += this.rotationSpeed
@@ -286,25 +286,23 @@ export default class Wheel extends Container {
                 }
             break
 
-            case STATE.slowdown :
-                if (this.rotationSpeed === 0) {
-                    this.state = STATE.stop
-                    this.stop()
-                    return
-                }
-
-                const test = this.rotationSpeed > 0 && this.rotationSpeed !== 0
-                
+            case STATE.slowdown :               
                 if (this.rotationSpeed > 0) {
                     this.rotationSpeed = Math.max(0, this.rotationSpeed - (WHEEL.slowdown * time.deltaTime))
-                } else {
+                } else if (this.rotationSpeed < 0) {
                     this.rotationSpeed = Math.min(0, this.rotationSpeed + (WHEEL.slowdown * time.deltaTime))
+                } else {
+                    this.rotationSpeed = 0
                 }
+
                 this.center.rotation += this.rotationSpeed
                 this.ballMoveAngle += this.rotationSpeed
                 this.updateBallPosition()
 
-                console.log('NEW', test, this.state, this.rotationSpeed.toFixed(2))
+                if (this.rotationSpeed === 0) {
+                    this.state = STATE.stop
+                    this.stop()
+                }
             break
 
             default : return

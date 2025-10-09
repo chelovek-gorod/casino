@@ -18,6 +18,8 @@ export const events = {
     showMessage: 'showMessage',
 
     showPopup: 'showPopup',
+
+    clearedOneOfBets: 'clearedOneOfBets',
 }
 
 export function screenResize( data ) {
@@ -56,4 +58,8 @@ export function showMessage(number) {
 
 export function showPopup( type ) {
     EventHub.emit( events.showPopup, type )
+}
+
+export function clearedOneOfBets() {
+    EventHub.emit( events.clearedOneOfBets )
 }

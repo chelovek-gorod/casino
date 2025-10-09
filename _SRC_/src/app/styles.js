@@ -26,6 +26,7 @@ export let styles = {
     logRestsBlack: null,
     logRestsWhite: null,
 
+    messageText: null,
     messageRed: null,
     messageBlack: null,
     messageGreen: null,
@@ -157,6 +158,13 @@ export function initFontStyles() {
         fill: '#ffffff',
     })
 
+    styles.messageText = new TextStyle({
+        fontFamily: fonts.Manrope600,
+        fontSize: MESSAGE.fontSizeForText,
+        lineHeight: MESSAGE.fontSizeForText,
+        align: 'center',
+        fill: '#000000',
+    })
     styles.messageRed = new TextStyle({
         fontFamily: fonts.Manrope800,
         fontSize: MESSAGE.fontSize,

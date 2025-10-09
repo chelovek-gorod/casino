@@ -1,20 +1,24 @@
-import { Container, Sprite, Text } from "pixi.js";
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 import { atlases, images } from "../../../../app/assets";
 import { EventHub, events } from "../../../../app/events";
 import { styles } from "../../../../app/styles";
 import { removeCursorPointer, setCursorPointer } from "../../../../utils/functions";
 import { CHIP, POPUP, POPUP_TEXT } from "../../../constants";
-import { betCurrent, betNearest, editBet, isLangRu, setNearest } from "../../../state";
+import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest, isSingleBetsInSectors } from "../../../state";
 import ShortButton from "../UI/ShortButton";
 
 const chipButtons = {
     xs: [0, 80, 160],
-    ys: [-80, 0],
-    scale: 0.5
+    ys: [-15, 60],
+    scale: 0.45
 }
 
-const nearestY = -156
-const betY = 100
+const titleY = -208
+const hrY = -176
+const hrX = 240
+const spielSplitsY = -144
+const nearestY = -100
+const betY = 130
 
 export default class Bet extends Container {
     constructor() {
@@ -23,8 +27,39 @@ export default class Bet extends Container {
         // title
         this.title = new Text({text: isLangRu ? POPUP_TEXT.bet.ru : POPUP_TEXT.bet.en, style: styles.popupTitle})
         this.title.anchor.set(0.5)
-        this.title.position.set(0, -POPUP.height * 0.5 + 40)
+        this.title.position.set(0, titleY)
         this.addChild(this.title)
+        // hr
+        this.hr = new Graphics()
+        this.hr.moveTo(-hrX, hrY)
+        this.hr.lineTo( hrX, hrY)
+        this.hr.stroke({width: 4, color: 0xffffff})
+        this.addChild(this.hr)
+
+        // spiel splits
+        this.spielSplitsSubtitle = new Text({
+            text: isLangRu ? POPUP_TEXT.spielSplits.ru : POPUP_TEXT.spielSplits.en,
+            style: styles.popupSubTitle
+        })
+        this.spielSplitsSubtitle.anchor.set(0, 0.5)
+        this.spielSplitsSubtitle.position.set(-176, spielSplitsY)
+        this.addChild(this.spielSplitsSubtitle)
+
+        this.spielSplitsSup = new ShortButton('<', 28, spielSplitsY, this.clickSpielSplits.bind(this))
+        this.spielSplitsSup.scale.set(0.3)
+        this.addChild(this.spielSplitsSup)
+
+        const spielSplitsValue = isSingleBetsInSectors
+            ? isLangRu ? POPUP_TEXT.spielSplitsValues[0].ru : POPUP_TEXT.spielSplitsValues[0].en
+            : isLangRu ? POPUP_TEXT.spielSplitsValues[1].ru : POPUP_TEXT.spielSplitsValues[1].en
+        this.spielSplitsValue = new Text({text: spielSplitsValue, style: styles.popupSubTitle})
+        this.spielSplitsValue.anchor.set(0.5)
+        this.spielSplitsValue.position.set(94, spielSplitsY)
+        this.addChild(this.spielSplitsValue)
+
+        this.spielSplitsAdd = new ShortButton('>', 160, spielSplitsY, this.clickSpielSplits.bind(this))
+        this.spielSplitsAdd.scale.set(0.3)
+        this.addChild(this.spielSplitsAdd)
 
         // nearest
         this.nearestSubtitle = new Text({text: isLangRu ? POPUP_TEXT.nearest.ru : POPUP_TEXT.nearest.en, style: styles.popupSubTitle})
@@ -94,6 +129,12 @@ export default class Bet extends Container {
     }
     updateNearestNumber( number ) {
         this.nearestValue.text = `${number} + 1 + ${number}`
+    }
+
+    clickSpielSplits() {
+        this.spielSplitsValue.text = changeSpielSplits()
+            ? isLangRu ? POPUP_TEXT.spielSplitsValues[0].ru : POPUP_TEXT.spielSplitsValues[0].en
+            : isLangRu ? POPUP_TEXT.spielSplitsValues[1].ru : POPUP_TEXT.spielSplitsValues[1].en
     }
 
     clickNearestSup() {
