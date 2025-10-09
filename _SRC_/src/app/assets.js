@@ -19,14 +19,19 @@ export const fonts = {
 export const images = {
     bg: 'ground_494x280px.png',
 
+    button: 'button.png',
+    short_button: 'short_button.png',
+
     field: 'field_1204x504px.png',
     spiel_bg: 'spiel_bg_1204x312px.png',
     spiel_top: 'spiel_top_1204x312px.png',
+    dolly: 'dolly.png',
 
     ball: 'wheel_ball_24x24px.png',
     wheel_border: 'wheel_border_728x728px.png',
     wheel_center: 'wheel_center_512x512px.png',
     point: 'point_36x36px.png',
+    clear_bet: 'clear_bet.png',
     
     dpf_1: 'dpf_1.png',
     dpf_2: 'dpf_2.png',
@@ -37,7 +42,6 @@ export const images = {
     dpf_7: 'dpf_7.png',
 
     smoke: 'smoke.png',
-    button: 'button.png',
 
     img_finger: 'finger.png',
     img_logo: 'logo.png',

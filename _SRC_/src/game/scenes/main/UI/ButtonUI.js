@@ -3,11 +3,13 @@ import { atlases, sounds } from "../../../../app/assets"
 import { removeCursorPointer, setCursorPointer } from "../../../../utils/functions"
 import { playSound } from "../../../../app/sound"
 import { UI } from "../../../constants"
+import { setHelpText } from "../../../../app/events"
 
 export default class ButtonUI extends Container {
-    constructor(iconName, callback, isWhite = true) {
+    constructor(iconName, callback, isWhite = true, helpText = '') {
         super()
         this.callback = callback
+        this.helpText = helpText
 
         this.bgImage = new Sprite(atlases.icon.textures[isWhite ? `${iconName}_yellow` : `${iconName}_white`])
         this.bgImage.anchor.set(0.5)
@@ -39,12 +41,14 @@ export default class ButtonUI extends Container {
     }
 
     onHover() {
+        setHelpText(this.helpText)
         if (!this.isActive) return
 
         this.mainImage.alpha = 0.5
         playSound(sounds.se_swipe)
     }
     onOut() {
+        setHelpText('')
         this.mainImage.alpha = 1
     }
 

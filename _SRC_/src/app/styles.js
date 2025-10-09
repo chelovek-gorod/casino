@@ -1,5 +1,5 @@
 import { TextStyle } from "pixi.js"
-import { UI } from "../game/constants"
+import { LOGS } from "../game/constants"
 import { fonts } from "./assets"
 
 export let styles = {
@@ -9,8 +9,12 @@ export let styles = {
     loading: null,
     button: null,
     buttonHover: null,
+    shortButton: null,
+    shortButtonHover: null,
     numbersList: null,
     money: null,
+
+    helpText: null,
 
     logLastRed: null,
     logLastBlack: null,
@@ -24,6 +28,9 @@ export let styles = {
 
     betsTotal: null,
     betsCurrent: null,
+
+    popupTitle: null,
+    popupSubTitle: null,
 }
 
 export function initFontStyles() {
@@ -54,6 +61,7 @@ export function initFontStyles() {
         dropShadowAngle: 0,
         dropShadowDistance: 0,
     })
+
     styles.button = new TextStyle({
         fontFamily: fonts.Manrope700,
         fontSize: 48,
@@ -70,56 +78,78 @@ export function initFontStyles() {
         dropShadowAngle: 0,
         dropShadowDistance: 0,
     })
+    styles.shortButton = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: 96,
+        fill: '#000000',
+    })
+    styles.shortButtonHover = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: 96,
+        fill: '#000000',
+    
+        dropShadow: true,
+        dropShadowColor: '#00ff00',
+        dropShadowBlur: 6,
+        dropShadowAngle: 0,
+        dropShadowDistance: 0,
+    })
 
     styles.money = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: 36,
+        fontSize: 28,
         fill: '#ffff00',
+    })
+
+    styles.helpText = new TextStyle({
+        fontFamily: fonts.Manrope300,
+        fontSize: 16,
+        fill: '#eeeeee',
     })
 
     styles.logLastRed = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[0],
+        fontSize: LOGS.fontSizes[0],
         fill: '#ff0000',
     })
     styles.logLastBlack = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[0],
+        fontSize: LOGS.fontSizes[0],
         fill: '#000000',
     })
     styles.logLastWhite = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[0],
+        fontSize: LOGS.fontSizes[0],
         fill: '#ffffff',
     })
     styles.logPreviousRed = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[1],
+        fontSize: LOGS.fontSizes[1],
         fill: '#ff0000',
     })
     styles.logPreviousBlack = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[1],
+        fontSize: LOGS.fontSizes[1],
         fill: '#000000',
     })
     styles.logPreviousWhite = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[1],
+        fontSize: LOGS.fontSizes[1],
         fill: '#ffffff',
     })
     styles.logRestsRed = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[2],
+        fontSize: LOGS.fontSizes[2],
         fill: '#ff0000',
     })
     styles.logRestsBlack = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[2],
+        fontSize: LOGS.fontSizes[2],
         fill: '#000000',
     })
     styles.logRestsWhite = new TextStyle({
         fontFamily: fonts.Manrope800,
-        fontSize: UI.logs.fontSizes[2],
+        fontSize: LOGS.fontSizes[2],
         fill: '#ffffff',
     })
 
@@ -132,6 +162,17 @@ export function initFontStyles() {
         fontFamily: fonts.Manrope600,
         fontSize: 24,
         fill: '#ffffff',
+    })
+
+    styles.popupTitle = new TextStyle({
+        fontFamily: fonts.Manrope700,
+        fontSize: 24,
+        fill: '#ffffff',
+    })
+    styles.popupSubTitle = new TextStyle({
+        fontFamily: fonts.Manrope700,
+        fontSize: 18,
+        fill: '#eeeeee',
     })
 
     styles.isReady = true

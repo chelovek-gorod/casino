@@ -1,11 +1,11 @@
-import { Container, Graphics, TilingSprite } from 'pixi.js'
+import { Container, TilingSprite } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music } from '../../../app/assets'
 import { setMusic } from '../../../app/sound'
-import { CHIP, GAME_CONTAINERS, GAME_OFFSET, UI } from '../../constants'
+import { GAME_CONTAINERS, GAME_OFFSET, UI } from '../../constants'
 import Field from './Field'
-import ChipButton from './UI/ChipButton'
 import LeftMenu from './UI/LeftMenu'
+import Popup from './popup/Popup'
 import RightMenu from './UI/RightMenu'
 import TopBarMenu from './UI/TopBarMenu'
 import Wheel from './Wheel'
@@ -36,17 +36,13 @@ export default class Main extends Container {
         this.topUI = new TopBarMenu()
         this.leftUI = new LeftMenu()
         this.rightUI = new RightMenu()
-        this.addChild(this.leftUI, this.rightUI, this.topUI)
+
+        this.popup = new Popup()
+
+        this.addChild(this.leftUI, this.rightUI, this.topUI, this.popup)
 
         // done
         setMusic([music.bgm_casino])
-/*
-        this.chip1 = new ChipButton(CHIP.c1, -700, 300, this.setActiveChip.bind(this), true)
-        this.addChild(this.chip1)
-*/
-        // test
-        this.test = new Graphics()
-        this.gameContainer.addChild(this.test)
     }
 
     screenResize(screenData) {
@@ -61,22 +57,22 @@ export default class Main extends Container {
         this.bg.tilePosition.x = offsetX * 0.5
         this.bg.tilePosition.y = offsetY * 0.5
 
+        // update popup
+        this.popup.screenResize(screenData)
+
         // get sizes without UI
         const gameWidth = screenData.isLandscape
             ? GAME_CONTAINERS.game.landscape.width : GAME_CONTAINERS.game.portrait.width
         const gameHeight = screenData.isLandscape
             ? GAME_CONTAINERS.game.landscape.height : GAME_CONTAINERS.game.portrait.height
 
-        const availableWidth = screenData.width - UI.logs.width
         const availableHeight = screenData.height - UI.size - UI.bets.height
 
-        const scale = Math.min(1, availableWidth / gameWidth, availableHeight / gameHeight)
+        const scale = Math.min(1, screenData.width / gameWidth, availableHeight / gameHeight)
         this.gameContainer.scale.set(scale)
 
-        const gameContainerOffsetX = screenData.centerX - availableWidth * 0.5
-        const gameContainerOffsetY = availableHeight * 0.5 + UI.size - screenData.centerY
-
-        this.gameContainer.position.set(gameContainerOffsetX, gameContainerOffsetY)
+        const gameContainerY = availableHeight * 0.5 + UI.size - screenData.centerY
+        this.gameContainer.position.set(0, gameContainerY)
 
         if (screenData.isLandscape) {
             const wheelX = (GAME_CONTAINERS.wheel.width - gameWidth) * 0.5 + GAME_OFFSET

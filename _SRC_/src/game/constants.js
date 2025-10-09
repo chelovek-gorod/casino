@@ -16,6 +16,57 @@ export const SECTOR = {
     top2to1: 'top2to1', mid2to1: 'mid2to1', bot2to1: 'bot2to1',
 }
 
+export const SECTOR_NAMES = {
+    zero: {ru: 'Зеро', en: 'Zero'},
+    vois: {ru: 'Соседи Зеро', en: 'Voisins du Zero'},
+    orph: {ru: 'Сироты', en: 'Orphelins'},
+    tier: {ru: 'Треть', en: 'Tiers du Cylindre'},
+    even: {ru: 'Чётные', en: 'Even'},
+    odd: {ru: 'Нечётные', en: 'Odd'},
+    red: {ru: 'Красные', en: 'Red'},
+    black: {ru: 'Чёрные', en: 'Black'},
+    at1to18: {ru: 'Малые (1-18)', en: 'Low (1-18)'},
+    at19to36: {ru: 'Большие (19-36)', en: 'High (1-18)'},
+    twelve1: {ru: 'Первая дюжина (1-12)', en: '1st Twelves (1-12)'},
+    twelve2: {ru: 'Вторая дюжина (13-24)', en: '2nd Twelves (13-24)'},
+    twelve3: {ru: 'Третья дюжина (25-36)', en: '3rd Twelves (25-36)'},
+    top2to1: {ru: 'Зеро', en: 'Zero'},
+    mid2to1: {ru: 'Зеро', en: 'Zero'},
+    bot2to1: {ru: 'Зеро', en: 'Zero'},
+}
+export const POINTS_NAMES = {
+    2: {ru: 'Разделённая ставка', en: 'Split'},
+    3: {ru: 'Ряд из трёх', en: 'Street'},
+    4: {ru: 'Квадрат', en: 'Corner'},
+    6: {ru: 'Линия из шести', en: 'Line'},
+}
+
+export const HELP_TEXT = {
+    home: {ru: 'Перезапустить', en: 'Restart'},
+    money: {ru: 'Ваш текущий счет', en: 'Your current money'},
+    addMoney: {ru: 'Пополнить счет', en: 'Get extra money'},
+    config: {ru: 'Настройки игры', en: 'Game settings'},
+
+    logButton: {ru: 'История выпавших значений', en: 'List of last results'},
+
+    bets: {ru: 'Сумма ставок и текущая ставка', en: 'Total of bets and current bet'},
+    currentBet: {ru: 'Ткущая ставка', en: 'Current bet'},
+    setBet: {ru: 'Изменить ставку', en: 'Set bet'},
+    repeatBets: {ru: 'Повторить последние ставки', en: 'Repeat all recent bets'},
+    clearBets: {ru: 'Очистить все ставки', en: 'Clear all bets'},
+}
+
+export const POPUP_TEXT = {
+    bet: {ru: 'РЕДАКТОР СТАВОК', en: 'BET EDITOR'},
+    nearest: {ru: 'Число соседей:', en: 'Nearest count:'},
+    logs: {ru: 'ИСТОРИЯ РЕЗУЛЬТАТОВ', en: 'LAST RESULTS'},
+}
+
+export const BUTTON_TEXT = {
+    done: {ru: 'Готово', en: 'Done'},
+    spin: {ru: 'Крутим', en: 'Spin'},
+}
+
 export const SECTOR_NUMBERS = {
     [SECTOR.zero]: [0, 32, 15, 12, 35, 3, 26],
     [SECTOR.vois]: [0, 32, 15, 12, 35, 3, 26, 19, 4, 21, 2, 25, 22, 18, 29, 7, 28],
@@ -45,10 +96,19 @@ export const BET_RATIO = {
     1: 36, /* ставка в число */
     2: 18, /* сплит (2 соседних) */
     3: 12, /* стрит (3 соседних) */
-    4: 9, /* угол (4 соседних) */
-    6: 6, /* 6 чисел рядом (2 соседних ряда) */
+    4: 9,  /* угол (4 соседних) */
+    6: 6,  /* 6 чисел рядом (2 соседних ряда) */
     12: 3, /* 12 чисел */
     18: 2, /* 18 чисел */
+}
+export const MAX_BET_RATIO = {
+    [BET_RATIO[1]]: 500,  /* 20 000 / 36 = 555  ~ 500 */
+    [BET_RATIO[2]]: 1000, /* 20 000 / 18 = 1111 ~ 1000 */
+    [BET_RATIO[3]]: 1500, /* 20 000 / 12 = 1666 ~ 1500 */
+    [BET_RATIO[4]]: 2000, /* 20 000 / 9 = 2222 ~ 2000 */
+    [BET_RATIO[6]]: 3000, /* 20 000 / 6 = 3333 ~ 3000 */
+    [BET_RATIO[12]]:5000, /* 20 000 / 3 = 6666 ~ 5000 */
+    [BET_RATIO[18]]:10000,/* 20 000 / 2 = 10000 */
 }
 
 export const CHIP = {
@@ -248,16 +308,72 @@ Object.keys(FIELD.ceils.sections).forEach( key => {
     FIELD.ceils.sections[key].centerY = FIELD.ceils.sections[key].y + FIELD.ceils.sections[key].h * 0.5
 })
 
+export const BALL = {
+    size: 24,
+    delayMin: 600,
+    delayMax: 1200,
+    speedMin: 0.036,
+    speedMax: 0.048,
+    speedBias: 0.024, // speed for start resize rotation radius
+    friction: 0.00006,
+    gravity: 2.7,
+    speedJump: 0.006, // final move speed to target number
+    rotationRadiusStart: 326,
+    rotationRadiusStop: 256,
+    rotationRadiusEnd: 162
+}
+
 export const WHEEL = {
     borderSize: 728,
     centerSize: 512,
-    ballSize: 24,
-    rotationSpeed: 0.016,
-    startBallOrbitRadius: 326,
-    endBallOrbitRadius: 160,
-    ballSpeed: 0.024,
-    sectorStep: (2 * Math.PI) / 37
+
+    speedMin: 0.009, // 0.008 -  sec 6, 4, 8, 21, 9
+    speedMax: 0.018,
+    acceleration: 0.0006,
+    slowdown: 0.00007, // speed -= slowdown * deltaTime
+    
+    sectorStep: (2 * Math.PI) / 37,
+
+    deflectorCenterOrbit: 283,
+    deflectorHalfLength: 16,
+    deflectors: [
+        {angle: Math.PI * 0.125, isTransverse: true},
+        {angle: Math.PI * 0.375, isTransverse: false},
+        {angle: Math.PI * 0.625, isTransverse: true},
+        {angle: Math.PI * 0.875, isTransverse: false},
+        {angle: Math.PI * 1.125, isTransverse: true},
+        {angle: Math.PI * 1.375, isTransverse: false},
+        {angle: Math.PI * 1.625, isTransverse: true},
+        {angle: Math.PI * 1.875, isTransverse: false},
+     ]
 }
+WHEEL.deflectors.forEach( deflector => {
+    const centerX = Math.cos(deflector.angle) * WHEEL.deflectorCenterOrbit
+    const centerY = Math.sin(deflector.angle) * WHEEL.deflectorCenterOrbit
+    const HalfPI = Math.PI * 0.5
+    
+    if (deflector.isTransverse) {
+        deflector.p1 = {
+            x: centerX + Math.cos(deflector.angle) * WHEEL.deflectorHalfLength,
+            y: centerY + Math.sin(deflector.angle) * WHEEL.deflectorHalfLength
+        }
+        deflector.p2 = {
+            x: centerX + Math.cos(deflector.angle + Math.PI) * WHEEL.deflectorHalfLength,
+            y: centerY + Math.sin(deflector.angle + Math.PI) * WHEEL.deflectorHalfLength
+        }
+    } else {
+        deflector.p1 = {
+            x: centerX + Math.cos(deflector.angle + HalfPI) * WHEEL.deflectorHalfLength,
+            y: centerY + Math.sin(deflector.angle + HalfPI) * WHEEL.deflectorHalfLength
+        }
+        deflector.p2 = {
+            x: centerX + Math.cos(deflector.angle - HalfPI) * WHEEL.deflectorHalfLength,
+            y: centerY + Math.sin(deflector.angle - HalfPI) * WHEEL.deflectorHalfLength
+        }
+    }
+    
+    deflector.center = { x: centerX, y: centerY }
+})
 
 export const BUTTON = {
     width: 320,
@@ -282,28 +398,20 @@ export const TEST_RESULTS = Array.from({ length: 1_000_000 }, () => {
 })
 
 export const UI = {
+    contextOpenMinDuration: 500,
+
     borderRadius: 20,
     bg: 0x135507,
+
     size: 60,
     iconOffset: 4,
     iconRealImageSize: 120,
     iconSize: 0,
     iconScale: 0,
     offset: 0, /* from side to icon center */
-    
-    logs: {
-        count: 12,
-        width: 40,
-        height: 400,
-        bg: 0xffffff,
-        alpha: 0.25,
-        fontSizes: [24, 18, 16],
-        offsetsY: [86, 32, 26],
-        offsetX: 0
-    },
 
     bets: {
-        width: 380,
+        width: 340,
         height: 40,
         bg: 0x000000,
         alpha: 0.5,
@@ -314,12 +422,10 @@ export const UI = {
 UI.offset = UI.size * 0.5
 UI.iconSize = UI.size - UI.iconOffset * 2
 UI.iconScale = UI.iconSize / UI.iconRealImageSize
-
-UI.logs.offsetX = UI.logs.width * 0.5
 UI.bets.iconSize = UI.bets.height - UI.iconOffset * 2
 UI.bets.iconScale = UI.bets.iconSize / UI.iconRealImageSize
 
-export const GAME_OFFSET = 24
+export const GAME_OFFSET = 24 /* offset between screen borders and between game containers */
 export const GAME_CONTAINERS = {
     wheel: {
         width: Math.max(WHEEL.borderSize, BUTTON.width),
@@ -354,3 +460,47 @@ GAME_CONTAINERS.game.landscape.width =
     GAME_CONTAINERS.wheel.width + GAME_OFFSET * 3 + GAME_CONTAINERS.field.width
 GAME_CONTAINERS.game.landscape.height =
     Math.max(GAME_CONTAINERS.wheel.height, GAME_CONTAINERS.field.height) + GAME_OFFSET * 2
+
+export const POPUP_TYPE = {
+    EMPTY: '',
+    bet: 'bet',
+    logs: 'logs',
+}
+export const POPUP = {
+    width: 480,
+    height: 480,
+    size: 0,
+    margin: 30,
+    padding: 20,
+    x: 0,
+    y: 0,
+    sellColor: 0x000000,
+    sellAlpha: 0.75,
+    bg: UI.bg,
+    borderRadius: UI.borderRadius,
+    borderWidth: 4,
+    borderColor: 0xffffff,
+    closeButton: { x: 0, y: 0, scale: 0.5 }
+}
+POPUP.x = -POPUP.width * 0.5
+POPUP.y = -POPUP.height * 0.5
+POPUP.size = Math.max(POPUP.width + POPUP.margin * 2, POPUP.height + POPUP.margin * 2)
+POPUP.closeButton.y = POPUP.height * 0.5 - POPUP.padding - (BUTTON.height * 0.5) * POPUP.closeButton.scale
+
+export const LOGS = {
+    piecesInRow: 12,
+    lines: 8,
+    max: 0,
+
+    x: 12,
+    y: -150,
+    
+    stepX: 0,
+    stepY: 0,
+
+    fontSizes: [30, 22, 18],
+}
+LOGS.max = LOGS.lines * LOGS.piecesInRow
+LOGS.stepX = Math.ceil(POPUP.width / (LOGS.piecesInRow + 2))
+LOGS.stepY = LOGS.stepX + 4
+LOGS.x += Math.ceil(-POPUP.width * 0.5 + LOGS.stepX)

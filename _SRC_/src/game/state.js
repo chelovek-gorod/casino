@@ -1,10 +1,14 @@
-import { updateBetaTotal, updateMoney } from "../app/events"
+import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber } from "../app/events"
+import { REAL_RESULTS } from "./constants"
+
+export let isLangRu = true
 
 export let isOnSpin = false
 export let money = 1000
 export let betsTotal = 0
-export let betCurrent = 50
-export let results = [36, 0, 12, 29, 1, 0, 7, 24, 33, 28, 30, 27, 2, 34, 4, 0, 35, 26, 3, 5, 25, 0, 25, 11, 13]
+export let betCurrent = 10
+export let betNearest = 2
+export let results = []
 
 export function setBet() {
     if (money < betCurrent || isOnSpin) return false
@@ -13,9 +17,40 @@ export function setBet() {
     betsTotal += betCurrent
 
     updateMoney(money)
-    updateBetaTotal(betsTotal)
+    updateBetTotal(betsTotal)
 
     return true
+}
+
+export function checkBet() {
+    if (betCurrent > money) betCurrent = Math.max(1, money)
+    updateBet(betCurrent)
+}
+
+export function editBet(value, isChip = false) {
+    if (value === 0) {
+        betCurrent = 1
+        return checkBet()
+    }
+
+    if (!isChip) {
+        betCurrent = Math.max(1, betCurrent + value)
+        return checkBet()
+    }
+
+    if (betCurrent < value) {
+        betCurrent = value
+        return checkBet()
+    }
+
+    betCurrent += value
+    checkBet()
+}
+
+export function setNearest( isAdd = true ) {
+    if (isAdd) betNearest = Math.min(9, betNearest + 1)
+    else betNearest = Math.max(1, betNearest - 1)
+    updateNearestNumber(betNearest)
 }
 
 export function addMoney( sum ) {
@@ -25,4 +60,10 @@ export function addMoney( sum ) {
 
 export function setSpin( isSpin ) {
     isOnSpin = isSpin
+    if (isSpin) startSpin()
+}
+
+export function setSpinResult( number ) {
+    results.unshift(number)
+    addLog(number)
 }

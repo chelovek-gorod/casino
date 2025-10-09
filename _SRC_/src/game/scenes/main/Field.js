@@ -1,7 +1,8 @@
 import { Container, Sprite } from "pixi.js";
 import { atlases, images } from "../../../app/assets";
+import { EventHub, events, showPopup } from "../../../app/events";
 import { setCursorPointer } from "../../../utils/functions";
-import { CHIP_DATA, FIELD, GAME_CONTAINERS, SECTOR, SECTOR_NUMBERS, SPIEL } from "../../constants";
+import { CHIP_DATA, FIELD, GAME_CONTAINERS, SECTOR, SECTOR_NUMBERS, SPIEL, UI } from "../../constants";
 import { betCurrent, setBet } from "../../state";
 
 const FIELD_TYPE = { spiel: 'spiel', field: 'field' }
@@ -52,6 +53,7 @@ export default class Field extends Container {
             this.sectorsList[key].field = FIELD_TYPE.spiel
             setCursorPointer(this.sectorsList[key])
             this.sectorsList[key].on('pointerdown', this.onClick, this)
+            this.sectorsList[key].on('pointerup', this.onRelease, this)
             this.sectorsList[key].on('pointerover', this.onHover, this)
             this.sectorsList[key].on('pointerout', this.onOut, this)
             this.spiel.addChild(this.sectorsList[key])
@@ -93,6 +95,7 @@ export default class Field extends Container {
             this.slotsList[key].field = FIELD_TYPE.field
             setCursorPointer(this.slotsList[key])
             this.slotsList[key].on('pointerdown', this.onClick, this)
+            this.slotsList[key].on('pointerup', this.onRelease, this)
             this.slotsList[key].on('pointerover', this.onHover, this)
             this.slotsList[key].on('pointerout', this.onOut, this)
             this.field.addChild(this.slotsList[key])
@@ -133,7 +136,16 @@ export default class Field extends Container {
             }
         }
 
-        // end of constructors
+        this.clickDuration = 0
+        this.clickTarget = null
+        this.clickIsActive = false
+
+        this.dolly = new Sprite(images.dolly)
+        this.dolly.scale.set(0.7)
+        this.dolly.anchor.set(0.5)
+
+        EventHub.on(events.startSpin, this.startSpin, this)
+        EventHub.on(events.addLog, this.getSpinResult, this)
     }
 
     addPoint(x, y, rowIndex, stepIndex, layer) {
@@ -156,34 +168,81 @@ export default class Field extends Container {
         }
         setCursorPointer(point)
         point.on('pointerdown', this.onClick, this)
+        point.on('pointerup', this.onRelease, this)
         point.on('pointerover', this.onHover, this)
         point.on('pointerout', this.onOut, this)
         this.field.addChild(point)
     }
 
-    onClick(event) {
-        console.log(
-            'title:', event.target.title,
-            'numbers:', event.target.numbers,
-            'type:', event.target.field,
-            'pos:', event.target.position
-        )
-
+    userSetBet() {
         if (!setBet()) return
 
         const chipImage = getChopSprite()
         chipImage.anchor.set(0.5)
         chipImage.scale.set(CHIP_DATA.scale)
 
-        if (event.target.field === FIELD_TYPE.spiel) {
+        if (this.clickTarget.field === FIELD_TYPE.spiel) {
             this.spiel.addChild(chipImage)
-            chipImage.position.set(event.target.position.x, event.target.position.y)
+            chipImage.position.set(this.clickTarget.position.x, this.clickTarget.position.y)
         } else {
             this.field.addChild(chipImage)
-            chipImage.position.set(event.target.position.x, event.target.position.y)
+            if (this.clickTarget.numbers.length === 1) {
+                chipImage.position.set(this.clickTarget.position.x - 8, this.clickTarget.position.y - 18)
+            } else {
+                chipImage.position.set(this.clickTarget.position.x, this.clickTarget.position.y)
+            }
         }
     }
+
+    startSpin() {
+        this.field.removeChild(this.dolly)
+    }
+
+    getSpinResult(number) {
+        const x = this.slotsList[number].position.x
+        const y = this.slotsList[number].position.y
+        this.dolly.position.set(x + 10, y + 20)
+        this.field.addChild(this.dolly)
+    }
+
+    onClick(event) {
+        console.log(
+            '\ntitle:', event.target.title,
+            '\nnumbers:', event.target.numbers,
+            '\ntype:', event.target.field,
+            '\npos:', event.target.position,
+            '\nisRightBtnClick', event.data.button == 2
+        )
+
+        this.clickDuration = Date.now()
+        this.clickTarget = event.target
+        this.clickIsActive = true
+    }
+    onRelease(event) {
+        this.clickIsActive = false
+        if (this.clickDuration === 0) return
+
+        const dt = Date.now() - this.clickDuration
+        this.clickDuration = 0
+        if(dt >= UI.contextOpenMinDuration) {
+            console.log(
+                'POPUP DATA:',
+                '\ntitle:', event.target.title,
+                '\nnumbers:', event.target.numbers,
+                '\ntype:', event.target.field
+            )
+            return showPopup()
+        }
+
+        this.clickTarget = event.target
+        this.userSetBet()
+    }
     onHover(event) {
+        if(this.clickIsActive) {
+            this.clickDuration = Date.now()
+            this.clickTarget = event.target
+        }
+
         if ('isPoint' in event.target === false) event.target.alpha = 0.5
         if (event.target.title === SECTOR.vois) this.sectorsList[SECTOR.zero].alpha = 0.5
         event.target.numbers.forEach( n => {
@@ -198,5 +257,16 @@ export default class Field extends Container {
             this.sectorsList[n].alpha = 0
             this.slotsList[n].alpha = 0
         })
+    }
+
+    kill() {
+        EventHub.off(events.startSpin, this.startSpin, this)
+        EventHub.off(events.addLog, this.getSpinResult, this)
+
+        while(this.children.length) {
+            if ('kill' in this.children[0]) this.children[0].kill()
+            else this.children[0].destroy()
+        }
+        this.destroy()
     }
 }

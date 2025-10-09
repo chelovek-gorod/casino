@@ -51,7 +51,13 @@ function appReady() {
 
 let tickerArr = []
 
-const appScreen = {}
+const appScreen = {
+    width: 0,
+    height: 0,
+    centerX: 0,
+    centerY: 0,
+    isLandscape: false
+}
 
 function resize() {
     appScreen.width = app.screen.width
