@@ -12,6 +12,8 @@ const SETTINGS = {
     }
 }
 
+let bgMusicVolume = 0.05
+
 let isSoundOn = getStoredValue(SETTINGS.sound)
 let isMusicOn = getStoredValue(SETTINGS.music)
 
@@ -93,6 +95,9 @@ export function playSound( se ) {
     // se.stop()
     se.play()
 }
+export function stopSound( se ) {
+    se.stop()
+}
 
 let bgMusicSound = null
 let bgMusicAudio = null
@@ -146,7 +151,7 @@ function loadBgMusic() {
             if (token !== bgMusicToken) return sound.destroy()
 
             bgMusicAudio = sound
-            sound.play({ volume: 0.36 }).on('end', nextBgMusic)
+            sound.play({ volume: bgMusicVolume }).on('end', nextBgMusic)
             if (!isSoundAvailable || !isMusicOn) stopMusic()
         }
     })

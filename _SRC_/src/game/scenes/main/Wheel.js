@@ -1,6 +1,7 @@
 import { Container, Sprite } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../../app/application";
-import { images } from "../../../app/assets";
+import { images, sounds } from "../../../app/assets";
+import { playSound, stopSound } from "../../../app/sound";
 import { getLinesIntersectionPoint } from "../../../utils/functions";
 import { BUTTON_TEXT, GAME_CONTAINERS, WHEEL, BALL, NUMBERS, SHOW_RESULT_DELAY } from "../../constants";
 import { isLangRu, isOnSpin, setSpin, setSpinResult } from "../../state";
@@ -243,6 +244,7 @@ export default class Wheel extends Container {
                 if (this.ballDelay <= 0) {
                     this.wheel.addChild(this.ball)
                     this.state = STATE.ball_on_border
+                    playSound(sounds.se_ball_roll)
                 }
             break
 
@@ -264,6 +266,8 @@ export default class Wheel extends Container {
                 if (this.ballRotationRadius < BALL.rotationRadiusStop) {
                     this.getWinningSector()
                     this.state = STATE.ball_move_to_target
+                    stopSound(sounds.se_ball_roll)
+                    playSound(sounds.se_ball_stop)
                 }
             break
 

@@ -55,12 +55,15 @@ export const HELP_TEXT = {
     repeatBets: {ru: 'Повторить последние ставки', en: 'Repeat all recent bets'},
     clearBets: {ru: 'Очистить все ставки', en: 'Clear all bets'},
 
-    betOnHover: {ru: 'Размер ставки:', en: 'Bet Size:'},
+    betOnHoverBet: {ru: 'Ставка:', en: 'Bet:'},
+    betOnHoverRate: {ru: 'Выплата:', en: 'Payout:'},
+    betOnHoverMax: {ru: 'Макс. ставка:', en: 'Max bet:'},
 }
 
 export const MESSAGE_TEXT = {
     lowMoney: {ru: 'Сумма ставки\nпревышает баланс', en: 'Bet amount\nexceeds balance'},
-    winMoney: {ru: 'Вы выиграли', en: 'You win'},
+    winMoney: {ru: 'Вы выиграли\n', en: 'You win\n'},
+    betLimit: {ru: 'Превышен лимит ставки\n', en: 'Bet limit exceeded\n'},
 }
 
 export const POPUP_TEXT = {
@@ -123,13 +126,13 @@ export const BET_RATIO = {
     18: 2, /* 18 чисел */
 }
 export const MAX_BET_RATIO = {
-    [BET_RATIO[1]]: 500,  /* 20 000 / 36 = 555  ~ 500 */
-    [BET_RATIO[2]]: 1000, /* 20 000 / 18 = 1111 ~ 1000 */
-    [BET_RATIO[3]]: 1500, /* 20 000 / 12 = 1666 ~ 1500 */
-    [BET_RATIO[4]]: 2000, /* 20 000 / 9 = 2222 ~ 2000 */
-    [BET_RATIO[6]]: 3000, /* 20 000 / 6 = 3333 ~ 3000 */
-    [BET_RATIO[12]]:5000, /* 20 000 / 3 = 6666 ~ 5000 */
-    [BET_RATIO[18]]:10000,/* 20 000 / 2 = 10000 */
+    1: 500,  /* 20 000 / 36 = 555  ~ 500 */
+    2: 1000, /* 20 000 / 18 = 1111 ~ 1000 */
+    3: 1500, /* 20 000 / 12 = 1666 ~ 1500 */
+    4: 2000, /* 20 000 / 9 = 2222 ~ 2000 */
+    6: 3000, /* 20 000 / 6 = 3333 ~ 3000 */
+    12:5000, /* 20 000 / 3 = 6666 ~ 5000 */
+    18:10000,/* 20 000 / 2 = 10000 */
 }
 
 export const CHIP = {

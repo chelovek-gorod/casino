@@ -2,7 +2,7 @@ import { Container, Sprite } from "pixi.js";
 import { atlases, images } from "../../../app/assets";
 import { EventHub, events, setHelpText } from "../../../app/events";
 import { setCursorPointer } from "../../../utils/functions";
-import { CHIP_DATA, FIELD, GAME_CONTAINERS, HELP_TEXT, NUMBERS, SECTOR, SECTOR_NUMBERS, SECTOR_SPLIT_NUMBERS, SPIEL, UI } from "../../constants";
+import { BET_RATIO, CHIP_DATA, FIELD, GAME_CONTAINERS, HELP_TEXT, MAX_BET_RATIO, NUMBERS, SECTOR, SECTOR_NUMBERS, SECTOR_SPLIT_NUMBERS, SPIEL, UI } from "../../constants";
 import { addBetData, betCurrent, betNearest, editBetData, getBetDataValue, isLangRu, isOnSpin, isSingleBetsInSectors, setBet } from "../../state";
 
 const FIELD_TYPE = { spiel: 'spiel', field: 'field' }
@@ -228,7 +228,7 @@ export default class Field extends Container {
             if (this.clickTarget.numbers.length === 1) {
 
                 const nearestList = getNearest(this.clickTarget.numbers[0])
-                if (!setBet(nearestList.length)) return
+                if (!setBet(nearestList)) return
 
                 nearestList.forEach( n => {
                     this.setBetInField(this.slotsList[n])
@@ -239,16 +239,16 @@ export default class Field extends Container {
             } else {
 
                 if (isSingleBetsInSectors) {
-                    if (!setBet(this.clickTarget.numbers.length)) return
+                    if (!setBet(this.clickTarget.numbers)) return
 
                     this.clickTarget.numbers.forEach( n => {
                         this.setBetInField(this.slotsList[n])
                         addBetData([+n])
                     })
                 } else {
-                    let totalNumbers = this.clickTarget.splitData.numbers.length
-                        + this.clickTarget.splitData.points.length
-                    if (!setBet(totalNumbers)) return
+                    if (!setBet(
+                        this.clickTarget.splitData.numbers, this.clickTarget.splitData.points.numbers
+                    )) return
 
                     this.clickTarget.splitData.numbers.forEach( n => {
                         this.setBetInField(this.slotsList[n])
@@ -264,7 +264,7 @@ export default class Field extends Container {
 
         // bet in field
         } else {
-            if (!setBet(1)) return
+            if (!setBet([], [this.clickTarget.numbers])) return
 
             this.setBetInField( this.clickTarget )
             addBetData(this.clickTarget.numbers)
@@ -272,9 +272,10 @@ export default class Field extends Container {
 
         if (this.clickTarget.chip) {
             const betValue = getBetDataValue(this.clickTarget.numbers)
+            const maxBet = MAX_BET_RATIO[this.clickTarget.numbers.length]
             setHelpText({
-                ru: `${HELP_TEXT.betOnHover.ru} ${betValue}`,
-                en: `${HELP_TEXT.betOnHover.en} ${betValue}`
+                ru: `${HELP_TEXT.betOnHoverBet.ru} ${betValue}. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
+                en: `${HELP_TEXT.betOnHoverBet.en} ${betValue}. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
             })
         }
     }
@@ -388,9 +389,17 @@ export default class Field extends Container {
 
         if (event.target.chip) {
             const betValue = getBetDataValue(event.target.numbers)
+            const maxBet = MAX_BET_RATIO[event.target.numbers.length]
             setHelpText({
-                ru: `${HELP_TEXT.betOnHover.ru} ${betValue}`,
-                en: `${HELP_TEXT.betOnHover.en} ${betValue}`
+                ru: `${HELP_TEXT.betOnHoverBet.ru} ${betValue}. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
+                en: `${HELP_TEXT.betOnHoverBet.en} ${betValue}. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
+            })
+        } else if (event.target.field === FIELD_TYPE.field || event.target.isPoint) {
+            const rateSize = BET_RATIO[event.target.numbers.length]
+            const maxBet = MAX_BET_RATIO[event.target.numbers.length]
+            setHelpText({
+                ru: `${HELP_TEXT.betOnHoverRate.ru} 1:${rateSize}. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
+                en: `${HELP_TEXT.betOnHoverRate.ru} 1:${rateSize}. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
             })
         }
         

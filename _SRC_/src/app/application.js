@@ -2,16 +2,14 @@ import { Application } from 'pixi.js'
 import { changeFocus, screenResize } from './events'
 import { uploadAssets } from './loader'
 
-let app = null
-let appContainer = null
-let startCallback = null
-
+// app settings
 let isGlobalAppCursor = false
 export let appPointer = null
 
 const isCursorHidden = false
 if (isCursorHidden) document.body.style.cursor = 'none'
 
+// pixi app settings
 const appSettings = {
     background: 0x000000,
     antialias: true, // сглаживание (false - для пиксель-арт стиля)
@@ -20,6 +18,11 @@ const appSettings = {
     resolution: window.devicePixelRatio || 1,
     resizeTo: null    
 }
+
+// app logic
+let app = null
+let appContainer = null
+let startCallback = null
 
 export default function initApp(container, callback) {
     if (app) return
@@ -97,22 +100,26 @@ let orientation = window.matchMedia("(orientation: portrait)");
 orientation.addEventListener("change", () => setTimeout(resize, 0))
 window.addEventListener('resize', () => setTimeout(resize, 0))
 
-window.addEventListener('focus', () => tickerStateChange(true))
-window.addEventListener('blur', () => tickerStateChange(false))
-if ('hidden' in document) document.addEventListener('visibilitychange', visibilityOnChange)
+window.addEventListener('focus', updateVisibilityState)
+window.addEventListener('blur', updateVisibilityState)
+if ('hidden' in document) document.addEventListener('visibilitychange', updateVisibilityState)
 
-function visibilityOnChange( ) {
-    const isHidden = document.hidden || document.visibilityState !== 'visible'
-    tickerStateChange( isHidden )
-}
-
-function tickerStateChange( isOn ) {
+function updateVisibilityState( ) {
     if (app === null || !('ticker' in app)) return
 
-    if (isOn) app.ticker.start()
+    // true if in focus and visible
+    const isVisible = document.visibilityState === 'visible' && document.hasFocus()
+
+    if (isVisible) app.ticker.start()
     else app.ticker.stop()
-    changeFocus(isOn)
+
+    changeFocus(isVisible) // event for others entities
+
+    // one render step to create first visible frame
+    if (isVisible && app.renderer) app.renderer.render(app.stage)
 }
+// update visibility with app init
+setTimeout(updateVisibilityState, 0)
 
 function tick(time) {
     // if (delta = 1) -> FPS = 60 (16.66ms per frame)

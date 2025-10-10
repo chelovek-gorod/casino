@@ -1,7 +1,7 @@
 import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber,
     showMessage, showPopup, clearedOneOfBets} from "../app/events"
 import { formatNumber } from "../utils/functions"
-import { MESSAGE_TEXT, BET_RATIO, MESSAGE } from "./constants"
+import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO } from "./constants"
 
 export let isLangRu = true
 
@@ -23,15 +23,34 @@ export let editedBetInfo = {
     value: 0
 }
 
-export function setBet(betCount = 1) {
+export function setBet(numbers, numbersList = []) {
     if (isOnSpin) return false
-    if (money < (betCurrent * betCount)) {
+
+    const totalBet = betCurrent * (numbers.length + numbersList.length)
+    if (money < totalBet) {
         showMessage( isLangRu ? MESSAGE_TEXT.lowMoney.ru : MESSAGE_TEXT.lowMoney.en )
         return false
     }
 
-    money -= betCurrent * betCount
-    betsTotal += betCurrent * betCount
+    let isValidBet = true
+    numbers.forEach( n => {
+        if (isValidBet) isValidBet = (betCurrent + getBetDataValue([n])) <= MAX_BET_RATIO[1]
+    }) 
+    if (!isValidBet) {
+        showMessage( isLangRu ? MESSAGE_TEXT.betLimit.ru : MESSAGE_TEXT.betLimit.en )
+        return false
+    }
+    numbersList.forEach( numbers => {
+        console.log('state numbersList:', numbersList)
+        if (isValidBet) isValidBet = (betCurrent + getBetDataValue(numbers)) <= MAX_BET_RATIO[numbers.length]
+    })
+    if (!isValidBet) {
+        showMessage( isLangRu ? MESSAGE_TEXT.betLimit.ru : MESSAGE_TEXT.betLimit.en )
+        return false
+    }
+
+    money -= totalBet
+    betsTotal += totalBet
 
     updateMoney(money)
     updateBetTotal(betsTotal)
@@ -90,6 +109,9 @@ export function setSpinResult( number ) {
     addLog(number)
     showMessage(number)
 
+    betsTotal = 0
+    updateBetTotal(betsTotal)
+
     let winMoney = 0
     const numberStr = number.toString();
     
@@ -134,6 +156,8 @@ export function editBetData(numbers) {
 
     // временно удаляем ставки вместо настроек
     addMoney( betsData[editedBetInfo.key] )
+    betsTotal -= betsData[editedBetInfo.key]
+    updateBetTotal(betsTotal)
     delete betsData[editedBetInfo.key]
     clearedOneOfBets()
     return // это временный return
