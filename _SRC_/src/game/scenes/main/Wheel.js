@@ -231,7 +231,7 @@ export default class Wheel extends Container {
                         this.targetSpeed, this.rotationSpeed - (WHEEL.acceleration * time.deltaTime)
                     )
                 }
-                this.center.rotation += this.rotationSpeed
+                this.center.rotation += this.rotationSpeed * time.deltaTime
                 
                 if (this.rotationSpeed === this.targetSpeed) {
                     this.state = STATE.ball_delay
@@ -299,8 +299,8 @@ export default class Wheel extends Container {
                     this.rotationSpeed = 0
                 }
 
-                this.center.rotation += this.rotationSpeed
-                this.ballMoveAngle += this.rotationSpeed
+                this.center.rotation += this.rotationSpeed * time.deltaTime
+                this.ballMoveAngle += this.rotationSpeed * time.deltaTime
                 this.updateBallPosition()
 
                 if (this.rotationSpeed === 0) {

@@ -1,7 +1,7 @@
 import { Container, Sprite, Text } from "pixi.js";
 import { HELP_TEXT, POPUP_TYPE, UI } from "../../../constants";
 import ButtonUI from "./ButtonUI";
-import { betCurrent, betsTotal, checkBet, isLangRu } from "../../../state";
+import { betCurrent, betsTotal, checkBet, isLangRu, clearAllBets } from "../../../state";
 import { styles } from "../../../../app/styles";
 import { atlases } from "../../../../app/assets";
 import { getRRTexture, getRRTextureWithShadow } from "../../../../utils/textureGenerator";
@@ -50,17 +50,13 @@ export default class RightMenu extends Container {
         this.bet = new ButtonUI('bet', this.showBetPopup.bind(this), true, HELP_TEXT.setBet)
         this.bet.position.set(-UI.offset, -UI.offset)
 
-        this.repeatBeat = new ButtonUI('repeat', this.testClick.bind(this), true, HELP_TEXT.repeatBets)
-        this.repeatBeat.scale.set(UI.iconScale * 1.5)
-        this.repeatBeat.position.set(-UI.offset, -UI.offset - 56)
-
-        this.cancelBeat = new ButtonUI('cancel', this.testClick.bind(this), true, HELP_TEXT.clearBets)
+        this.cancelBeat = new ButtonUI('cancel', clearAllBets, true, HELP_TEXT.clearBets)
         this.cancelBeat.scale.set(UI.iconScale * 1.5)
-        this.cancelBeat.position.set(-UI.offset, -UI.offset - 92)
+        this.cancelBeat.position.set(-UI.offset, -UI.offset - 56)
         
         this.addChild(
-            this.betsBg, this.betsTotal, this.betsTotalText, this.betsCurrentText, this.bg, this.bet,
-            this.cancelBeat, this.repeatBeat
+            this.betsBg, this.betsTotal, this.betsTotalText, this.betsCurrentText,
+            this.bg, this.bet, this.cancelBeat
         )
 
         EventHub.on(events.updateBet, this.updateBet, this)
@@ -79,12 +75,8 @@ export default class RightMenu extends Container {
         showPopup(POPUP_TYPE.bet)
     }
 
-    testClick() {
-        console.log('get click')
-    }
-
     kill() {
-        EventHub.off(events.updateBetaTotal, updateBetaTotal, this)
+        EventHub.off(events.updateBetTotal, updateBetaTotal, this)
 
         this.betsBg.eventMode = 'none'
         this.betsBg.off('pointerover', () => setHelpText(HELP_TEXT.bets))

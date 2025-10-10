@@ -26,7 +26,9 @@ export let editedBetInfo = {
 export function setBet(numbers, numbersList = []) {
     if (isOnSpin) return false
 
-    const totalBet = betCurrent * (numbers.length + numbersList.length)
+    console.log('setBet', [...numbers], [...numbersList])
+
+    const totalBet = betCurrent * numbers.length + betCurrent * numbersList.length
     if (money < totalBet) {
         showMessage( isLangRu ? MESSAGE_TEXT.lowMoney.ru : MESSAGE_TEXT.lowMoney.en )
         return false
@@ -41,7 +43,6 @@ export function setBet(numbers, numbersList = []) {
         return false
     }
     numbersList.forEach( numbers => {
-        console.log('state numbersList:', numbersList)
         if (isValidBet) isValidBet = (betCurrent + getBetDataValue(numbers)) <= MAX_BET_RATIO[numbers.length]
     })
     if (!isValidBet) {
@@ -148,6 +149,16 @@ export function getBetDataValue(numbers) {
     if ( !(key in betsData) ) return 0
 
     return betsData[key]
+}
+
+export function clearAllBets() {
+    for( const key in betsData){
+        addMoney( betsData[key] )
+        betsTotal = 0
+        updateBetTotal(betsTotal)
+        delete betsData[key]
+    }
+    clearedOneOfBets()
 }
 
 export function editBetData(numbers) {

@@ -246,8 +246,9 @@ export default class Field extends Container {
                         addBetData([+n])
                     })
                 } else {
+                    const pointsNumbers = this.clickTarget.splitData.points.map(p => p.numbers)
                     if (!setBet(
-                        this.clickTarget.splitData.numbers, this.clickTarget.splitData.points.numbers
+                        this.clickTarget.splitData.numbers, pointsNumbers
                     )) return
 
                     this.clickTarget.splitData.numbers.forEach( n => {
@@ -398,8 +399,8 @@ export default class Field extends Container {
             const rateSize = BET_RATIO[event.target.numbers.length]
             const maxBet = MAX_BET_RATIO[event.target.numbers.length]
             setHelpText({
-                ru: `${HELP_TEXT.betOnHoverRate.ru} 1:${rateSize}. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
-                en: `${HELP_TEXT.betOnHoverRate.ru} 1:${rateSize}. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
+                ru: `${HELP_TEXT.betOnHoverRate.ru} ${rateSize}:1. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
+                en: `${HELP_TEXT.betOnHoverRate.ru} ${rateSize}:1. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
             })
         }
         

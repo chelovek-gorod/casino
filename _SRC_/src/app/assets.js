@@ -68,7 +68,7 @@ export const music = {
 }
 
 export const loadConfig = {
-    musicKey: null,
-    imageKey: 'bg',
-    isImageTile: true,
+    musicKey: null, // String or null
+    imageKey: 'bg', // String or null
+    isImageTile: true, // true/false
 }
