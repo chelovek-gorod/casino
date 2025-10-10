@@ -396,7 +396,7 @@ export default class Field extends Container {
                 en: `${HELP_TEXT.betOnHoverBet.en} ${betValue}. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
             })
         } else if (event.target.field === FIELD_TYPE.field || event.target.isPoint) {
-            const rateSize = BET_RATIO[event.target.numbers.length]
+            const rateSize = BET_RATIO[event.target.numbers.length] - 1
             const maxBet = MAX_BET_RATIO[event.target.numbers.length]
             setHelpText({
                 ru: `${HELP_TEXT.betOnHoverRate.ru} ${rateSize}:1. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
