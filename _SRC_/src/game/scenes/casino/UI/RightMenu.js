@@ -7,6 +7,7 @@ import { atlases } from "../../../../app/assets";
 import { getRRTexture, getRRTextureWithShadow } from "../../../../utils/textureGenerator";
 import { EventHub, events, setHelpText, showPopup } from "../../../../app/events";
 import { formatNumber } from "../../../../utils/functions";
+import { tickerRemove } from "../../../../app/application";
 
 export default class RightMenu extends Container {
     constructor() {
@@ -61,6 +62,8 @@ export default class RightMenu extends Container {
 
         EventHub.on(events.updateBet, this.updateBet, this)
         EventHub.on(events.updateBetTotal, this.updateBetTotal, this)
+        EventHub.on(events.startSpin, this.setDisableCancelButton, this)
+        EventHub.on(events.addLog, this.setEnableCancelButton, this)
     }
 
     updateBet(bet) {
@@ -75,8 +78,18 @@ export default class RightMenu extends Container {
         showPopup(POPUP_TYPE.bet)
     }
 
+    setEnableCancelButton() {
+        this.cancelBeat.setActive(true)
+    }
+    setDisableCancelButton() {
+        this.cancelBeat.setActive(false)
+    }
+
     kill() {
-        EventHub.off(events.updateBetTotal, updateBetaTotal, this)
+        EventHub.off(events.updateBet, this.updateBet, this)
+        EventHub.off(events.updateBetTotal, this.updateBetTotal, this)
+        EventHub.off(events.startSpin, this.setDisableCancelButton, this)
+        EventHub.off(events.addLog, this.setEnableCancelButton, this)
 
         this.betsBg.eventMode = 'none'
         this.betsBg.off('pointerover', () => setHelpText(HELP_TEXT.bets))

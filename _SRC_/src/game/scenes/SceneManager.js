@@ -1,6 +1,6 @@
-import { getAppScreen, sceneAdd, sceneRemove, tickerAdd, tickerRemove } from "../app/application"
-import { EventHub, events } from "../app/events"
-import { SCENE_ALPHA_STEP } from "./constants"
+import { getAppScreen, sceneAdd, sceneRemove, tickerAdd, tickerRemove } from "../../app/application"
+import { EventHub, events } from "../../app/events"
+import { SCENE_ALPHA_STEP } from "../constants"
 
 let sceneManager = null
 
@@ -63,5 +63,12 @@ export default class SceneManager {
             this.currentScene.alpha += time.elapsedMS * SCENE_ALPHA_STEP
             if (this.currentScene.alpha >= 1) this.scenesReady()
         }
+    }
+
+    kill() {
+        EventHub.off( events.screenResize, this.screenResize, this)
+
+        this.currentScene.kill()
+        this.nextScene.kill()
     }
 }

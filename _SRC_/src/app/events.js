@@ -6,6 +6,8 @@ export const events = {
     screenResize: 'screenResize',
     changeFocus: 'changeFocus',
 
+    startScene: 'startScene',
+
     setHelpText: 'setHelpText',
 
     updateMoney: 'updateMoney',
@@ -28,6 +30,10 @@ export function screenResize( data ) {
 }
 export function changeFocus( isOnFocus ) {
     EventHub.emit( events.changeFocus, isOnFocus )
+}
+
+export function startScene( sceneName ) {
+    EventHub.emit( events.startScene, sceneName )
 }
 
 export function setHelpText( text ) {

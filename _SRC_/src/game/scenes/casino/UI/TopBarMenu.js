@@ -1,11 +1,12 @@
 import { Container, Texture, Sprite, Text } from "pixi.js"
-import { HELP_TEXT, UI } from "../../../constants"
+import { HELP_TEXT, SCENE_NAME, UI } from "../../../constants"
 import ButtonUI from "./ButtonUI"
 import { addMoney, isLangRu, money } from "../../../state"
 import { styles } from "../../../../app/styles"
 import { formatNumber } from "../../../../utils/functions"
 import { getRRTexture, getRRTextureWithShadow } from "../../../../utils/textureGenerator"
-import { EventHub, events, setHelpText, showPopup } from "../../../../app/events"
+import { EventHub, events, setHelpText, showPopup, startScene } from "../../../../app/events"
+import { tickerRemove } from "../../../../app/application"
 
 export default class TopBarMenu extends Container {
     constructor() {
@@ -13,7 +14,7 @@ export default class TopBarMenu extends Container {
         
         this.bg = new Sprite()
 
-        this.home = new ButtonUI('home', this.testClick.bind(this), true, HELP_TEXT.home)
+        this.home = new ButtonUI('home', () => startScene(SCENE_NAME.Menu), true, HELP_TEXT.home)
 
         this.money = new Text({text: formatNumber(money), style: styles.money})
         this.money.anchor.set(0, 0.5)

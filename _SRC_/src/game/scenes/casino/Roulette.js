@@ -5,13 +5,13 @@ import { setMusic } from '../../../app/sound'
 import { GAME_CONTAINERS, GAME_OFFSET, UI } from '../../constants'
 import Field from './Field'
 import LeftMenu from './UI/LeftMenu'
-import Popup from './popup/Popup'
+import Popup from '../common/Popup'
 import RightMenu from './UI/RightMenu'
 import TopBarMenu from './UI/TopBarMenu'
 import Wheel from './Wheel'
 import Message from './UI/Message'
 
-export default class Main extends Container {
+export default class Roulette extends Container {
     constructor() {
         super()
         this.alpha = 0
@@ -48,7 +48,7 @@ export default class Main extends Container {
         setMusic([music.bgm_casino])
     }
 
-    screenResize(screenData) {
+    screenResize(screenData) { console.log('RR')
         // set scene container in center of screen
         this.position.set( screenData.centerX, screenData.centerY )
 

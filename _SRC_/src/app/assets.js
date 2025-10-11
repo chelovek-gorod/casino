@@ -18,6 +18,7 @@ export const fonts = {
 
 export const images = {
     bg: 'ground_494x280px.png',
+    main_bg: 'main_bg.png',
 
     button: 'button.png',
 
@@ -30,6 +31,8 @@ export const images = {
     wheel_border: 'wheel_border_728x728px.png',
     wheel_center: 'wheel_center_512x512px.png',
     point: 'point_36x36px.png',
+
+    slot_border: 'slot_border.png',
     
     dpf_1: 'dpf_1.png',
     dpf_2: 'dpf_2.png',
@@ -49,7 +52,8 @@ export const atlases = {
    chip: 'chip.json',
    short_btn: 'short_btn.json',
    field_light: 'field_light.json',
-   spiel_light: 'spiel_light.json'
+   spiel_light: 'spiel_light.json',
+   slot_image: 'slot_image.json',
 }
 export const sounds = {
     se_swipe: 'se_swipe.mp3',

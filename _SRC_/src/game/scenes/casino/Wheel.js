@@ -5,7 +5,7 @@ import { playSound, stopSound } from "../../../app/sound";
 import { getLinesIntersectionPoint } from "../../../utils/functions";
 import { BUTTON_TEXT, GAME_CONTAINERS, WHEEL, BALL, NUMBERS, SHOW_RESULT_DELAY } from "../../constants";
 import { isLangRu, isOnSpin, setSpin, setSpinResult } from "../../state";
-import Button from './UI/Button'
+import Button from '../common/Button'
 
 const HalfPI = Math.PI * 0.5
 const DoublePI = Math.PI * 2

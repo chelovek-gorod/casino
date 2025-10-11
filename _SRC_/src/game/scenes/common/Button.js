@@ -1,10 +1,10 @@
 import { Container, Text, Sprite } from "pixi.js"
-import { images, sounds } from "../../../../app/assets"
-import { removeCursorPointer, setCursorPointer } from "../../../../utils/functions"
-import { styles } from "../../../../app/styles"
-import { playSound } from "../../../../app/sound"
-import { getRRTextureWithShadow } from "../../../../utils/textureGenerator"
-import { BUTTON } from "../../../constants"
+import { images, sounds } from "../../../app/assets"
+import { removeCursorPointer, setCursorPointer } from "../../../utils/functions"
+import { styles } from "../../../app/styles"
+import { playSound } from "../../../app/sound"
+import { getRRTextureWithShadow } from "../../../utils/textureGenerator"
+import { BUTTON } from "../../constants"
 
 export default class Button extends Container {
     constructor(text, x, y, callback, isActive = true) {

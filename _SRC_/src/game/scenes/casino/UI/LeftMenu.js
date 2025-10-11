@@ -3,6 +3,7 @@ import { HELP_TEXT, POPUP_TYPE, UI } from "../../../constants";
 import ButtonUI from "./ButtonUI";
 import { getRRTextureWithShadow } from "../../../../utils/textureGenerator";
 import { showPopup } from "../../../../app/events";
+import { tickerRemove } from "../../../../app/application";
 
 export default class LeftMenu extends Container {
     constructor() {

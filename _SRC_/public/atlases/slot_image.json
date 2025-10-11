@@ -1,0 +1,351 @@
+{
+  "frames": {
+    "7": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "777": {
+      "frame": {
+        "x": 286,
+        "y": 2,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "apple": {
+      "frame": {
+        "x": 2,
+        "y": 246,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "bonus": {
+      "frame": {
+        "x": 286,
+        "y": 246,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "card_1": {
+      "frame": {
+        "x": 2,
+        "y": 490,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "card_2": {
+      "frame": {
+        "x": 286,
+        "y": 490,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "card_3": {
+      "frame": {
+        "x": 2,
+        "y": 734,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "card_4": {
+      "frame": {
+        "x": 286,
+        "y": 734,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "cards": {
+      "frame": {
+        "x": 2,
+        "y": 978,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "cheery": {
+      "frame": {
+        "x": 286,
+        "y": 978,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "coin": {
+      "frame": {
+        "x": 2,
+        "y": 1222,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "lemon": {
+      "frame": {
+        "x": 286,
+        "y": 1222,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "watermelon": {
+      "frame": {
+        "x": 2,
+        "y": 1466,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "wild_super": {
+      "frame": {
+        "x": 286,
+        "y": 1466,
+        "w": 280,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 280,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 280,
+        "h": 240
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "slot_image.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 568,
+      "h": 1708
+    },
+    "scale": 1
+  }
+}

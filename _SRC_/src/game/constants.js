@@ -1,10 +1,17 @@
 export const SCENE_ALPHA_STEP = 0.001
 
+export const SCENE_NAME = {
+    Menu : 'Menu',
+    Roulette : 'Roulette',
+    Slots : 'Slots',
+}
+
 // main menu
-export const MM_ALPHA_STEP = 0.0002
-export const MM_FIRST_BUTTON_DELAY = 2400
-export const MM_NEXT_BUTTON_DELAY = 300
-export const MM_TITLE_DELAY = 600
+export const MENU_BG_SIZE = 1920
+export const MENU_TEXT = {
+    rouletteButton: {ru: 'Рулетка', en: 'Roulette'},
+    slotsButton: {ru: 'Слоты', en: 'Slots'},
+}
 
 // game
 export const SECTOR = {
@@ -42,7 +49,7 @@ export const POINTS_NAMES = {
 }
 
 export const HELP_TEXT = {
-    home: {ru: 'Перезапустить', en: 'Restart'},
+    home: {ru: 'В главное меню', en: 'To main menu'},
     money: {ru: 'Ваш текущий счет', en: 'Your current money'},
     addMoney: {ru: 'Пополнить счет', en: 'Get extra money'},
     config: {ru: 'Настройки игры', en: 'Game settings'},
