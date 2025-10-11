@@ -19,7 +19,8 @@ export const events = {
 
     showPopup: 'showPopup',
 
-    clearedOneOfBets: 'clearedOneOfBets',
+    clearOneBet: 'clearOneBet',
+    clearAllBets: 'clearAllBets',
 }
 
 export function screenResize( data ) {
@@ -60,6 +61,9 @@ export function showPopup( type ) {
     EventHub.emit( events.showPopup, type )
 }
 
-export function clearedOneOfBets() {
-    EventHub.emit( events.clearedOneOfBets )
+export function clearOneBet() {
+    EventHub.emit( events.clearOneBet )
+}
+export function clearAllBets() {
+    EventHub.emit( events.clearAllBets )
 }

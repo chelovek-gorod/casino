@@ -2,9 +2,8 @@ import { Container, Sprite, Text } from "pixi.js"
 import { atlases } from "../../../app/assets"
 import { styles } from "../../../app/styles"
 import { CHIP_DATA } from "../../constants"
-import { betCurrent } from "../../state"
 
-function getChipTexture(bet = betCurrent) {
+function getChipTexture(bet) {
     if (bet < 5) return atlases.chip.textures.c1
     if (bet < 10) return atlases.chip.textures.c5
     if (bet < 25) return atlases.chip.textures.c10
@@ -17,22 +16,27 @@ function getChipTexture(bet = betCurrent) {
 }
 
 export default class Chip extends Container {
-    constructor(value = betCurrent) {
+    constructor(isForField = true) {
         super()
 
-        this.image = new Sprite( getChipTexture() )
+        this.image = new Sprite( getChipTexture(0) )
         this.image.anchor.set(0.5)
-        this.image.scale.set(CHIP_DATA.scale)
+        this.image.scale.set(isForField ? CHIP_DATA.scale : CHIP_DATA.nearestScale)
         this.addChild(this.image)
 
-        this.text = new Text({text: value, style: styles.chip})
-        this.text.anchor.set(0.5)
-        this.addChild(this.text)
+        if (isForField) {
+            this.text = new Text({text: 0, style: styles.chip})
+            this.text.anchor.set(0.5)
+            this.addChild(this.text)
+        }
     }
 
-    update(value = betCurrent) {
-        this.image.texture = getChipTexture(value)
-        this.text.text = value
+    update(value) {
+        if ( !('text' in this) ) return
+
+        const current = value === 0 ? 0 : +this.text.text + value
+        this.image.texture = getChipTexture(current)
+        this.text.text = current
     }
 
     kill() {

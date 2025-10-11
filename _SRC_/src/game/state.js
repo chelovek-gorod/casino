@@ -1,5 +1,5 @@
 import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber,
-    showMessage, showPopup, clearedOneOfBets} from "../app/events"
+    showMessage, clearOneBet, clearAllBets} from "../app/events"
 import { formatNumber } from "../utils/functions"
 import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO, MAX_BET } from "./constants"
 
@@ -110,6 +110,7 @@ export function addMoney( sum ) {
 export function setSpin( isSpin ) {
     isOnSpin = isSpin
     if (isSpin) startSpin()
+    else clearAllBets()
 }
 
 export function setSpinResult( number ) {
@@ -140,7 +141,6 @@ export function setSpinResult( number ) {
     }
 
     for (const key in betsData) delete betsData[key]
-    clearedOneOfBets() // временное событие
 }
 
 export function addBetData(numbers) {
@@ -156,33 +156,23 @@ export function getBetDataValue(numbers) {
     return betsData[key]
 }
 
-export function clearAllBets() {
+export function clearAllBetsData() {
     for( const key in betsData){
         addMoney( betsData[key] )
         betsTotal = 0
         updateBetTotal(betsTotal)
         delete betsData[key]
     }
-    clearedOneOfBets()
+    clearAllBets()
 }
 
-export function editBetData(numbers) {
+export function removeBet(numbers) {
     editedBetInfo.key = [...numbers].sort((a, b) => a - b).join('_')
     if ( !(editedBetInfo.key in betsData) ) return
 
-    // временно удаляем ставки вместо настроек
     addMoney( betsData[editedBetInfo.key] )
     betsTotal -= betsData[editedBetInfo.key]
     updateBetTotal(betsTotal)
     delete betsData[editedBetInfo.key]
-    clearedOneOfBets()
-    return // это временный return
-
-    editedBetInfo.value = betsData[editedBetInfo.key]
-    showPopup() // popup use updateValueInEditedBet(value)
-}
-
-export function updateValueInEditedBet(value) {
-    // !!! ПРОВЕРИТЬ хватит ли money если value увеличился
-    // обновить спрайт фишки в зависимости от нового значения или удалить, если ставка снята
+    clearOneBet()
 }

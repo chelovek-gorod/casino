@@ -55,15 +55,18 @@ export const HELP_TEXT = {
     repeatBets: {ru: 'Повторить последние ставки', en: 'Repeat all recent bets'},
     clearBets: {ru: 'Очистить все ставки', en: 'Clear all bets'},
 
-    betOnHoverBet: {ru: 'Ставка:', en: 'Bet:'},
-    betOnHoverRate: {ru: 'Выплата:', en: 'Payout:'},
-    betOnHoverMax: {ru: 'Макс. ставка:', en: 'Max bet:'},
+    betOnHoverBet: {ru: 'Ставка', en: 'Bet'},
+    betOnHoverRate: {ru: 'Выплата', en: 'Payout'},
+    betOnHoverMax: {ru: 'Макс. ставка', en: 'Max bet'},
 }
 
 export const MESSAGE_TEXT = {
     lowMoney: {ru: 'Сумма ставки\nпревышает баланс', en: 'Bet amount\nexceeds balance'},
     winMoney: {ru: 'Вы выиграли\n', en: 'You win\n'},
-    betLimit: {ru: 'Превышен лимит ставки\n', en: 'Bet limit exceeded\n'},
+    betLimit: {
+        ru: 'Лимит ставки превышен\nдля этой части поля!',
+        en: 'This bet is too high\nfor this spo!'
+    },
 }
 
 export const POPUP_TEXT = {
@@ -146,7 +149,10 @@ export const CHIP = {
     c5000: 'c5000'
 }
 export const CHIP_DATA = {
-    scale: 1
+    scale: 0.75,
+    fontSize: 16,
+
+    nearestScale: 0.5,
 }
 
 export const SPIEL = {
@@ -159,43 +165,43 @@ export const SPIEL = {
         [SECTOR.tier]: {x: 933, y: 156},
     },
     numbers: [
-        /*  0 */ {x: 69, y: 84},
-        /*  1 */ {x: 861, y: 259},
-        /*  2 */ {x: 471, y: 52},
-        /*  3 */ {x: 83, y: 241},
-        /*  4 */ {x: 341, y: 52},
-        /*  5 */ {x: 1120, y: 241},
-        /*  6 */ {x: 731, y: 52},
-        /*  7 */ {x: 341, y: 259},
-        /*  8 */ {x: 1121, y: 71},
-        /*  9 */ {x: 601, y: 259},
-        /* 10 */ {x: 1145, y: 199},
-        /* 11 */ {x: 991, y: 52},
-        /* 12 */ {x: 211, y: 259},
-        /* 13 */ {x: 861, y: 52},
-        /* 14 */ {x: 731, y: 259},
-        /* 15 */ {x: 211, y: 52},
-        /* 16 */ {x: 991, y: 259},
-        /* 17 */ {x: 601, y: 52},
-        /* 18 */ {x: 471, y: 259},
-        /* 19 */ {x: 276, y: 52},
-        /* 20 */ {x: 796, y: 259},
-        /* 21 */ {x: 406, y: 52},
-        /* 22 */ {x: 536, y: 259},
-        /* 23 */ {x: 1145, y: 114},
-        /* 24 */ {x: 1062, y: 257},
-        /* 25 */ {x: 536, y: 52},
-        /* 26 */ {x: 58, y: 198},
-        /* 27 */ {x: 796, y: 52},
-        /* 28 */ {x: 276, y: 259},
-        /* 29 */ {x: 406, y: 259},
-        /* 30 */ {x: 1062, y: 55},
-        /* 31 */ {x: 666, y: 259},
-        /* 32 */ {x: 141, y: 54},
-        /* 33 */ {x: 926, y: 259},
-        /* 34 */ {x: 666, y: 52},
-        /* 35 */ {x: 140, y: 257},
-        /* 36 */ {x: 926, y: 52},
+        /*  0 */ {x: 68,   y: 84,  chipX: 38,   chipY: 76},
+        /*  1 */ {x: 861,  y: 259, chipX: 861,  chipY: 299},
+        /*  2 */ {x: 471,  y: 52,  chipX: 471,  chipY: 12},
+        /*  3 */ {x: 83,   y: 241, chipX: 63,   chipY: 267},
+        /*  4 */ {x: 341,  y: 52,  chipX: 341,  chipY: 12},
+        /*  5 */ {x: 1120, y: 241, chipX: 1140, chipY: 267},
+        /*  6 */ {x: 731,  y: 52,  chipX: 731,  chipY: 12},
+        /*  7 */ {x: 341,  y: 259, chipX: 341,  chipY: 299},
+        /*  8 */ {x: 1121, y: 71,  chipX: 1140, chipY: 45},
+        /*  9 */ {x: 601,  y: 259, chipX: 601,  chipY: 299},
+        /* 10 */ {x: 1145, y: 199, chipX: 1186, chipY: 199},
+        /* 11 */ {x: 991,  y: 52,  chipX: 991,  chipY: 12},
+        /* 12 */ {x: 211,  y: 259, chipX: 211,  chipY: 299},
+        /* 13 */ {x: 861,  y: 52,  chipX: 861,  chipY: 12},
+        /* 14 */ {x: 731,  y: 259, chipX: 731,  chipY: 299},
+        /* 15 */ {x: 211,  y: 52,  chipX: 211,  chipY: 12},
+        /* 16 */ {x: 991,  y: 259, chipX: 991,  chipY: 299},
+        /* 17 */ {x: 601,  y: 52,  chipX: 601,  chipY: 12},
+        /* 18 */ {x: 471,  y: 259, chipX: 471,  chipY: 299},
+        /* 19 */ {x: 276,  y: 52,  chipX: 276,  chipY: 12},
+        /* 20 */ {x: 796,  y: 259, chipX: 796,  chipY: 299},
+        /* 21 */ {x: 406,  y: 52,  chipX: 406,  chipY: 12},
+        /* 22 */ {x: 536,  y: 259, chipX: 536,  chipY: 299},
+        /* 23 */ {x: 1145, y: 114, chipX: 1186, chipY: 114},
+        /* 24 */ {x: 1062, y: 257, chipX: 1062, chipY: 299},
+        /* 25 */ {x: 536,  y: 52,  chipX: 536,  chipY: 12},
+        /* 26 */ {x: 58,   y: 198, chipX: 17,   chipY: 199},
+        /* 27 */ {x: 796,  y: 52,  chipX: 796,  chipY: 12},
+        /* 28 */ {x: 276,  y: 259, chipX: 276,  chipY: 299},
+        /* 29 */ {x: 406,  y: 259, chipX: 406,  chipY: 299},
+        /* 30 */ {x: 1062, y: 55,  chipX: 1062, chipY: 12},
+        /* 31 */ {x: 666,  y: 259, chipX: 666,  chipY: 299},
+        /* 32 */ {x: 141,  y: 54,  chipX: 141,  chipY: 12},
+        /* 33 */ {x: 926,  y: 259, chipX: 926,  chipY: 299},
+        /* 34 */ {x: 666,  y: 52,  chipX: 666,  chipY: 12},
+        /* 35 */ {x: 140,  y: 257, chipX: 140,  chipY: 299},
+        /* 36 */ {x: 926,  y: 52,  chipX: 926,  chipY: 12},
     ]
 }
 

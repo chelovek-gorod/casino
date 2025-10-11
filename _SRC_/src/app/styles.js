@@ -1,5 +1,5 @@
 import { TextStyle } from "pixi.js"
-import { LOGS, MESSAGE } from "../game/constants"
+import { CHIP_DATA, LOGS, MESSAGE } from "../game/constants"
 import { fonts } from "./assets"
 
 export let styles = {
@@ -207,7 +207,7 @@ export function initFontStyles() {
 
     styles.chip = new TextStyle({
         fontFamily: fonts.Manrope600,
-        fontSize: 20,
+        fontSize: CHIP_DATA.fontSize,
         fill: '#ffffff',
     })
 

@@ -1,4 +1,4 @@
-import { Container, Text } from "pixi.js";
+import { Container, Text, Graphics } from "pixi.js";
 import { EventHub, events } from "../../../../app/events";
 import { styles } from "../../../../app/styles";
 import { POPUP, POPUP_TEXT, LOGS, SECTOR, SECTOR_NUMBERS } from "../../../constants";
@@ -9,6 +9,10 @@ const SIZE_TYPE = {
     previous : 'previous',
     rests : 'rests'
 }
+
+const titleY = -208
+const hrY = -176
+const hrX = 240
 
 function setNumberInText(number, numberText) {
     numberText.text = number
@@ -42,8 +46,14 @@ export default class Logs extends Container {
         // title
         this.title = new Text({text: isLangRu ? POPUP_TEXT.logs.ru : POPUP_TEXT.logs.en, style: styles.popupTitle})
         this.title.anchor.set(0.5)
-        this.title.position.set(0, -POPUP.height * 0.5 + 40)
+        this.title.position.set(0, titleY)
         this.addChild(this.title)
+        // hr
+        this.hr = new Graphics()
+        this.hr.moveTo(-hrX, hrY)
+        this.hr.lineTo( hrX, hrY)
+        this.hr.stroke({width: 4, color: 0xffffff})
+        this.addChild(this.hr)
 
         // logs
         this.logs = new Container()

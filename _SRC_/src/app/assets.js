@@ -20,7 +20,6 @@ export const images = {
     bg: 'ground_494x280px.png',
 
     button: 'button.png',
-    short_button: 'short_button.png',
 
     field: 'field_1204x504px.png',
     spiel_bg: 'spiel_bg_1204x312px.png',
@@ -48,6 +47,7 @@ export const images = {
 export const atlases = {
    icon: 'icon.json',
    chip: 'chip.json',
+   short_btn: 'short_btn.json',
    field_light: 'field_light.json',
    spiel_light: 'spiel_light.json'
 }

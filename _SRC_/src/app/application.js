@@ -6,7 +6,7 @@ import { uploadAssets } from './loader'
 let isGlobalAppCursor = false
 export let appPointer = null
 
-const isCursorHidden = false
+const isCursorHidden = false // use custom image
 if (isCursorHidden) document.body.style.cursor = 'none'
 
 // pixi app settings

@@ -1,7 +1,7 @@
 import { Container, Sprite, Text } from "pixi.js";
 import { HELP_TEXT, POPUP_TYPE, UI } from "../../../constants";
 import ButtonUI from "./ButtonUI";
-import { betCurrent, betsTotal, checkBet, isLangRu, clearAllBets } from "../../../state";
+import { betCurrent, betsTotal, checkBet, isLangRu, clearAllBetsData } from "../../../state";
 import { styles } from "../../../../app/styles";
 import { atlases } from "../../../../app/assets";
 import { getRRTexture, getRRTextureWithShadow } from "../../../../utils/textureGenerator";
@@ -50,8 +50,8 @@ export default class RightMenu extends Container {
         this.bet = new ButtonUI('bet', this.showBetPopup.bind(this), true, HELP_TEXT.setBet)
         this.bet.position.set(-UI.offset, -UI.offset)
 
-        this.cancelBeat = new ButtonUI('cancel', clearAllBets, true, HELP_TEXT.clearBets)
-        this.cancelBeat.scale.set(UI.iconScale * 1.5)
+        this.cancelBeat = new ButtonUI('cancel', clearAllBetsData, true, HELP_TEXT.clearBets)
+        this.cancelBeat.scale.set(UI.iconScale * 1.75)
         this.cancelBeat.position.set(-UI.offset, -UI.offset - 56)
         
         this.addChild(

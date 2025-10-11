@@ -1,5 +1,5 @@
-import { Container, Text, Sprite } from "pixi.js"
-import { images, sounds } from "../../../../app/assets"
+import { Container, Sprite } from "pixi.js"
+import { atlases, sounds } from "../../../../app/assets"
 import { removeCursorPointer, setCursorPointer } from "../../../../utils/functions"
 import { styles } from "../../../../app/styles"
 import { playSound } from "../../../../app/sound"
@@ -7,7 +7,7 @@ import { getRRTextureWithShadow } from "../../../../utils/textureGenerator"
 import { BUTTON } from "../../../constants"
 
 export default class ShortButton extends Container {
-    constructor(text, x, y, callback, isActive = true) {
+    constructor(textureName, x, y, callback, isActive = true) {
         super()
         this.position.set(x, y)
 
@@ -21,17 +21,12 @@ export default class ShortButton extends Container {
         this.shadow.anchor.set(0.5)
         this.addChild(this.shadow)
 
-        this.image = new Sprite(images.short_button)
+        this.image = new Sprite(atlases.short_btn.textures[textureName])
         this.image.anchor.set(0.5)
         setCursorPointer(this.image)
         this.image.on('pointerdown', this.click, this)
         this.image.on('pointerover', this.onHover, this)
-        this.image.on('pointerout', this.onOut, this)
         this.addChild(this.image)
-
-        this.label = new Text({ text: text, style: styles.shortButton })
-        this.label.anchor.set(0.5)
-        this.addChild(this.label)
 
         this.isActive = isActive
         this.setActive(this.isActive)
@@ -43,7 +38,6 @@ export default class ShortButton extends Container {
             this.alpha = 1
         } else {
             this.alpha = 0.5
-            this.label.style = styles.shortButton
         }
     }
 
@@ -57,11 +51,7 @@ export default class ShortButton extends Container {
     onHover() {
         if (!this.isActive) return
 
-        this.label.style = styles.shortButtonHover
         playSound(sounds.se_swipe)
-    }
-    onOut() {
-        this.label.style = styles.shortButton
     }
 
     deactivate() {

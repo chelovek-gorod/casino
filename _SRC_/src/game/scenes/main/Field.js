@@ -2,9 +2,9 @@ import { Container, Sprite } from "pixi.js";
 import { atlases, images } from "../../../app/assets";
 import { EventHub, events, setHelpText } from "../../../app/events";
 import { setCursorPointer } from "../../../utils/functions";
-import { BET_RATIO, CHIP_DATA, FIELD, GAME_CONTAINERS, HELP_TEXT, MAX_BET_RATIO,
+import { BET_RATIO, FIELD, GAME_CONTAINERS, HELP_TEXT, MAX_BET_RATIO,
     NUMBERS, SECTOR, SECTOR_NUMBERS, SECTOR_SPLIT_NUMBERS, SPIEL, UI } from "../../constants";
-import { addBetData, betCurrent, betNearest, editBetData, getBetDataValue,
+import { addBetData, betCurrent, betNearest, removeBet, getBetDataValue,
     isOnSpin, isSingleBetsInSectors, setBet } from "../../state";
 import Chip from "./Chip";
 
@@ -25,6 +25,10 @@ function getNearest(number) {
 export default class Field extends Container {
     constructor() {
         super()
+
+        // chips
+        this.spielChips = new Container()
+        this.fieldChips = new Container()
 
         // SPIEL
         this.spiel = new Container()
@@ -58,6 +62,8 @@ export default class Field extends Container {
             this.sectorsList[index].position.set(numberData.x, numberData.y)
             this.sectorsList[index].numbers = [index]
             this.sectorsList[index].isPoint = true
+            this.sectorsList[index].chip = new Chip(false)
+            this.sectorsList[index].chip.position.set(numberData.chipX, numberData.chipY)
         })
         Object.keys(this.sectorsList).forEach( key => {
             this.sectorsList[key].alpha = 0
@@ -91,6 +97,7 @@ export default class Field extends Container {
             this.slotsList[index].position.set(data.centerX, data.centerY + fieldOffsetY)
             this.slotsList[index].numbers = [index]
             this.slotsList[index].isPoint = true
+            this.slotsList[index].spielChip = this.sectorsList[index].chip
         })
         Object.keys(FIELD.ceils.sections).forEach( section => {
             this.slotsList[section] = new Sprite(atlases.field_light.textures[section])
@@ -105,7 +112,10 @@ export default class Field extends Container {
             this.slotsList[key].alpha = 0
             this.slotsList[key].title = key
             this.slotsList[key].field = FIELD_TYPE.field
-            this.slotsList[key].chip = null
+            this.slotsList[key].chip = new Chip()
+            this.slotsList[key].chip.position.set(
+                this.slotsList[key].position.x, this.slotsList[key].position.y
+            )
             setCursorPointer(this.slotsList[key])
             this.slotsList[key].on('pointerdown', this.onClick, this)
             this.slotsList[key].on('pointerup', this.onRelease, this)
@@ -163,9 +173,17 @@ export default class Field extends Container {
         this.dolly.scale.set(0.7)
         this.dolly.anchor.set(0.5)
 
+        this.dollySpiel = new Sprite(images.dolly)
+        this.dollySpiel.scale.set(0.5)
+        this.dollySpiel.anchor.set(0.5)
+
+        this.spiel.addChild(this.spielChips)
+        this.field.addChild(this.fieldChips)
+
         EventHub.on(events.startSpin, this.startSpin, this)
         EventHub.on(events.addLog, this.getSpinResult, this)
-        EventHub.on(events.clearedOneOfBets, this.clearedOneOfBets, this)
+        EventHub.on(events.clearOneBet, this.clearOneBet, this)
+        EventHub.on(events.clearAllBets, this.clearAllBets, this)
     }
 
     addPoint(x, y, rowIndex, stepIndex, layer) {
@@ -179,6 +197,8 @@ export default class Field extends Container {
             ? FIELD.points.mid[rowIndex][stepIndex]
             : FIELD.points.bot[stepIndex]
         point.isPoint = true
+        point.chip = new Chip()
+        point.chip.position.set(x, y)
         switch(point.numbers.length) {
             case 2 : point.title = 'pair'; break
             case 3 : point.title = 'street'; break
@@ -222,21 +242,26 @@ export default class Field extends Container {
                 if (!setBet(nearestList)) return
 
                 nearestList.forEach( n => {
-                    this.setBetInField(this.slotsList[n])
                     addBetData([n])
+                    this.setBetInField(this.slotsList[n])
                 })
+
+                
 
             // sector
             } else {
 
                 if (isSingleBetsInSectors) {
+
                     if (!setBet(this.clickTarget.numbers)) return
 
                     this.clickTarget.numbers.forEach( n => {
-                        this.setBetInField(this.slotsList[n])
                         addBetData([+n])
+                        this.setBetInField(this.slotsList[n])
                     })
+
                 } else {
+
                     const pointsNumbers = this.clickTarget.splitData.points.map(p => p.numbers)
                     if(this.clickTarget.title === SECTOR.vois) {
                         pointsNumbers.push(SECTOR_SPLIT_NUMBERS[SECTOR.vois][0])
@@ -245,18 +270,21 @@ export default class Field extends Container {
                         this.clickTarget.splitData.numbers, pointsNumbers
                     )) return
 
-                    this.clickTarget.splitData.numbers.forEach( n => {
-                        this.setBetInField(this.slotsList[n])
-                        addBetData([+n])
-                    })
                     this.clickTarget.splitData.points.forEach( point => {
                         this.setBetInField(point)
                         if (this.clickTarget.title === SECTOR.vois
-                        && point.numbers.join('_') === SECTOR_SPLIT_NUMBERS[SECTOR.vois][0].join('_')) {
+                        && point.numbers.join('_') === "0_2_3") {
                             this.setBetInField(point)
                         }
                     })
+
                     pointsNumbers.forEach(numbers => addBetData(numbers))
+
+                    this.clickTarget.splitData.numbers.forEach( n => {
+                        addBetData([+n])
+                        this.setBetInField(this.slotsList[n])
+                    })
+                    
                 }
 
             }
@@ -265,12 +293,12 @@ export default class Field extends Container {
         } else {
             if (!setBet([], [this.clickTarget.numbers])) return
 
-            this.setBetInField( this.clickTarget )
             addBetData(this.clickTarget.numbers)
+            this.setBetInField( this.clickTarget )
         }
 
-        if (this.clickTarget.chip) {
-            const betValue = getBetDataValue(this.clickTarget.numbers)
+        const betValue = getBetDataValue(this.clickTarget.numbers)
+        if (betValue > 0) {
             const maxBet = MAX_BET_RATIO[this.clickTarget.numbers.length]
             setHelpText({
                 ru: `${HELP_TEXT.betOnHoverBet.ru} ${betValue}. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
@@ -279,22 +307,15 @@ export default class Field extends Container {
         }
     }
     setBetInField(betData) {
-        if (betData.chip) {
-            const previousBet = getBetDataValue(betData.numbers)
-            betData.chip.update(previousBet + betCurrent)
-        } else {
-            betData.chip = new Chip(betCurrent)
-            this.field.addChild(betData.chip)
-        }
-
-        if (betData.numbers.length === 1) {
-            betData.chip.position.set(betData.position.x - 8, betData.position.y - 18)
-        } else {
-            betData.chip.position.set(betData.position.x, betData.position.y)
+        betData.chip.update(betCurrent)
+        this.fieldChips.addChild(betData.chip)
+        if ('spielChip' in betData) {
+            this.spielChips.addChild(betData.spielChip)
         }
     }
 
     startSpin() {
+        this.spiel.removeChild(this.dollySpiel)
         this.field.removeChild(this.dolly)
         this.clickIsActive = false
         this.clickDuration = 0
@@ -305,6 +326,11 @@ export default class Field extends Container {
         const y = this.slotsList[number].position.y
         this.dolly.position.set(x + 10, y + 20)
         this.field.addChild(this.dolly)
+
+        const sx = this.sectorsList[number].chip.position.x
+        const sy = this.sectorsList[number].chip.position.y
+        this.dollySpiel.position.set(sx, sy)
+        this.spiel.addChild(this.dollySpiel)
     }
 
     highlightOn(target) {
@@ -364,7 +390,7 @@ export default class Field extends Container {
 
         const dt = Date.now() - this.clickDuration
         this.clickDuration = 0
-        if(dt >= UI.contextOpenMinDuration) {
+        if(dt >= UI.contextOpenMinDuration || event.data.button === 2) {
             console.log(
                 'POPUP DATA:',
                 '\ntitle:', event.target.title,
@@ -375,7 +401,7 @@ export default class Field extends Container {
             // disable to set and edit bets in spiel field !!!
             if (event.target.field === FIELD_TYPE.spiel) return
 
-            return editBetData(event.target.numbers)
+            return removeBet(event.target.numbers)
         }
 
         this.clickTarget = event.target
@@ -384,8 +410,8 @@ export default class Field extends Container {
     onHover(event) {
         if (isOnSpin) return
 
-        if (event.target.chip) {
-            const betValue = getBetDataValue(event.target.numbers)
+        const betValue = getBetDataValue(event.target.numbers)
+        if (betValue > 0) {
             const maxBet = MAX_BET_RATIO[event.target.numbers.length]
             setHelpText({
                 ru: `${HELP_TEXT.betOnHoverBet.ru} ${betValue}. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
@@ -415,27 +441,37 @@ export default class Field extends Container {
         setHelpText()
     }
 
-    clearedOneOfBets() {
+    clearOneBet() {
         Object.keys(this.slotsList).forEach( key => {
-            if (this.slotsList[key].chip) {
+            if ('chip' in this.slotsList[key]) {
                 if (getBetDataValue(this.slotsList[key].numbers) === 0) {
-                    this.slotsList[key].chip.destroy()
-                    this.slotsList[key].chip = null
+                    this.slotsList[key].chip.update(0)
+                    this.fieldChips.removeChild(this.slotsList[key].chip)
+                    if ('spielChip' in this.slotsList[key]) {
+                        this.spielChips.removeChild(this.slotsList[key].spielChip)
+                    }
                 }
             }
         })
         this.pointsList.forEach( point => {
-            if (point.chip && getBetDataValue(point.numbers) === 0) {
-                point.chip.destroy()
-                point.chip = null
+            if (getBetDataValue(point.numbers) === 0) {
+                point.chip.update(0)
+                this.fieldChips.removeChild(point.chip)
             }
         })
+    }
+
+    clearAllBets() {
+        this.spielChips.removeChildren()
+        this.fieldChips.children.forEach(c => c.update(0))
+        this.fieldChips.removeChildren()
     }
 
     kill() {
         EventHub.off(events.startSpin, this.startSpin, this)
         EventHub.off(events.addLog, this.getSpinResult, this)
-        EventHub.on(events.clearedOneOfBets, this.clearedOneOfBets, this)
+        EventHub.off(events.clearOneBet, this.clearOneBet, this)
+        EventHub.off(events.clearAllBets, this.clearAllBets, this)
 
         while(this.children.length) {
             if ('kill' in this.children[0]) this.children[0].kill()

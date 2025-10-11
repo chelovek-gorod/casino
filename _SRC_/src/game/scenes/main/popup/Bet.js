@@ -45,7 +45,7 @@ export default class Bet extends Container {
         this.spielSplitsSubtitle.position.set(-176, spielSplitsY)
         this.addChild(this.spielSplitsSubtitle)
 
-        this.spielSplitsSup = new ShortButton('<', 28, spielSplitsY, this.clickSpielSplits.bind(this))
+        this.spielSplitsSup = new ShortButton('prv', 28, spielSplitsY, this.clickSpielSplits.bind(this))
         this.spielSplitsSup.scale.set(0.3)
         this.addChild(this.spielSplitsSup)
 
@@ -57,7 +57,7 @@ export default class Bet extends Container {
         this.spielSplitsValue.position.set(94, spielSplitsY)
         this.addChild(this.spielSplitsValue)
 
-        this.spielSplitsAdd = new ShortButton('>', 160, spielSplitsY, this.clickSpielSplits.bind(this))
+        this.spielSplitsAdd = new ShortButton('nxt', 160, spielSplitsY, this.clickSpielSplits.bind(this))
         this.spielSplitsAdd.scale.set(0.3)
         this.addChild(this.spielSplitsAdd)
 
@@ -67,7 +67,7 @@ export default class Bet extends Container {
         this.nearestSubtitle.position.set(-146, nearestY)
         this.addChild(this.nearestSubtitle)
 
-        this.nearestSup = new ShortButton('-', 18, nearestY, this.clickNearestSup.bind(this))
+        this.nearestSup = new ShortButton('sub', 18, nearestY, this.clickNearestSup.bind(this))
         this.nearestSup.scale.set(0.3)
         this.addChild(this.nearestSup)
 
@@ -76,7 +76,7 @@ export default class Bet extends Container {
         this.nearestValue.position.set(74, nearestY)
         this.addChild(this.nearestValue)
 
-        this.nearestAdd = new ShortButton('+', 130, nearestY, this.clickNearestAdd.bind(this))
+        this.nearestAdd = new ShortButton('add', 130, nearestY, this.clickNearestAdd.bind(this))
         this.nearestAdd.scale.set(0.3)
         this.addChild(this.nearestAdd)
 
@@ -94,7 +94,7 @@ export default class Bet extends Container {
         this.addChip(5000,  chipButtons.xs[2], chipButtons.ys[1])
 
         // bet
-        this.betSup = new ShortButton('-', -chipButtons.xs[2], betY, this.clickBetSup.bind(this))
+        this.betSup = new ShortButton('sub', -chipButtons.xs[2], betY, this.clickBetSup.bind(this))
         this.betSup.scale.set(0.5)
         this.addChild(this.betSup)
 
@@ -104,7 +104,7 @@ export default class Bet extends Container {
         this.betValue.position.set(0, betY)
         this.addChild(this.betValue)
 
-        this.betAdd = new ShortButton('+', chipButtons.xs[2], betY, this.clickBetAdd.bind(this))
+        this.betAdd = new ShortButton('add', chipButtons.xs[2], betY, this.clickBetAdd.bind(this))
         this.betAdd.scale.set(0.5)
         this.addChild(this.betAdd)
 
