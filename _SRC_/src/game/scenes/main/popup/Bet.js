@@ -1,16 +1,16 @@
 import { Container, Graphics, Sprite, Text } from "pixi.js";
-import { atlases, images } from "../../../../app/assets";
+import { atlases } from "../../../../app/assets";
 import { EventHub, events } from "../../../../app/events";
 import { styles } from "../../../../app/styles";
 import { removeCursorPointer, setCursorPointer } from "../../../../utils/functions";
-import { CHIP, POPUP, POPUP_TEXT } from "../../../constants";
+import { CHIP, POPUP_TEXT } from "../../../constants";
 import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest, isSingleBetsInSectors } from "../../../state";
 import ShortButton from "../UI/ShortButton";
 
 const chipButtons = {
     xs: [0, 80, 160],
     ys: [-15, 60],
-    scale: 0.45
+    scale: 1
 }
 
 const titleY = -208
@@ -113,7 +113,7 @@ export default class Bet extends Container {
     }
 
     addChip(value, x, y) {
-        this[`c${value}`] = new Sprite(value === 0 ? images.clear_bet : atlases.chip.textures[CHIP[`c${value}`]])
+        this[`c${value}`] = new Sprite(atlases.chip.textures[`c${value}`])
         this[`c${value}`].anchor.set(0.5)
         this[`c${value}`].scale.set(chipButtons.scale)
         this[`c${value}`].position.set(x, y)
@@ -122,6 +122,11 @@ export default class Bet extends Container {
         setCursorPointer(this[`c${value}`])
         this[`c${value}`].on('pointerdown', this.clickChip, this)
         this.addChild(this[`c${value}`])
+        if (value === 0) return
+        this[`t${value}`] = new Text({text: value, style: styles.chip})
+        this[`t${value}`].anchor.set(0.5)
+        this[`t${value}`].position.set(x, y)
+        this.addChild(this[`t${value}`])
     }
 
     updateBet( bet ) {

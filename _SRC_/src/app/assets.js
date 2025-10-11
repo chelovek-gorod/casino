@@ -31,7 +31,6 @@ export const images = {
     wheel_border: 'wheel_border_728x728px.png',
     wheel_center: 'wheel_center_512x512px.png',
     point: 'point_36x36px.png',
-    clear_bet: 'clear_bet.png',
     
     dpf_1: 'dpf_1.png',
     dpf_2: 'dpf_2.png',
@@ -65,10 +64,11 @@ export const voices = {
 }
 export const music = {
     bgm_casino: 'bgm_casino.mp3',
+    bgm_0: 'bgm_0.mp3',
 }
 
 export const loadConfig = {
-    musicKey: null, // String or null
+    musicKey: 'bgm_0', // String or null
     imageKey: 'bg', // String or null
     isImageTile: true, // true/false
 }

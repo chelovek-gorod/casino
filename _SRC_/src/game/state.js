@@ -1,7 +1,7 @@
 import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber,
     showMessage, showPopup, clearedOneOfBets} from "../app/events"
 import { formatNumber } from "../utils/functions"
-import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO } from "./constants"
+import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO, MAX_BET } from "./constants"
 
 export let isLangRu = true
 
@@ -26,8 +26,6 @@ export let editedBetInfo = {
 export function setBet(numbers, numbersList = []) {
     if (isOnSpin) return false
 
-    console.log('setBet', [...numbers], [...numbersList])
-
     const totalBet = betCurrent * numbers.length + betCurrent * numbersList.length
     if (money < totalBet) {
         showMessage( isLangRu ? MESSAGE_TEXT.lowMoney.ru : MESSAGE_TEXT.lowMoney.en )
@@ -42,8 +40,17 @@ export function setBet(numbers, numbersList = []) {
         showMessage( isLangRu ? MESSAGE_TEXT.betLimit.ru : MESSAGE_TEXT.betLimit.en )
         return false
     }
+    const counter = {}
+    for (const numbers of numbersList) {
+        const key = [...numbers].sort((a, b) => a - b).join('_')
+        if (key in counter) counter[key] += 1
+        else counter[key] = 1
+    }
     numbersList.forEach( numbers => {
-        if (isValidBet) isValidBet = (betCurrent + getBetDataValue(numbers)) <= MAX_BET_RATIO[numbers.length]
+        const key = [...numbers].sort((a, b) => a - b).join('_')
+        if (isValidBet) {
+            isValidBet = (betCurrent * counter[key] + getBetDataValue(numbers)) <= MAX_BET_RATIO[numbers.length]
+        }
     })
     if (!isValidBet) {
         showMessage( isLangRu ? MESSAGE_TEXT.betLimit.ru : MESSAGE_TEXT.betLimit.en )
@@ -71,7 +78,7 @@ export function editBet(value, isChip = false) {
     }
 
     if (!isChip) {
-        betCurrent = Math.max(1, betCurrent + value)
+        betCurrent = Math.min(MAX_BET, Math.max(1, betCurrent + value))
         return checkBet()
     }
 
@@ -80,7 +87,7 @@ export function editBet(value, isChip = false) {
         return checkBet()
     }
 
-    betCurrent += value
+    betCurrent = Math.min(MAX_BET, Math.max(1, betCurrent + value))
     checkBet()
 }
 
@@ -140,8 +147,6 @@ export function addBetData(numbers) {
     const key = [...numbers].sort((a, b) => a - b).join('_')
     if (key in betsData) betsData[key] += betCurrent
     else betsData[key] = betCurrent
-
-    console.log(betsData)
 }
 
 export function getBetDataValue(numbers) {

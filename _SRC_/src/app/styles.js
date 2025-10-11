@@ -36,6 +36,8 @@ export let styles = {
 
     popupTitle: null,
     popupSubTitle: null,
+
+    chip: null,
 }
 
 export function initFontStyles() {
@@ -201,6 +203,12 @@ export function initFontStyles() {
         fontFamily: fonts.Manrope700,
         fontSize: 18,
         fill: '#eeeeee',
+    })
+
+    styles.chip = new TextStyle({
+        fontFamily: fonts.Manrope600,
+        fontSize: 20,
+        fill: '#ffffff',
     })
 
     styles.isReady = true

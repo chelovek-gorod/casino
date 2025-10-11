@@ -2,22 +2,13 @@ import { Container, Sprite } from "pixi.js";
 import { atlases, images } from "../../../app/assets";
 import { EventHub, events, setHelpText } from "../../../app/events";
 import { setCursorPointer } from "../../../utils/functions";
-import { BET_RATIO, CHIP_DATA, FIELD, GAME_CONTAINERS, HELP_TEXT, MAX_BET_RATIO, NUMBERS, SECTOR, SECTOR_NUMBERS, SECTOR_SPLIT_NUMBERS, SPIEL, UI } from "../../constants";
-import { addBetData, betCurrent, betNearest, editBetData, getBetDataValue, isLangRu, isOnSpin, isSingleBetsInSectors, setBet } from "../../state";
+import { BET_RATIO, CHIP_DATA, FIELD, GAME_CONTAINERS, HELP_TEXT, MAX_BET_RATIO,
+    NUMBERS, SECTOR, SECTOR_NUMBERS, SECTOR_SPLIT_NUMBERS, SPIEL, UI } from "../../constants";
+import { addBetData, betCurrent, betNearest, editBetData, getBetDataValue,
+    isOnSpin, isSingleBetsInSectors, setBet } from "../../state";
+import Chip from "./Chip";
 
 const FIELD_TYPE = { spiel: 'spiel', field: 'field' }
-
-function getChipTexture(bet = betCurrent) {
-    if (bet < 5) return atlases.chip.textures.c1
-    if (bet < 10) return atlases.chip.textures.c5
-    if (bet < 25) return atlases.chip.textures.c10
-    if (bet < 50) return atlases.chip.textures.c25
-    if (bet < 100) return atlases.chip.textures.c50
-    if (bet < 500) return atlases.chip.textures.c100
-    if (bet < 1000) return atlases.chip.textures.c500
-    if (bet < 5000) return atlases.chip.textures.c1000
-    return atlases.chip.textures.c5000
-}
 
 function getNearest(number) {
     const index = NUMBERS.indexOf(number)
@@ -247,6 +238,9 @@ export default class Field extends Container {
                     })
                 } else {
                     const pointsNumbers = this.clickTarget.splitData.points.map(p => p.numbers)
+                    if(this.clickTarget.title === SECTOR.vois) {
+                        pointsNumbers.push(SECTOR_SPLIT_NUMBERS[SECTOR.vois][0])
+                    }
                     if (!setBet(
                         this.clickTarget.splitData.numbers, pointsNumbers
                     )) return
@@ -257,8 +251,12 @@ export default class Field extends Container {
                     })
                     this.clickTarget.splitData.points.forEach( point => {
                         this.setBetInField(point)
-                        addBetData(point.numbers)
+                        if (this.clickTarget.title === SECTOR.vois
+                        && point.numbers.join('_') === SECTOR_SPLIT_NUMBERS[SECTOR.vois][0].join('_')) {
+                            this.setBetInField(point)
+                        }
                     })
+                    pointsNumbers.forEach(numbers => addBetData(numbers))
                 }
 
             }
@@ -283,11 +281,9 @@ export default class Field extends Container {
     setBetInField(betData) {
         if (betData.chip) {
             const previousBet = getBetDataValue(betData.numbers)
-            betData.chip.texture = getChipTexture(previousBet + betCurrent)
+            betData.chip.update(previousBet + betCurrent)
         } else {
-            betData.chip = new Sprite( getChipTexture() )
-            betData.chip.anchor.set(0.5)
-            betData.chip.scale.set(CHIP_DATA.scale)
+            betData.chip = new Chip(betCurrent)
             this.field.addChild(betData.chip)
         }
 
@@ -419,7 +415,7 @@ export default class Field extends Container {
         setHelpText()
     }
 
-    clearedOneOfBets() { console.log('CLEAR')
+    clearedOneOfBets() {
         Object.keys(this.slotsList).forEach( key => {
             if (this.slotsList[key].chip) {
                 if (getBetDataValue(this.slotsList[key].numbers) === 0) {

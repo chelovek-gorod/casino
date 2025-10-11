@@ -84,7 +84,7 @@ export const BUTTON_TEXT = {
 
 export const SECTOR_SPLIT_NUMBERS = {
     [SECTOR.zero]: [ [0, 3], [12, 15], [32, 35], [26] ],
-    [SECTOR.vois]: [ [0, 2], [0, 3], [4, 7], [12, 15], [32, 35], [25, 26], [28, 29], [19, 22], [18, 21] ],
+    [SECTOR.vois]: [ [0, 2, 3], [4, 7], [12, 15], [32, 35], [25, 26], [28, 29], [19, 22], [18, 21] ],
     [SECTOR.orph]: [ [6, 9], [14, 17], [17, 20], [31, 34], [1] ] ,
     [SECTOR.tier]: [ [5, 8], [10, 11], [13, 16], [23, 24], [27, 30], [33, 36] ]
 }
@@ -132,6 +132,7 @@ export const MAX_BET_RATIO = {
     12:5000, /* 20 000 / 3 = 6666 ~ 5000 */
     18:10000,/* 20 000 / 2 = 10000 */
 }
+export const MAX_BET = 10000
 
 export const CHIP = {
     c1: 'c1',
@@ -145,7 +146,7 @@ export const CHIP = {
     c5000: 'c5000'
 }
 export const CHIP_DATA = {
-    scale: 0.36
+    scale: 1
 }
 
 export const SPIEL = {
