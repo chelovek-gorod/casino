@@ -13,7 +13,7 @@ export const MENU_TEXT = {
     slotsButton: {ru: 'Слоты', en: 'Slots'},
 }
 
-// game
+// Roulette
 export const SECTOR = {
     zero: 'zero', vois: 'vois', orph: 'orph', tier: 'tier',
     even: 'even', odd: 'odd',
@@ -555,3 +555,71 @@ export const MESSAGE = {
     inOutDuration: 300,
 }
 MESSAGE.y = -MESSAGE.height * 0.5
+
+/////////////////////////////////////
+
+// Slots
+
+export const SLOTS_BORDER = {
+    width: 1923,
+    height: 880,
+    x: 0,
+    y: 0,
+    offset: 60,
+}
+SLOTS_BORDER.x = -SLOTS_BORDER.width * 0.5
+SLOTS_BORDER.y = -SLOTS_BORDER.height * 0.5
+export const SLOTS_LINES = {
+    positionsX: [ 80, 450, 820, 1190, 1560 ],
+    positionsY: [ -160, 80, 320, 560 ],
+    slotWidth: 280,
+    slotHeight: 240,
+    acceleration: 0.003,
+    minSpeed: 6.5,
+    maxSpeed: 7.5,
+    stopSpeed: 1,
+    minTimeout: 100,
+    maxTimeout: 200,
+    delayRate: 200,
+    duration: 2500
+}
+
+export const SLOTS_LINES_VALUES = [
+    ['apple', 'apple',]
+]
+//                                10   50  200  1000  5000
+export const SLOTS_LINES_DATA = {
+    //                           x0  x1  x2   x3   x4   x5
+         apple: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+        cheery: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+         lemon: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+    watermelon: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+
+         cards: {count: 4, rates:[0, 0, 0,  20, 100, 1000]},
+
+             7: {count: 2, rates:[0, 0, 0,  50, 250, 2500]},
+           777: {count: 1, rates:[0, 0, 0, 100, 500, 5000]},
+
+          coin: {count: 1, rates:[0, 0, 0,  20, 100, 500], effects: [1, 2, 5, 20, 100]},
+         bonus: {count: 1, rates:[0, 0, 0,  20, 100, 500], effects: [2, 5, 20, 100, 500]},
+
+          wild: {count: 1, rates:[0, 0, 0,   0,   0,   0], effects: 'Joker'},
+}
+let count = 0
+for (let key in SLOTS_LINES_DATA) {
+    count += SLOTS_LINES_DATA[key].count
+}
+console.log(count)
+
+// P = (1/8)^3 = 1/512 ≈ 0.00195
+for (let key in SLOTS_LINES_DATA) {
+    const P3 = (SLOTS_LINES_DATA[key].count / count) ** 3
+    const P4 = (SLOTS_LINES_DATA[key].count / count) ** 4
+    const P5 = (SLOTS_LINES_DATA[key].count / count) ** 5
+
+    const W3 = (1 / P3).toFixed()
+    const W4 = (1 / P4).toFixed()
+    const W5 = (1 / P5).toFixed()
+
+    console.log(key, '\nW3:', W3, '\nW4:', W4, '\nW5:', W5, '\n')
+}

@@ -53,7 +53,7 @@ export const atlases = {
    short_btn: 'short_btn.json',
    field_light: 'field_light.json',
    spiel_light: 'spiel_light.json',
-   slot_image: 'slot_image.json',
+   slot: 'slot.json',
 }
 export const sounds = {
     se_swipe: 'se_swipe.mp3',

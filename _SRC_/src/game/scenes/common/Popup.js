@@ -3,8 +3,8 @@ import { EventHub, events } from "../../../app/events"
 import { BUTTON_TEXT, POPUP, POPUP_TYPE } from "../../constants"
 import { isLangRu } from "../../state"
 import Button from "./Button"
-import Bet from "../casino/popup/Bet"
-import Logs from "../casino/popup/Logs"
+import Bet from "../roulette/popup/Bet"
+import Logs from "../roulette/popup/Logs"
 
 export default class Popup extends Container {
     constructor() {
