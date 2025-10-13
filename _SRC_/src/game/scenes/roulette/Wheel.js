@@ -2,10 +2,10 @@ import { Container, Sprite } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../../app/application";
 import { images, sounds } from "../../../app/assets";
 import { playSound, stopSound } from "../../../app/sound";
-import { getLinesIntersectionPoint } from "../../../utils/functions";
+import { getLinesIntersectionPoint, getRandom } from "../../../utils/functions";
 import { BUTTON_TEXT, GAME_CONTAINERS, WHEEL, BALL, NUMBERS, SHOW_RESULT_DELAY } from "../../constants";
 import { isLangRu, isOnSpin, setSpin, setSpinResult } from "../../state";
-import Button from '../common/Button'
+import Button from "../../UI/Button";
 
 const HalfPI = Math.PI * 0.5
 const DoublePI = Math.PI * 2
@@ -18,10 +18,6 @@ const STATE = {
     ball_move_to_target: 'ball_move_to_target',
     slowdown: 'slowdown',
     stop: 'stop',
-}
-
-function getRandom(min, max) {
-    return min + Math.random() * (max - min);
 }
 
 function normalizeAngleDiff(angle) {

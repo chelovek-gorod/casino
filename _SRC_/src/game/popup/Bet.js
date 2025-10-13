@@ -1,10 +1,10 @@
 import { Container, Graphics, Sprite, Text } from "pixi.js";
-import { atlases } from "../../../../app/assets";
-import { EventHub, events } from "../../../../app/events";
-import { styles } from "../../../../app/styles";
-import { removeCursorPointer, setCursorPointer } from "../../../../utils/functions";
-import { CHIP, POPUP_TEXT } from "../../../constants";
-import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest, isSingleBetsInSectors } from "../../../state";
+import { atlases } from "../../app/assets";
+import { EventHub, events } from "../../app/events";
+import { styles } from "../../app/styles";
+import { removeCursorPointer, setCursorPointer } from "../../utils/functions";
+import { CHIP, POPUP_TEXT, SCENE_NAME } from "../constants";
+import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest, isSingleBetsInSectors, currentScene } from "../state";
 import ShortButton from "../UI/ShortButton";
 
 const chipButtons = {
@@ -36,49 +36,51 @@ export default class Bet extends Container {
         this.hr.stroke({width: 4, color: 0xffffff})
         this.addChild(this.hr)
 
-        // spiel splits
-        this.spielSplitsSubtitle = new Text({
-            text: isLangRu ? POPUP_TEXT.spielSplits.ru : POPUP_TEXT.spielSplits.en,
-            style: styles.popupSubTitle
-        })
-        this.spielSplitsSubtitle.anchor.set(0, 0.5)
-        this.spielSplitsSubtitle.position.set(-176, spielSplitsY)
-        this.addChild(this.spielSplitsSubtitle)
+        if (currentScene === SCENE_NAME.Roulette) {
+            // spiel splits
+            this.spielSplitsSubtitle = new Text({
+                text: isLangRu ? POPUP_TEXT.spielSplits.ru : POPUP_TEXT.spielSplits.en,
+                style: styles.popupSubTitle
+            })
+            this.spielSplitsSubtitle.anchor.set(0, 0.5)
+            this.spielSplitsSubtitle.position.set(-176, spielSplitsY)
+            this.addChild(this.spielSplitsSubtitle)
 
-        this.spielSplitsSup = new ShortButton('prv', 28, spielSplitsY, this.clickSpielSplits.bind(this))
-        this.spielSplitsSup.scale.set(0.3)
-        this.addChild(this.spielSplitsSup)
+            this.spielSplitsSup = new ShortButton('prv', 28, spielSplitsY, this.clickSpielSplits.bind(this))
+            this.spielSplitsSup.scale.set(0.3)
+            this.addChild(this.spielSplitsSup)
 
-        const spielSplitsValue = isSingleBetsInSectors
-            ? isLangRu ? POPUP_TEXT.spielSplitsValues[0].ru : POPUP_TEXT.spielSplitsValues[0].en
-            : isLangRu ? POPUP_TEXT.spielSplitsValues[1].ru : POPUP_TEXT.spielSplitsValues[1].en
-        this.spielSplitsValue = new Text({text: spielSplitsValue, style: styles.popupSubTitle})
-        this.spielSplitsValue.anchor.set(0.5)
-        this.spielSplitsValue.position.set(94, spielSplitsY)
-        this.addChild(this.spielSplitsValue)
+            const spielSplitsValue = isSingleBetsInSectors
+                ? isLangRu ? POPUP_TEXT.spielSplitsValues[0].ru : POPUP_TEXT.spielSplitsValues[0].en
+                : isLangRu ? POPUP_TEXT.spielSplitsValues[1].ru : POPUP_TEXT.spielSplitsValues[1].en
+            this.spielSplitsValue = new Text({text: spielSplitsValue, style: styles.popupSubTitle})
+            this.spielSplitsValue.anchor.set(0.5)
+            this.spielSplitsValue.position.set(94, spielSplitsY)
+            this.addChild(this.spielSplitsValue)
 
-        this.spielSplitsAdd = new ShortButton('nxt', 160, spielSplitsY, this.clickSpielSplits.bind(this))
-        this.spielSplitsAdd.scale.set(0.3)
-        this.addChild(this.spielSplitsAdd)
+            this.spielSplitsAdd = new ShortButton('nxt', 160, spielSplitsY, this.clickSpielSplits.bind(this))
+            this.spielSplitsAdd.scale.set(0.3)
+            this.addChild(this.spielSplitsAdd)
 
-        // nearest
-        this.nearestSubtitle = new Text({text: isLangRu ? POPUP_TEXT.nearest.ru : POPUP_TEXT.nearest.en, style: styles.popupSubTitle})
-        this.nearestSubtitle.anchor.set(0, 0.5)
-        this.nearestSubtitle.position.set(-146, nearestY)
-        this.addChild(this.nearestSubtitle)
+            // nearest
+            this.nearestSubtitle = new Text({text: isLangRu ? POPUP_TEXT.nearest.ru : POPUP_TEXT.nearest.en, style: styles.popupSubTitle})
+            this.nearestSubtitle.anchor.set(0, 0.5)
+            this.nearestSubtitle.position.set(-146, nearestY)
+            this.addChild(this.nearestSubtitle)
 
-        this.nearestSup = new ShortButton('sub', 18, nearestY, this.clickNearestSup.bind(this))
-        this.nearestSup.scale.set(0.3)
-        this.addChild(this.nearestSup)
+            this.nearestSup = new ShortButton('sub', 18, nearestY, this.clickNearestSup.bind(this))
+            this.nearestSup.scale.set(0.3)
+            this.addChild(this.nearestSup)
 
-        this.nearestValue = new Text({text: `${betNearest} + 1 + ${betNearest}`, style: styles.popupSubTitle})
-        this.nearestValue.anchor.set(0.5)
-        this.nearestValue.position.set(74, nearestY)
-        this.addChild(this.nearestValue)
+            this.nearestValue = new Text({text: `${betNearest} + 1 + ${betNearest}`, style: styles.popupSubTitle})
+            this.nearestValue.anchor.set(0.5)
+            this.nearestValue.position.set(74, nearestY)
+            this.addChild(this.nearestValue)
 
-        this.nearestAdd = new ShortButton('add', 130, nearestY, this.clickNearestAdd.bind(this))
-        this.nearestAdd.scale.set(0.3)
-        this.addChild(this.nearestAdd)
+            this.nearestAdd = new ShortButton('add', 130, nearestY, this.clickNearestAdd.bind(this))
+            this.nearestAdd.scale.set(0.3)
+            this.addChild(this.nearestAdd)
+        }
 
         // chips
         this.addChip(   0, -chipButtons.xs[2], chipButtons.ys[0])
@@ -109,7 +111,9 @@ export default class Bet extends Container {
         this.addChild(this.betAdd)
 
         EventHub.on(events.updateBet, this.updateBet, this)
-        EventHub.on(events.updateNearestNumber, this.updateNearestNumber, this)
+        if (currentScene === SCENE_NAME.Roulette) {
+            EventHub.on(events.updateNearestNumber, this.updateNearestNumber, this)
+        }
     }
 
     addChip(value, x, y) {
@@ -165,7 +169,9 @@ export default class Bet extends Container {
 
     kill() {
         EventHub.off(events.updateBet, this.updateBet, this)
-        EventHub.off(events.updateNearestNumber, this.updateNearestNumber, this)
+        if (currentScene === SCENE_NAME.Roulette) {
+            EventHub.off(events.updateNearestNumber, this.updateNearestNumber, this)
+        }
 
         while(this.children.length) {
             tickerRemove(this.children[0])

@@ -3,6 +3,10 @@ export function formatNumber(number) {
     return russianFormatter.format(number);
 }
 
+export function getRandom(min, max) {
+    return min + Math.random() * (max - min);
+}
+
 export function setCursorPointer(target) {
     target.eventMode = 'static'
     target.on('pointerover', () => document.body.style.cursor = 'pointer')

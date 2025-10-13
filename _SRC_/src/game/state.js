@@ -1,9 +1,12 @@
 import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber,
-    showMessage, clearOneBet, clearAllBets} from "../app/events"
+    showMessage, clearOneBet, clearAllBets, EventHub, events} from "../app/events"
 import { formatNumber } from "../utils/functions"
-import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO, MAX_BET } from "./constants"
+import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO, MAX_BET, SCENE_NAME } from "./constants"
 
 export let isLangRu = true
+
+export let currentScene = SCENE_NAME.Menu
+EventHub.on( events.startScene, (scene) => currentScene = scene )
 
 export let isOnSpin = false
 export let isSingleBetsInSectors = false
@@ -21,6 +24,32 @@ const betsData = {
 export let editedBetInfo = {
     key: '',
     value: 0
+}
+
+export function resetState() {
+    betsTotal = 0
+}
+
+export function checkRunSlots() {
+    if (money < betCurrent) {
+        showMessage(
+            isLangRu ? MESSAGE_TEXT.lowMoney.ru : MESSAGE_TEXT.lowMoney.en
+        )
+        return  false
+    }
+
+    betsTotal = betCurrent
+    addMoney(-betCurrent)
+    return  true
+}
+export function resultSlots(rate = 0) {
+    if (rate > 0) {
+        const winMoney = betsTotal * rate
+        const message = isLangRu ? MESSAGE_TEXT.winMoney.ru : MESSAGE_TEXT.winMoney.en
+        showMessage(`${message} ${formatNumber(winMoney)} !`)
+        addMoney(winMoney)
+    }
+    betsTotal = 0
 }
 
 export function setBet(numbers, numbersList = []) {

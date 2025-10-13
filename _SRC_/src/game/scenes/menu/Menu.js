@@ -5,16 +5,15 @@ import { startScene } from '../../../app/events'
 import { setMusic } from '../../../app/sound'
 import { MENU_BG_SIZE, MENU_TEXT, SCENE_NAME } from '../../constants'
 import { isLangRu } from '../../state'
-import Button from '../common/Button'
+import Button from '../../UI/Button'
+import BackgroundTiling from '../../BG/BackgroundTiling'
 
 export default class Menu extends Container {
     constructor() {
         super()
         this.alpha = 0
 
-        // BG
-        this.bg = new Sprite(images.main_bg)
-        this.bg.anchor.set(0.5)
+        this.bg = new BackgroundTiling(images.bg_blue)
         this.addChild(this.bg)
 
         this.rouletteButton = new Button(
@@ -37,11 +36,7 @@ export default class Menu extends Container {
         // set scene container in center of screen
         this.position.set( screenData.centerX, screenData.centerY )
 
-        // set bg in full screen
-        const scaleBg = Math.max(0.5,
-            screenData.isLandscape ? screenData.width / MENU_BG_SIZE : screenData.height / MENU_BG_SIZE
-        )
-        this.bg.scale.set(scaleBg)
+        this.bg.screenResize(screenData)
     }
 
     kill() {

@@ -17,8 +17,9 @@ export const fonts = {
 }
 
 export const images = {
-    bg: 'ground_494x280px.png',
-    main_bg: 'main_bg.png',
+    bg_green: 'ground_green.png',
+    bg_red: 'ground_red.png',
+    bg_blue: 'ground_blue.png',
 
     button: 'button.png',
 
@@ -32,7 +33,7 @@ export const images = {
     wheel_center: 'wheel_center_512x512px.png',
     point: 'point_36x36px.png',
 
-    slot_border: 'slot_border.png',
+    slot_border: 'slots_border.png',
     
     dpf_1: 'dpf_1.png',
     dpf_2: 'dpf_2.png',
@@ -73,6 +74,6 @@ export const music = {
 
 export const loadConfig = {
     musicKey: 'bgm_0', // String or null
-    imageKey: 'bg', // String or null
+    imageKey: 'bg_blue', // String or null
     isImageTile: true, // true/false
 }

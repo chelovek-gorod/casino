@@ -1,9 +1,10 @@
 import { Container, Sprite } from "pixi.js";
-import { HELP_TEXT, POPUP_TYPE, UI } from "../../../constants";
+import { HELP_TEXT, POPUP_TYPE, SCENE_NAME, UI } from "../constants";
 import ButtonUI from "./ButtonUI";
-import { getRRTextureWithShadow } from "../../../../utils/textureGenerator";
-import { showPopup } from "../../../../app/events";
-import { tickerRemove } from "../../../../app/application";
+import { getRRTextureWithShadow } from "../../utils/textureGenerator";
+import { showPopup } from "../../app/events";
+import { tickerRemove } from "../../app/application";
+import { currentScene } from "../state";
 
 export default class LeftMenu extends Container {
     constructor() {
@@ -24,7 +25,7 @@ export default class LeftMenu extends Container {
     }
 
     showBetPopup() {
-        showPopup(POPUP_TYPE.logs)
+        if (currentScene === SCENE_NAME.Roulette) showPopup(POPUP_TYPE.logs)
     }
 
     kill() {

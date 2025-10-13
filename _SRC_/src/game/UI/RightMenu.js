@@ -1,13 +1,13 @@
 import { Container, Sprite, Text } from "pixi.js";
-import { HELP_TEXT, POPUP_TYPE, UI } from "../../../constants";
+import { HELP_TEXT, POPUP_TYPE, SCENE_NAME, UI } from "../constants";
 import ButtonUI from "./ButtonUI";
-import { betCurrent, betsTotal, checkBet, isLangRu, clearAllBetsData } from "../../../state";
-import { styles } from "../../../../app/styles";
-import { atlases } from "../../../../app/assets";
-import { getRRTexture, getRRTextureWithShadow } from "../../../../utils/textureGenerator";
-import { EventHub, events, setHelpText, showPopup } from "../../../../app/events";
-import { formatNumber } from "../../../../utils/functions";
-import { tickerRemove } from "../../../../app/application";
+import { betCurrent, betsTotal, checkBet, isLangRu, clearAllBetsData, currentScene } from "../state";
+import { styles } from "../../app/styles";
+import { atlases } from "../../app/assets";
+import { getRRTexture, getRRTextureWithShadow } from "../../utils/textureGenerator";
+import { EventHub, events, setHelpText, showPopup } from "../../app/events";
+import { formatNumber } from "../../utils/functions";
+import { tickerRemove } from "../../app/application";
 
 export default class RightMenu extends Container {
     constructor() {
@@ -29,7 +29,12 @@ export default class RightMenu extends Container {
         this.betsTotal.anchor.set(0.5)
         this.betsTotal.scale.set(UI.bets.iconScale)
         this.betsTotal.position.set(-UI.bets.width + UI.bets.iconSize * 0.75, betsOffsetY)
-        this.betsTotalText = new Text({ text: `${isLangRu ? 'Сумма' : 'Total'}: ${formatNumber(betsTotal)}`, style: styles.betsTotal })
+        this.betsTotalText = new Text({
+            text: currentScene === SCENE_NAME.Roulette
+            ? `${isLangRu ? 'Сумма' : 'Total'}: ${formatNumber(betsTotal)}`
+            : '',
+            style: styles.betsTotal
+        })
         this.betsTotalText.anchor.set(0, 0.5)
         this.betsTotalText.position.set(this.betsTotal.position.x + UI.bets.iconSize * 0.75, betsOffsetY)
 
@@ -51,14 +56,16 @@ export default class RightMenu extends Container {
         this.bet = new ButtonUI('bet', this.showBetPopup.bind(this), true, HELP_TEXT.setBet)
         this.bet.position.set(-UI.offset, -UI.offset)
 
-        this.cancelBeat = new ButtonUI('cancel', clearAllBetsData, true, HELP_TEXT.clearBets)
-        this.cancelBeat.scale.set(UI.iconScale * 1.75)
-        this.cancelBeat.position.set(-UI.offset, -UI.offset - 56)
-        
         this.addChild(
             this.betsBg, this.betsTotal, this.betsTotalText, this.betsCurrentText,
-            this.bg, this.bet, this.cancelBeat
+            this.bg, this.bet
         )
+        if (currentScene === SCENE_NAME.Roulette) {
+            this.cancelBeat = new ButtonUI('cancel', clearAllBetsData, true, HELP_TEXT.clearBets)
+            this.cancelBeat.scale.set(UI.iconScale * 1.75)
+            this.cancelBeat.position.set(-UI.offset, -UI.offset - 56)
+            this.addChild(this.cancelBeat)
+        }
 
         EventHub.on(events.updateBet, this.updateBet, this)
         EventHub.on(events.updateBetTotal, this.updateBetTotal, this)

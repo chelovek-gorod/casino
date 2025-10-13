@@ -561,17 +561,19 @@ MESSAGE.y = -MESSAGE.height * 0.5
 // Slots
 
 export const SLOTS_BORDER = {
-    width: 1923,
-    height: 880,
-    x: 0,
-    y: 0,
-    offset: 60,
+    width: 0,
+    height: 0,
+    x: -928,
+    y: -440,
+    offsetX: 204,
+    offsetY: 80,
+    offsetLine: 12,
 }
-SLOTS_BORDER.x = -SLOTS_BORDER.width * 0.5
-SLOTS_BORDER.y = -SLOTS_BORDER.height * 0.5
+SLOTS_BORDER.width = -SLOTS_BORDER.x * 2
+SLOTS_BORDER.height = -SLOTS_BORDER.y * 2
 export const SLOTS_LINES = {
-    positionsX: [ 80, 450, 820, 1190, 1560 ],
-    positionsY: [ -160, 80, 320, 560 ],
+    positionsX: [ SLOTS_BORDER.offsetX ],
+    positionsY: [],
     slotWidth: 280,
     slotHeight: 240,
     acceleration: 0.003,
@@ -583,13 +585,26 @@ export const SLOTS_LINES = {
     delayRate: 200,
     duration: 2500
 }
+for(let i = 1; i < 5; i++){
+    const x = SLOTS_LINES.positionsX[i-1] + SLOTS_BORDER.offsetLine + SLOTS_LINES.slotWidth
+    SLOTS_LINES.positionsX.push( x )
+}
+for(let i = 0; i < 4; i++){
+    if (i === 0) SLOTS_LINES.positionsY.push( -SLOTS_LINES.slotHeight )
+    else SLOTS_LINES.positionsY.push( SLOTS_LINES.positionsY[i-1] + SLOTS_LINES.slotHeight )
+}
 
-export const SLOTS_LINES_VALUES = [
-    ['apple', 'apple',]
-]
-//                                10   50  200  1000  5000
+// slots keys
+export const SLOTS = {
+    f1: 'f1', f2: 'f2', f3: 'f3', f4: 'f4', f5: 'f5', f6: 'f6', f7: 'f7', f8: 'f8', f9: 'f9',
+    d1: 'd1', d2: 'd2', d3: 'd3',
+    c1: 'c1', c2: 'c2', c3: 'c3',
+    seven: 'seven', gold: 'gold', clover: 'clover',
+    jackpot: 'jackpot', bonus: 'bonus', wild: 'wild',
+}
+    
 export const SLOTS_LINES_DATA = {
-    //                           x0  x1  x2   x3   x4   x5
+    //                   x0  x1  x2   x3   x4   x5
     f1: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
     f2: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
     f3: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
@@ -600,21 +615,21 @@ export const SLOTS_LINES_DATA = {
     f8: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
     f9: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
 
-    d1: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    d2: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    d3: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    d1: {count: 9, rates:[0, 0, 0,  20, 100, 1000]},
+    d2: {count: 9, rates:[0, 0, 0,  20, 100, 1000]},
+    d3: {count: 9, rates:[0, 0, 0,  20, 100, 1000]},
 
-    c1: {count: 7, rates:[0, 0, 0,  10,  50,  500]},
-    c2: {count: 7, rates:[0, 0, 0,  10,  50,  500]},
-    c3: {count: 7, rates:[0, 0, 0,  10,  50,  500]},
+    c1: {count: 7, rates:[0, 0, 0,  50, 200, 2000]},
+    c2: {count: 7, rates:[0, 0, 0,  50, 200, 2000]},
+    c3: {count: 7, rates:[0, 0, 0,  50, 200, 2000]},
 
-    seven: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+    seven: {count: 5, rates:[0, 0, 0, 100, 500, 5000]},
     gold: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
     clover: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
 
     jackpot: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
-    bonus: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
-    wild: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
+    bonus: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+    wild: {count: 7, rates:[0, 0, 0,  10,  50,  500]},
 }
 let count = 0
 for (let key in SLOTS_LINES_DATA) {
@@ -628,9 +643,9 @@ for (let key in SLOTS_LINES_DATA) {
     const P4 = (SLOTS_LINES_DATA[key].count / count) ** 4
     const P5 = (SLOTS_LINES_DATA[key].count / count) ** 5
 
-    const W3 = (1 / P3).toFixed()
-    const W4 = (1 / P4).toFixed()
-    const W5 = (1 / P5).toFixed()
+    const W3 = (1 / P3 / 1000).toFixed(2)
+    const W4 = (1 / P4 / 1000).toFixed(2)
+    const W5 = (1 / P5 / 1000).toFixed(2)
 
     console.log(key, '\nW3:', W3, '\nW4:', W4, '\nW5:', W5, '\n')
 }

@@ -1,9 +1,9 @@
 import { Container, Sprite } from "pixi.js"
-import { atlases, sounds } from "../../../../app/assets"
-import { removeCursorPointer, setCursorPointer } from "../../../../utils/functions"
-import { playSound } from "../../../../app/sound"
-import { UI } from "../../../constants"
-import { setHelpText } from "../../../../app/events"
+import { atlases, sounds } from "../../app/assets"
+import { removeCursorPointer, setCursorPointer } from "../../utils/functions"
+import { playSound } from "../../app/sound"
+import { UI } from "../constants"
+import { setHelpText } from "../../app/events"
 
 export default class ButtonUI extends Container {
     constructor(iconName, callback, isWhite = true, helpText = '') {

@@ -1,12 +1,12 @@
 import { Container, Texture, Sprite, Text } from "pixi.js"
-import { HELP_TEXT, SCENE_NAME, UI } from "../../../constants"
+import { HELP_TEXT, SCENE_NAME, UI } from "../constants"
 import ButtonUI from "./ButtonUI"
-import { addMoney, isLangRu, money } from "../../../state"
-import { styles } from "../../../../app/styles"
-import { formatNumber } from "../../../../utils/functions"
-import { getRRTexture, getRRTextureWithShadow } from "../../../../utils/textureGenerator"
-import { EventHub, events, setHelpText, showPopup, startScene } from "../../../../app/events"
-import { tickerRemove } from "../../../../app/application"
+import { addMoney, isLangRu, money } from "../state"
+import { styles } from "../../app/styles"
+import { formatNumber } from "../../utils/functions"
+import { getRRTexture, getRRTextureWithShadow } from "../../utils/textureGenerator"
+import { EventHub, events, setHelpText, showPopup, startScene } from "../../app/events"
+import { tickerRemove } from "../../app/application"
 
 export default class TopBarMenu extends Container {
     constructor() {

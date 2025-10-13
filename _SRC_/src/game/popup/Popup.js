@@ -1,10 +1,10 @@
 import { Container, Graphics } from "pixi.js"
-import { EventHub, events } from "../../../app/events"
-import { BUTTON_TEXT, POPUP, POPUP_TYPE } from "../../constants"
-import { isLangRu } from "../../state"
-import Button from "./Button"
-import Bet from "../roulette/popup/Bet"
-import Logs from "../roulette/popup/Logs"
+import { EventHub, events } from "../../app/events"
+import { BUTTON_TEXT, POPUP, POPUP_TYPE } from "../constants"
+import { isLangRu } from "../state"
+import Button from "../UI/Button"
+import Bet from "./Bet"
+import Logs from "./Logs"
 
 export default class Popup extends Container {
     constructor() {

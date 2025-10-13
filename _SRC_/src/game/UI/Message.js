@@ -1,8 +1,8 @@
 import { Container, Graphics, Text } from "pixi.js";
-import { tickerAdd, tickerRemove } from "../../../../app/application";
-import { EventHub, events } from "../../../../app/events";
-import { styles } from "../../../../app/styles";
-import { MESSAGE, SECTOR_NUMBERS, SECTOR } from "../../../constants";
+import { tickerAdd, tickerRemove } from "../../app/application";
+import { EventHub, events } from "../../app/events";
+import { styles } from "../../app/styles";
+import { MESSAGE, SECTOR_NUMBERS, SECTOR } from "../constants";
 
 export default class Message extends Container {
     constructor() {

@@ -4,23 +4,24 @@ import { images, music } from '../../../app/assets'
 import { setMusic } from '../../../app/sound'
 import { GAME_CONTAINERS, GAME_OFFSET, UI } from '../../constants'
 import Field from './Field'
-import LeftMenu from './UI/LeftMenu'
-import Popup from '../common/Popup'
-import RightMenu from './UI/RightMenu'
-import TopBarMenu from './UI/TopBarMenu'
 import Wheel from './Wheel'
-import Message from './UI/Message'
+import LeftMenu from '../../UI/LeftMenu'
+import RightMenu from '../../UI/RightMenu'
+import TopBarMenu from '../../UI/TopBarMenu'
+import Message from '../../UI/Message'
+import Popup from '../../popup/Popup'
+import BackgroundTiling from '../../BG/BackgroundTiling'
+import { resetState } from '../../state'
 
 export default class Roulette extends Container {
     constructor() {
         super()
         this.alpha = 0
 
+        resetState()
+
         // BG
-        this.bg = new TilingSprite(images.bg)
-        this.bgTileWidth = images.bg.width
-        this.bgTileHeight = images.bg.height
-        this.bg.anchor.set(0.5)
+        this.bg = new BackgroundTiling(images.bg_green)
         this.addChild(this.bg)
 
         // SCALED MAIN GAME CONTAINER
@@ -53,12 +54,7 @@ export default class Roulette extends Container {
         this.position.set( screenData.centerX, screenData.centerY )
 
         // repeat bg tile in full screen (width and height)
-        this.bg.width = screenData.width
-        this.bg.height = screenData.height
-        const offsetX = screenData.width % this.bgTileWidth
-        const offsetY = screenData.height % this.bgTileHeight
-        this.bg.tilePosition.x = offsetX * 0.5
-        this.bg.tilePosition.y = offsetY * 0.5
+        this.bg.screenResize(screenData)
 
         // update popup
         this.popup.screenResize(screenData)

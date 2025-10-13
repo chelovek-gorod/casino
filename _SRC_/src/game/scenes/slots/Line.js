@@ -1,11 +1,8 @@
 import { Container, Sprite, Graphics } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../../app/application";
 import { atlases } from "../../../app/assets";
+import { getRandom } from "../../../utils/functions";
 import { SLOTS_LINES_DATA, SLOTS_LINES } from "../../constants";
-
-function getRandom(min, max) {
-    return min + Math.random() * (max - min);
-}
 
 const STATE = {
     start: 'start',
@@ -20,12 +17,12 @@ export default class Line extends Container {
         this.stopCallback = stopCallback
 
         const mask = new Graphics()
-        mask.rect(0, 80, SLOTS_LINES.slotWidth, SLOTS_LINES.slotHeight * 3)
+        mask.rect(0, 0, SLOTS_LINES.slotWidth, SLOTS_LINES.slotHeight * 3)
         mask.fill(0xffffff)
         this.addChild(mask)
 
         this.bg = new Graphics()
-        this.bg.rect(0, 80, SLOTS_LINES.slotWidth, SLOTS_LINES.slotHeight * 3)
+        this.bg.rect(0, 0, SLOTS_LINES.slotWidth, SLOTS_LINES.slotHeight * 3)
         this.bg.fill(0xffffff)
         this.addChild(this.bg)
 
@@ -64,6 +61,16 @@ export default class Line extends Container {
         this.runTime = 0
         this.state = STATE.stop
         this.stopCallback
+    }
+
+    getResults() {
+        const results = []
+        for (let i = 1; i < 4; i++) {
+            let index = this.nextImageIndex - i
+            if (index < 0) index += this.imagesList.length
+            results.push(this.imagesList[index])
+        }
+        return results
     }
 
     run(delayIndex) {

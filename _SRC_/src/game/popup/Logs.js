@@ -1,8 +1,8 @@
 import { Container, Text, Graphics } from "pixi.js";
-import { EventHub, events } from "../../../../app/events";
-import { styles } from "../../../../app/styles";
-import { POPUP, POPUP_TEXT, LOGS, SECTOR, SECTOR_NUMBERS } from "../../../constants";
-import { isLangRu, results } from "../../../state";
+import { EventHub, events } from "../../app/events";
+import { styles } from "../../app/styles";
+import { POPUP, POPUP_TEXT, LOGS, SECTOR, SECTOR_NUMBERS } from "../constants";
+import { isLangRu, results } from "../state";
 
 const SIZE_TYPE = {
     last : 'last',
