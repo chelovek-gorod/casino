@@ -18,10 +18,16 @@ export default class Line extends Container {
         super()
 
         this.stopCallback = stopCallback
+
         const mask = new Graphics()
         mask.rect(0, 80, SLOTS_LINES.slotWidth, SLOTS_LINES.slotHeight * 3)
-        mask.fill(0x000000)
+        mask.fill(0xffffff)
         this.addChild(mask)
+
+        this.bg = new Graphics()
+        this.bg.rect(0, 80, SLOTS_LINES.slotWidth, SLOTS_LINES.slotHeight * 3)
+        this.bg.fill(0xffffff)
+        this.addChild(this.bg)
 
         this.imagesMaskContainer = new Container()
         this.imagesMaskContainer.mask = mask
@@ -40,10 +46,10 @@ export default class Line extends Container {
 
         this.nextImageIndex = 3
         this.visibleImages = [
-            new Sprite(atlases.slot.textures[ this.imagesList[ 3 ] ]),
-            new Sprite(atlases.slot.textures[ this.imagesList[ 2 ] ]),
-            new Sprite(atlases.slot.textures[ this.imagesList[ 1 ] ]),
-            new Sprite(atlases.slot.textures[ this.imagesList[ 0 ] ]),
+            new Sprite(atlases.slots.textures[ this.imagesList[ 3 ] ]),
+            new Sprite(atlases.slots.textures[ this.imagesList[ 2 ] ]),
+            new Sprite(atlases.slots.textures[ this.imagesList[ 1 ] ]),
+            new Sprite(atlases.slots.textures[ this.imagesList[ 0 ] ]),
         ]
 
         this.visibleImages.forEach( (image, index) => {
@@ -88,7 +94,7 @@ export default class Line extends Container {
 
         this.nextImageIndex++
         if (this.nextImageIndex === this.imagesList.length) this.nextImageIndex = 0
-        const nextTexture = atlases.slot.textures[ this.imagesList[this.nextImageIndex] ]
+        const nextTexture = atlases.slots.textures[ this.imagesList[this.nextImageIndex] ]
 
         this.visibleImages[3].texture = this.visibleImages[2].texture
         this.visibleImages[2].texture = this.visibleImages[1].texture

@@ -590,20 +590,31 @@ export const SLOTS_LINES_VALUES = [
 //                                10   50  200  1000  5000
 export const SLOTS_LINES_DATA = {
     //                           x0  x1  x2   x3   x4   x5
-         apple: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
-        cheery: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
-         lemon: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
-    watermelon: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+    f1: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
+    f2: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
+    f3: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
+    f4: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
+    f5: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
+    f6: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
+    f7: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
+    f8: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
+    f9: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
 
-         cards: {count: 4, rates:[0, 0, 0,  20, 100, 1000]},
+    d1: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    d2: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    d3: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
 
-             7: {count: 2, rates:[0, 0, 0,  50, 250, 2500]},
-           777: {count: 1, rates:[0, 0, 0, 100, 500, 5000]},
+    c1: {count: 7, rates:[0, 0, 0,  10,  50,  500]},
+    c2: {count: 7, rates:[0, 0, 0,  10,  50,  500]},
+    c3: {count: 7, rates:[0, 0, 0,  10,  50,  500]},
 
-          coin: {count: 1, rates:[0, 0, 0,  20, 100, 500], effects: [1, 2, 5, 20, 100]},
-         bonus: {count: 1, rates:[0, 0, 0,  20, 100, 500], effects: [2, 5, 20, 100, 500]},
+    seven: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+    gold: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+    clover: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
 
-          wild: {count: 1, rates:[0, 0, 0,   0,   0,   0], effects: 'Joker'},
+    jackpot: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
+    bonus: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
+    wild: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
 }
 let count = 0
 for (let key in SLOTS_LINES_DATA) {
