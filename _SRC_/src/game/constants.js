@@ -618,8 +618,8 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - 1) / SLOTS_HIGHLIGHT.inOut
 
-const FC = 36 // 9 types // 8
-const DC = 12 // 3 types
+const FC = 18 // 9 types // 8
+const DC = 9 // 3 types
 //          x0 x1 x2  x3   x4   x5
 const FCR = [0, 0, 0,  5,  20,  100]
 const DCR = [0, 0, 0, 10,  50,  500]
@@ -646,15 +646,16 @@ export const SLOTS_LINES_DATA = {
     */
 
     /* seven: {count: XC, rates: XCR}, */
-    gold: {count: 6, rates: FCR},
-    clover: {count: 12, rates: FCR},
+    gold: {count: 3, rates: DCR},
+    clover: {count: 6, rates: DCR},
 
-    jackpot: {count: 2, rates: FCR, extraBetRates: []},
-    bonus: {count: 6, rates: FCR, bonusRates: []},
-    wild: {count: 12, rates: FCR},
+    jackpot: {count: 1, rates: DCR, extraBetRates: []},
+
+    bonus: {count: 3, rates: FCR, bonusRates: []},
+    wild: {count: 6, rates: FCR},
 }
 SLOTS_LINES_DATA.jackpot.extraBetRates = [
-    0, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000
+    0, 10, 50, 200, 500, 1000
 ]
 if (SLOTS_LINES_DATA.jackpot.extraBetRates.length <= SLOTS_LINES_DATA.jackpot.count * 5
 && SLOTS_LINES_DATA.jackpot.extraBetRates.length < 15) {
