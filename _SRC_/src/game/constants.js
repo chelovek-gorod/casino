@@ -649,12 +649,12 @@ export const SLOTS_LINES_DATA = {
     gold: {count: 6, rates: FCR},
     clover: {count: 12, rates: FCR},
 
-    jackpot: {count: 1, rates: FCR, extraBetRates: []},
+    jackpot: {count: 2, rates: FCR, extraBetRates: []},
     bonus: {count: 6, rates: FCR, bonusRates: []},
     wild: {count: 12, rates: FCR},
 }
 SLOTS_LINES_DATA.jackpot.extraBetRates = [
-    0, 10, 100, 1000, 10000, 100000
+    0, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000
 ]
 if (SLOTS_LINES_DATA.jackpot.extraBetRates.length <= SLOTS_LINES_DATA.jackpot.count * 5
 && SLOTS_LINES_DATA.jackpot.extraBetRates.length < 15) {
