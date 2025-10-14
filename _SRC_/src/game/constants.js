@@ -618,7 +618,7 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - 1) / SLOTS_HIGHLIGHT.inOut
 
-const FC = 18 // 9 types // 8
+const FC = 12 // 9 types // 8
 const DC = 9 // 3 types
 //          x0 x1 x2  x3   x4   x5
 const FCR = [0, 0, 0,  5,  20,  100]
