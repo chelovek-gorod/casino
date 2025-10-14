@@ -654,7 +654,7 @@ export const SLOTS_LINES_DATA = {
     wild: {count: 3, rates: FCR},
 }
 SLOTS_LINES_DATA.jackpot.extraBetRates = [
-    0, 10, 50, 200, 500, 1000
+    0, 10, 50, 200, 1000, 5000
 ]
 if (SLOTS_LINES_DATA.jackpot.extraBetRates.length <= SLOTS_LINES_DATA.jackpot.count * 5
 && SLOTS_LINES_DATA.jackpot.extraBetRates.length < 15) {

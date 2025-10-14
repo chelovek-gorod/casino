@@ -241,7 +241,7 @@ export default class Slots extends Container {
 
         if (bonuses > 1 && totalRate) this.highlightList.push(bonusesHighlights)
 
-        totalRate = totalRate * bonuses + jackpotRate + golds
+        totalRate = totalRate * SLOTS_LINES_DATA[SLOTS.bonus].bonusRates[bonuses] + jackpotRate + golds
         if (totalRate === 0 && clovers > 0) {
             this.highlightList.push(cloversHighlights)
             returnBet()
