@@ -68,12 +68,16 @@ export const voices = {
     // voice_start_2: 'voice_ru_start_second.mp3',
 }
 export const music = {
-    bgm_casino: 'bgm_casino.mp3',
     bgm_0: 'bgm_0.mp3',
+    bgm_1: 'bgm_1.mp3',
+    bgm_2: 'bgm_2.mp3',
+    bgm_3: 'bgm_3.mp3',
+    bgm_4: 'bgm_4.mp3',
+    bgm_5: 'bgm_5.mp3',
 }
 
 export const loadConfig = {
-    musicKey: 'bgm_0', // String or null
+    musicKey: null, // String or null
     imageKey: 'bg_blue', // String or null
     isImageTile: true, // true/false
 }

@@ -46,7 +46,7 @@ export default class Roulette extends Container {
         this.addChild(this.leftUI, this.rightUI, this.topUI, this.popup, this.message)
 
         // done
-        setMusic([music.bgm_casino])
+        setMusic([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
     }
 
     screenResize(screenData) { console.log('RR')

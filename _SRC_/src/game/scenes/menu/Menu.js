@@ -27,9 +27,6 @@ export default class Menu extends Container {
             0, 100, () => startScene(SCENE_NAME.Slots)
         )
         this.addChild(this.slotsButton)
-
-        // done
-        setMusic([music.bgm_casino])
     }
 
     screenResize(screenData) {
