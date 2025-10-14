@@ -2,10 +2,10 @@ import { Container, Sprite } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music } from '../../../app/assets'
 import { setMusic } from '../../../app/sound'
-import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA } from '../../constants'
+import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA, MESSAGE } from '../../constants'
 import Line from './Line'
 import Button from '../../UI/Button'
-import { isLangRu, checkRunSlots, resultSlots, resetState } from '../../state'
+import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet } from '../../state'
 import LeftMenu from '../../UI/LeftMenu'
 import RightMenu from '../../UI/RightMenu'
 import TopBarMenu from '../../UI/TopBarMenu'
@@ -60,6 +60,8 @@ export default class Slots extends Container {
 
         this.addChild(this.leftUI, this.rightUI, this.topUI, this.popup, this.message)
 
+        this.highlightList = []
+
         document.addEventListener('keyup', (e) => {
             if (e.code === "Space") this.run()
         })
@@ -108,7 +110,6 @@ export default class Slots extends Container {
         this.linsRunningCount -= 1
         if (this.linsRunningCount === 0) {
             this.checkSpinResults()
-            this.runButton.setActive(true)
         }
     }
 
@@ -116,117 +117,173 @@ export default class Slots extends Container {
         // [ [top, mid, bot], [top, mid, bot], [top, mid, bot], [top, mid, bot], [top, mid, bot] ]
         const results = this.lines.map( line => line.getResults() )
 
-        // count bonuses
         let bonuses = 1
+        let bonusesHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        let jackpots = 0
+        let jackpotsHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        let clovers = 0
+        let cloversHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        let golds = 0
+        let goldsHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
         const top = []
         const mid = []
         const bot = []
-        results.forEach( line => {
+
+        results.forEach( (line, lineIndex) => {
             line.forEach( (value, index) => {
-                bonuses += value === SLOTS.bonus ? 1 : 0
+                if (value === SLOTS.bonus) {
+                    bonuses++
+                    bonusesHighlights[lineIndex][index] = 1
+                }
+
+                if (value === SLOTS.jackpot) {
+                    jackpots++
+                    jackpotsHighlights[lineIndex][index] = 1
+                }
+
+                if (value === SLOTS.clover) {
+                    clovers++
+                    cloversHighlights[lineIndex][index] = 1
+                }
+
+                if (value === SLOTS.gold) {
+                    golds++
+                    goldsHighlights[lineIndex][index] = 1
+                }
+
                 if (index === 0) top.push(value)
                 else if (index === 1) mid.push(value)
                 else bot.push(value)
             })
         })
 
+        if (jackpots) this.highlightList.push(jackpotsHighlights)
+        if (golds) this.highlightList.push(goldsHighlights)
+
+        // DON'T USE BONUSES WITH JACKPOT !!!
+        const jackpotRate = SLOTS_LINES_DATA[SLOTS.jackpot].extraBetRates[jackpots]
+
         // check wins
-        const topWin = this.checkLongLine(top)
-        const midWin = this.checkLongLine(mid)
-        const botWin = this.checkLongLine(bot)
+        const linesFive =  [
+            this.countConsecutive(top),
+            this.countConsecutive(mid),
+            this.countConsecutive(bot)
+        ]
 
         const linesTree = [
-            this.checkLineThree([top[0], mid[1], bot[2]]),
-            this.checkLineThree([top[1], mid[2], bot[3]]),
-            this.checkLineThree([top[2], mid[3], bot[4]]),
-            this.checkLineThree([top[2], mid[1], bot[0]]),
-            this.checkLineThree([top[3], mid[2], bot[1]]),
-            this.checkLineThree([top[4], mid[3], bot[2]])
-        ].filter(line => line !== null)
+            this.countConsecutive([top[0], mid[1], bot[2]]),
+            this.countConsecutive([top[1], mid[2], bot[3]]),
+            this.countConsecutive([top[2], mid[3], bot[4]]),
+            this.countConsecutive([top[2], mid[1], bot[0]]),
+            this.countConsecutive([top[3], mid[2], bot[1]]),
+            this.countConsecutive([top[4], mid[3], bot[2]])
+        ]
 
-        let totalRate = 0
-        linesTree.forEach( data => { totalRate += SLOTS_LINES_DATA[data.key].rates[data.count] })
-        topWin.forEach( data => { totalRate += SLOTS_LINES_DATA[data.key].rates[data.count] })
-        midWin.forEach( data => { totalRate += SLOTS_LINES_DATA[data.key].rates[data.count] })
-        botWin.forEach( data => { totalRate += SLOTS_LINES_DATA[data.key].rates[data.count] })
+        let totalRate = 0 // without jackpot
 
-        resultSlots(totalRate * bonuses)
+        linesTree.forEach( (data, index) => {
+            for(let key in data) {
+                if (data[key].count > 2) {
+                    totalRate += data[key].count
+
+                    const highlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+                    this.highlightList.push(highlights)
+                }
+            }
+        })
+        linesFive.forEach( (data, index) => {
+            for(let key in data) {
+                if (data[key].count > 2) {
+                    totalRate += data[key].count
+
+                    const highlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+                    data[key].indexes.forEach( i => highlights[i][index] = 1 )
+                    this.highlightList.push(highlights)
+                }
+            }
+        })
+
+        if (bonuses > 1 && totalRate) this.highlightList.push(bonusesHighlights)
+
+        totalRate = totalRate * bonuses + jackpotRate + golds
+        if (totalRate === 0 && clovers > 0) {
+            this.highlightList.push(cloversHighlights)
+            returnBet()
+        }
+
+        resultSlots(totalRate)
+
+        if (totalRate === 0) this.highlightCallback()
+        else setTimeout(() => this.highlightCallback(), MESSAGE.showDuration + MESSAGE.inOutDuration * 2)
 
         // test
+        console.log('Jackpot', jackpotRate)
+        console.log('golds', golds)
+        console.log('clovers', clovers)
         console.log('BONUS x', bonuses)
-        console.log('top', topWin)
-        console.log('mid', midWin)
-        console.log('bot', botWin)
+        console.log('5x', linesFive)
         console.log('3х:', linesTree)
+        console.log('3х:', linesTree)
+        console.log('RATE:', totalRate)
         console.log('-------------')        
     }
-    checkLongLine(line) {
-        const combinations = []
-        let usedPositions = new Set()
-        
-        // Ищем все возможные комбинации
-        for (let start = 0; start < line.length; start++) {
-            if (usedPositions.has(start)) continue
-            
-            let currentSymbol = null
-            let count = 0
-            const positions = []
-            
-            for (let i = start; i < line.length; i++) {
-                const symbol = line[i]
-                
-                if (currentSymbol === null && symbol !== SLOTS.wild) {
-                    currentSymbol = symbol
-                    count = 1
-                    positions.push(i)
-                    usedPositions.add(i)
-                }
-                else if (currentSymbol !== null && (symbol === currentSymbol || symbol === SLOTS.wild)) {
+    countConsecutive(line) {
+        const sames = {}
+        let key = line[0] // key of a same
+        let count = 1 // count of nearest
+        let indexes = [0]
+        for (let i = 1; i < line.length; i++) {
+            if (key === line[i] || line[i] === SLOTS.wild || key === SLOTS.wild) {
+                count ++
+                indexes.push(i)
+                if (key === SLOTS.wild) key = line[i]
+            } else {
+                sames[key] = {count: count, indexes: indexes}
+                key = line[i]
+                count = 1
+                let previousIndex = i - 1
+                indexes = [i]
+                while(previousIndex > 0 && line[previousIndex] === SLOTS.wild) {
+                    indexes.push(previousIndex)
+                    previousIndex--
                     count++
-                    positions.push(i)
-                    usedPositions.add(i)
                 }
-                else {
-                    break
-                }
-            }
-            
-            if (count >= 3 && currentSymbol) {
-                combinations.push({
-                    key: currentSymbol,
-                    count: count,
-                    positions: positions // опционально, если нужны позиции
-                })
             }
         }
+        if (!(key in sames) || sames[key].count < count) sames[key] = {count: count, indexes: indexes}
         
-        return combinations
+        return sames
     }
-    checkLineThree(line) {
-        let targetSymbol = null
-        
-        // Определяем целевой символ (первый не-wild)
-        for (let symbol of line) {
-            if (symbol !== SLOTS.wild) {
-                targetSymbol = symbol
-                break
-            }
+    highlightCallback() {
+        this.linsRunningCount--
+        if (this.linsRunningCount > 0) return
+
+        console.log(this, this.highlightList)
+
+        if (this.highlightList.length === 0) {
+            this.runButton.setActive(true)
+            return
         }
-        
-        // Если все wild, то targetSymbol остается null
-        
-        // Проверяем, все ли символы подходят под targetSymbol (или wild)
-        for (let symbol of line) {
-            if (symbol !== SLOTS.wild && symbol !== targetSymbol) {
-                return null // Найден чужой символ - не совпадает
-            }
-        }
-        
-        // Если дошли сюда - все 3 символа совпадают
-        return {
-            key: targetSymbol || SLOTS.wild, // если все wild, то key = 'wild'
-            count: 3
-        }
+
+        this.linsRunningCount = 5
+        const highlightData = this.highlightList.shift()
+
+        this.lines.forEach((line, index) => {
+            line.highlight(highlightData[index], this.highlightCallback.bind(this))
+        })
+
+        // test
+        /*
+        setTimeout( () => {
+            // left[0]->right[4];  top/mid/bot
+            this.lines[0].highlight([1, 0, 0], () => { console.log('done') })
+            this.lines[1].highlight([0, 1, 0], () => { console.log('done') })
+            this.lines[2].highlight([0, 0, 1], () => { console.log('done') })
+            this.lines[3].highlight([0, 0, 0], () => { console.log('done') })
+            this.lines[4].highlight([0, 0, 0], () => { console.log('done') })
+        }, 0)
+        */
     }
 
     kill() {

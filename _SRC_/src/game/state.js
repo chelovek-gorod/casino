@@ -51,6 +51,10 @@ export function resultSlots(rate = 0) {
     }
     betsTotal = 0
 }
+export function returnBet() {
+    addMoney(betsTotal)
+    betsTotal = 0
+}
 
 export function setBet(numbers, numbersList = []) {
     if (isOnSpin) return false

@@ -2,12 +2,18 @@ import { Container, Sprite, Graphics } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../../app/application";
 import { atlases } from "../../../app/assets";
 import { getRandom } from "../../../utils/functions";
-import { SLOTS_LINES_DATA, SLOTS_LINES } from "../../constants";
+import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT } from "../../constants";
 
 const STATE = {
+    idle: 'idle',
+
     start: 'start',
     run: 'run',
     stop: 'stop',
+
+    highlightIn: 'highlightIn',
+    highlight: 'highlight',
+    highlightOut: 'highlightOut',
 }
 
 export default class Line extends Container {
@@ -50,7 +56,10 @@ export default class Line extends Container {
         ]
 
         this.visibleImages.forEach( (image, index) => {
-            image.position.set(0, SLOTS_LINES.positionsY[index])
+            image.anchor.set(0.5)
+            image.position.set(
+                SLOTS_LINES.slotHalfWidth, SLOTS_LINES.positionsY[index] + SLOTS_LINES.slotHalfHeight
+            )
             this.imagesContainer.addChildAt(image, 0)
         })
         
@@ -59,8 +68,16 @@ export default class Line extends Container {
         this.normalSpeed = 0
         this.startTimeout = 0
         this.runTime = 0
-        this.state = STATE.stop
+        this.state = STATE.idle
         this.stopCallback
+
+        this.highlightData = {
+            valuesList: [],
+            callback: null,
+            duration: SLOTS_HIGHLIGHT.duration,
+            scale: 1,
+            alpha: 1,
+        }
     }
 
     getResults() {
@@ -89,8 +106,10 @@ export default class Line extends Container {
         tickerRemove(this)
 
         this.visibleImages.forEach( (image, index) => {
-            image.position.set(0, SLOTS_LINES.positionsY[index])
-            this.imagesContainer.addChildAt(image, 0)
+            image.position.set(
+                SLOTS_LINES.slotHalfWidth, SLOTS_LINES.positionsY[index] + SLOTS_LINES.slotHalfHeight
+            )
+            // this.imagesContainer.addChildAt(image, 0)
         })
 
         this.stopCallback()
@@ -111,7 +130,81 @@ export default class Line extends Container {
         if (this.state === STATE.stop && this.speed === SLOTS_LINES.stopSpeed) this.stop()
     }
 
+    highlight(arr, callback) { console.log('start')
+        this.highlightData.valuesList = arr
+        this.highlightData.callback = callback
+        this.highlightData.duration = SLOTS_HIGHLIGHT.duration
+        this.highlightData.scale = 1
+        this.highlightData.alpha = 1
+
+        this.state = STATE.highlightIn
+        tickerAdd(this)
+    }
+    updateHighlight() {
+        // top
+        if (this.highlightData.valuesList[0]) {
+            this.visibleImages[1].scale.set(this.highlightData.scale)
+        } else {
+            this.visibleImages[1].alpha = this.highlightData.alpha
+        }
+
+        // mid
+        if (this.highlightData.valuesList[1]) {
+            this.visibleImages[2].scale.set(this.highlightData.scale)
+        } else {
+            this.visibleImages[2].alpha = this.highlightData.alpha
+        }
+
+        // bot
+        if (this.highlightData.valuesList[2]) {
+            this.visibleImages[3].scale.set(this.highlightData.scale)
+        } else {
+            this.visibleImages[3].alpha = this.highlightData.alpha
+        }
+    }
+
     tick(time) {
+        // highlight
+        if (this.state === STATE.highlightIn) { console.log(this.highlightData)
+            this.highlightData.alpha = Math.max(
+                SLOTS_HIGHLIGHT.minAlpha,
+                this.highlightData.alpha - SLOTS_HIGHLIGHT.stepAlphaInMS * time.deltaMS
+            )
+            this.highlightData.scale = Math.min(
+                SLOTS_HIGHLIGHT.maxScale,
+                this.highlightData.scale + SLOTS_HIGHLIGHT.stepScaleInMS * time.deltaMS
+            )
+            if (this.highlightData.scale === SLOTS_HIGHLIGHT.maxScale) this.state = STATE.highlight
+
+            return this.updateHighlight()
+        }
+        if (this.state === STATE.highlight) {
+            this.highlightData.duration = Math.max(0, this.highlightData.duration - time.deltaMS)
+            if (this.highlightData.duration === 0) this.state = STATE.highlightOut
+
+            return
+        }
+        if (this.state === STATE.highlightOut) {
+            this.highlightData.alpha = Math.min(
+                1,
+                this.highlightData.alpha + SLOTS_HIGHLIGHT.stepAlphaInMS * time.deltaMS
+            )
+            this.highlightData.scale = Math.max(
+                1,
+                this.highlightData.scale - SLOTS_HIGHLIGHT.stepScaleInMS * time.deltaMS
+            )
+            if (this.highlightData.scale === 1) {
+                this.state = STATE.idle
+                tickerRemove(this)
+                setTimeout(() => this.highlightData.callback(), 0)
+            }
+
+            return this.updateHighlight()
+        }
+
+        if (this.state === STATE.idle) return tickerRemove(this)
+
+        // rotation
         if (this.startTimeout > 0) {
             this.startTimeout -= time.deltaMS
             return

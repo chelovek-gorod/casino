@@ -576,6 +576,8 @@ export const SLOTS_LINES = {
     positionsY: [],
     slotWidth: 280,
     slotHeight: 240,
+    slotHalfWidth: 0,
+    slotHalfHeight: 0,
     acceleration: 0.003,
     minSpeed: 6.5,
     maxSpeed: 7.5,
@@ -585,6 +587,8 @@ export const SLOTS_LINES = {
     delayRate: 200,
     duration: 2500
 }
+SLOTS_LINES.slotHalfWidth = SLOTS_LINES.slotWidth * 0.5
+SLOTS_LINES.slotHalfHeight = SLOTS_LINES.slotHeight * 0.5
 for(let i = 1; i < 5; i++){
     const x = SLOTS_LINES.positionsX[i-1] + SLOTS_BORDER.offsetLine + SLOTS_LINES.slotWidth
     SLOTS_LINES.positionsX.push( x )
@@ -602,35 +606,59 @@ export const SLOTS = {
     seven: 'seven', gold: 'gold', clover: 'clover',
     jackpot: 'jackpot', bonus: 'bonus', wild: 'wild',
 }
-    
-export const SLOTS_LINES_DATA = {
-    //                   x0  x1  x2   x3   x4   x5
-    f1: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
-    f2: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
-    f3: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
-    f4: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
-    f5: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
-    f6: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
-    f7: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
-    f8: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
-    f9: {count: 12, rates:[0, 0, 0,  10,  50,  500]},
 
-    d1: {count: 9, rates:[0, 0, 0,  20, 100, 1000]},
-    d2: {count: 9, rates:[0, 0, 0,  20, 100, 1000]},
-    d3: {count: 9, rates:[0, 0, 0,  20, 100, 1000]},
-
-    c1: {count: 7, rates:[0, 0, 0,  50, 200, 2000]},
-    c2: {count: 7, rates:[0, 0, 0,  50, 200, 2000]},
-    c3: {count: 7, rates:[0, 0, 0,  50, 200, 2000]},
-
-    seven: {count: 5, rates:[0, 0, 0, 100, 500, 5000]},
-    gold: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
-    clover: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
-
-    jackpot: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
-    bonus: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
-    wild: {count: 7, rates:[0, 0, 0,  10,  50,  500]},
+export const SLOTS_HIGHLIGHT = {
+    duration: 100,
+    inOut: 400,
+    minAlpha: 0.3,
+    maxScale: 1.2,
+    stepAlphaInMS: 0,
+    stepScaleInMS: 0,
 }
+SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
+SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - 1) / SLOTS_HIGHLIGHT.inOut
+
+export const SLOTS_LINES_DATA = {
+    //                   x0 x1 x2   x3   x4   x5
+    f1: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f2: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f3: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f4: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f5: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f6: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f7: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f8: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f9: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+
+    d1: {count: 6, rates:[0, 0, 0,  20, 100, 1000]},
+    d2: {count: 6, rates:[0, 0, 0,  20, 100, 1000]},
+    d3: {count: 6, rates:[0, 0, 0,  20, 100, 1000]},
+
+    c1: {count: 4, rates:[0, 0, 0,  50, 200, 2000]},
+    c2: {count: 4, rates:[0, 0, 0,  50, 200, 2000]},
+    c3: {count: 4, rates:[0, 0, 0,  50, 200, 2000]},
+
+    seven: {count: 3, rates:[0, 0, 0, 100, 500, 5000]},
+    gold: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
+    clover: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
+
+    jackpot: {count: 1, rates:[0, 0, 0,  10,  50,  500], extraBetRates: []},
+    bonus: {count: 2, rates:[0, 0, 0,  10,  50,  500], bonusRates: []},
+    wild: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+}
+SLOTS_LINES_DATA.jackpot.extraBetRates = [
+    0, 100, 1000, 10000, 100000, 1000000
+]
+if (SLOTS_LINES_DATA.jackpot.extraBetRates.length <= SLOTS_LINES_DATA.jackpot.count * 5) {
+    throw "Not enough elements in array SLOTS_LINES_DATA.jackpot.extraBetRates.length"
+}
+SLOTS_LINES_DATA.bonus.bonusRates = [
+    1, 2, 3, 5, 10, 20, 50, 100, 200, 500, 1000
+]
+if (SLOTS_LINES_DATA.bonus.bonusRates.length <= SLOTS_LINES_DATA.bonus.count * 5) {
+    throw "Not enough elements in array SLOTS_LINES_DATA.bonus.bonusRates"
+}
+
 let count = 0
 for (let key in SLOTS_LINES_DATA) {
     count += SLOTS_LINES_DATA[key].count
