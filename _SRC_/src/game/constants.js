@@ -618,44 +618,55 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - 1) / SLOTS_HIGHLIGHT.inOut
 
+const FC = 36 // 9 types // 8
+const DC = 12 // 3 types
+//          x0 x1 x2  x3   x4   x5
+const FCR = [0, 0, 0,  5,  20,  100]
+const DCR = [0, 0, 0, 10,  50,  500]
+
 export const SLOTS_LINES_DATA = {
-    //                   x0 x1 x2   x3   x4   x5
-    f1: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    f2: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    f3: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    f4: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    f5: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    f6: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    f7: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    f8: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
-    f9: {count: 9, rates:[0, 0, 0,  10,  50,  500]},
+    f1: {count: FC, rates: FCR},
+    f2: {count: FC, rates: FCR},
+    f3: {count: FC, rates: FCR},
+    f4: {count: FC, rates: FCR},
+    f5: {count: FC, rates: FCR},
+    /* f6: {count: FC, rates: FCR}, */
+    /* f7: {count: FC, rates: FCR}, */
+    f8: {count: FC, rates: FCR},
+    /* f9: {count: FC, rates: FCR}, */
 
-    d1: {count: 6, rates:[0, 0, 0,  20, 100, 1000]},
-    d2: {count: 6, rates:[0, 0, 0,  20, 100, 1000]},
-    d3: {count: 6, rates:[0, 0, 0,  20, 100, 1000]},
+    d1: {count: DC, rates: DCR},
+    d2: {count: DC, rates: DCR},
+    d3: {count: DC, rates: DCR},
 
+    /*
     c1: {count: 4, rates:[0, 0, 0,  50, 200, 2000]},
     c2: {count: 4, rates:[0, 0, 0,  50, 200, 2000]},
     c3: {count: 4, rates:[0, 0, 0,  50, 200, 2000]},
+    */
 
-    seven: {count: 3, rates:[0, 0, 0, 100, 500, 5000]},
-    gold: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
-    clover: {count: 3, rates:[0, 0, 0,  10,  50,  500]},
+    /* seven: {count: XC, rates: XCR}, */
+    gold: {count: 6, rates: FCR},
+    clover: {count: 12, rates: FCR},
 
-    jackpot: {count: 1, rates:[0, 0, 0,  10,  50,  500], extraBetRates: []},
-    bonus: {count: 2, rates:[0, 0, 0,  10,  50,  500], bonusRates: []},
-    wild: {count: 5, rates:[0, 0, 0,  10,  50,  500]},
+    jackpot: {count: 1, rates: FCR, extraBetRates: []},
+    bonus: {count: 6, rates: FCR, bonusRates: []},
+    wild: {count: 12, rates: FCR},
 }
 SLOTS_LINES_DATA.jackpot.extraBetRates = [
-    0, 100, 1000, 10000, 100000, 1000000
+    0, 10, 100, 1000, 10000, 100000
 ]
-if (SLOTS_LINES_DATA.jackpot.extraBetRates.length <= SLOTS_LINES_DATA.jackpot.count * 5) {
+if (SLOTS_LINES_DATA.jackpot.extraBetRates.length <= SLOTS_LINES_DATA.jackpot.count * 5
+&& SLOTS_LINES_DATA.jackpot.extraBetRates.length < 15) {
     throw "Not enough elements in array SLOTS_LINES_DATA.jackpot.extraBetRates.length"
 }
 SLOTS_LINES_DATA.bonus.bonusRates = [
-    1, 2, 3, 5, 10, 20, 50, 100, 200, 500, 1000
+    1, 2, 4, 8, 16,
+    32, 64, 128, 256, 512,
+    1024, 2048, 4096, 8192, 16384
 ]
-if (SLOTS_LINES_DATA.bonus.bonusRates.length <= SLOTS_LINES_DATA.bonus.count * 5) {
+if (SLOTS_LINES_DATA.bonus.bonusRates.length <= SLOTS_LINES_DATA.bonus.count * 5
+&& SLOTS_LINES_DATA.bonus.bonusRates.length < 15) {
     throw "Not enough elements in array SLOTS_LINES_DATA.bonus.bonusRates"
 }
 

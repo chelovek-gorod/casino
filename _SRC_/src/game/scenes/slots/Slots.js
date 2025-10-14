@@ -185,17 +185,52 @@ export default class Slots extends Container {
         linesTree.forEach( (data, index) => {
             for(let key in data) {
                 if (data[key].count > 2) {
-                    totalRate += data[key].count
+                    totalRate += SLOTS_LINES_DATA[key].rates[ data[key].count ]
+ 
+                    switch(index) {
+                        case 0 : // [top[0], mid[1], bot[2]
+                            this.highlightList.push(
+                                [[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0], [0, 0, 0]]
+                            )
+                        break;
 
-                    const highlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
-                    this.highlightList.push(highlights)
+                        case 1 : // [top[1], mid[2], bot[3]]
+                            this.highlightList.push(
+                                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]]
+                            )
+                        break;
+
+                        case 2 : // [top[2], mid[3], bot[4]
+                            this.highlightList.push(
+                                [[0, 0, 0], [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
+                            )
+                        break;
+
+                        case 3 : // [top[2], mid[1], bot[0]
+                            this.highlightList.push(
+                                [[0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 0], [0, 0, 0]]
+                            )
+                        break;
+
+                        case 4 : // [top[3], mid[2], bot[1]
+                            this.highlightList.push(
+                                [[0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 0]]
+                            )
+                        break;
+
+                        case 5 : // [top[4], mid[3], bot[2]
+                            this.highlightList.push(
+                                [[0, 0, 0], [0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]]
+                            )
+                        break;
+                    }
                 }
             }
         })
         linesFive.forEach( (data, index) => {
             for(let key in data) {
                 if (data[key].count > 2) {
-                    totalRate += data[key].count
+                    totalRate += SLOTS_LINES_DATA[key].rates[ data[key].count ]
 
                     const highlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
                     data[key].indexes.forEach( i => highlights[i][index] = 1 )
@@ -223,7 +258,6 @@ export default class Slots extends Container {
         console.log('clovers', clovers)
         console.log('BONUS x', bonuses)
         console.log('5x', linesFive)
-        console.log('3х:', linesTree)
         console.log('3х:', linesTree)
         console.log('RATE:', totalRate)
         console.log('-------------')        
@@ -258,8 +292,6 @@ export default class Slots extends Container {
     highlightCallback() {
         this.linsRunningCount--
         if (this.linsRunningCount > 0) return
-
-        console.log(this, this.highlightList)
 
         if (this.highlightList.length === 0) {
             this.runButton.setActive(true)

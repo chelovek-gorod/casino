@@ -130,7 +130,7 @@ export default class Line extends Container {
         if (this.state === STATE.stop && this.speed === SLOTS_LINES.stopSpeed) this.stop()
     }
 
-    highlight(arr, callback) { console.log('start')
+    highlight(arr, callback) {
         this.highlightData.valuesList = arr
         this.highlightData.callback = callback
         this.highlightData.duration = SLOTS_HIGHLIGHT.duration
@@ -165,7 +165,7 @@ export default class Line extends Container {
 
     tick(time) {
         // highlight
-        if (this.state === STATE.highlightIn) { console.log(this.highlightData)
+        if (this.state === STATE.highlightIn) {
             this.highlightData.alpha = Math.max(
                 SLOTS_HIGHLIGHT.minAlpha,
                 this.highlightData.alpha - SLOTS_HIGHLIGHT.stepAlphaInMS * time.deltaMS
