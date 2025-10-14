@@ -646,13 +646,12 @@ export const SLOTS_LINES_DATA = {
     */
 
     /* seven: {count: XC, rates: XCR}, */
-    gold: {count: 3, rates: DCR},
-    clover: {count: 6, rates: DCR},
-
+    gold: {count: 1, rates: DCR},
+    clover: {count: 1, rates: DCR},
     jackpot: {count: 1, rates: DCR, extraBetRates: []},
 
     bonus: {count: 3, rates: FCR, bonusRates: []},
-    wild: {count: 6, rates: FCR},
+    wild: {count: 3, rates: FCR},
 }
 SLOTS_LINES_DATA.jackpot.extraBetRates = [
     0, 10, 50, 200, 500, 1000
