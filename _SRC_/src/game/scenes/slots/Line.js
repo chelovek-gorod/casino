@@ -2,7 +2,7 @@ import { Container, Sprite, Graphics } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../../app/application";
 import { atlases } from "../../../app/assets";
 import { getRandom } from "../../../utils/functions";
-import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT } from "../../constants";
+import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT, MESSAGE } from "../../constants";
 
 const STATE = {
     idle: 'idle',
@@ -78,6 +78,7 @@ export default class Line extends Container {
             scale: 1,
             alpha: 1,
         }
+        this.highlightCallbackTimeout = MESSAGE.showDuration + MESSAGE.inOutDuration * 2
     }
 
     getResults() {
@@ -213,7 +214,7 @@ export default class Line extends Container {
             if (this.highlightData.scale === 1) {
                 this.state = STATE.idle
                 tickerRemove(this)
-                setTimeout(() => this.highlightData.callback(), 0)
+                setTimeout(() => this.highlightData.callback(), this.highlightCallbackTimeout)
             }
 
             return this.updateHighlight()

@@ -74,7 +74,31 @@ export const MESSAGE_TEXT = {
         ru: 'Лимит ставки превышен\nдля этой части поля!',
         en: 'This bet is too high\nfor this spo!'
     },
+
+    'LINE': {ru: ' в ряд\n', en: ' in line\n'},
+    'BONUS': {ru: 'БОНУС x', en: 'Bonus '},
+    'BONUS2': {ru: '\nза ряды', en: '\nfor lines'},
+    '7x7': {ru: 'Джекпот 7x7 !!!\n', en: 'Jackpot 7x7 !!!\n'},
+    'SET': {ru: 'За коллекцию\n', en: 'Set bonus\n'},
+    'GOLD': {ru: 'Находка!\n', en: 'Lucky Find!\n'},
+    'CLOVER': {ru: 'Возврат ставки\n', en: 'Return bet\n'},
 }
+
+/*
+export const MESSAGE_TEXT = {
+  lowMoney: {
+    ru: () => `Сумма ставки\nпревышает баланс`,
+    en: () => `Bet amount\nexceeds balance`
+  },
+  winMoney: {
+    ru: (sum) => `Вы выиграли\n${sum}₽!`,
+    en: (sum) => `You win\n${sum}$!`
+  }
+}
+
+console.log(MESSAGE_TEXT.winMoney.ru(1500)) // → "Вы выиграли\n1500₽!"
+console.log(MESSAGE_TEXT.lowMoney.en())     // → "Bet amount\nexceeds balance"
+*/
 
 export const POPUP_TEXT = {
     bet: {ru: 'РЕДАКТОР СТАВОК', en: 'BET EDITOR'},
@@ -551,7 +575,7 @@ export const MESSAGE = {
     fontSizeForText: 48,
     bg: 0xffffff,
     alpha: 0.6,
-    showDuration: 1200,
+    showDuration: 600,
     inOutDuration: 300,
 }
 MESSAGE.y = -MESSAGE.height * 0.5
@@ -600,60 +624,279 @@ for(let i = 0; i < 4; i++){
 
 // slots keys
 export const SLOTS = {
-    f1: 'f1', f2: 'f2', f3: 'f3', f4: 'f4', f5: 'f5', f6: 'f6', f7: 'f7',
-    d1: 'd1', d2: 'd2', d3: 'd3',
-    bonus: 'bonus', wild: 'wild',
+    apple: 'apple',
+    banana: 'banana',
+    blueberry: 'blueberry',
+    cherry: 'cherry',
+    grape: 'grape',
+    lemon: 'lemon',
+    melon: 'melon',
+    strawberry: 'strawberry',
+    peach: 'peach',
+
+    cards: 'cards',
+    dices: 'dices',
+    chips: 'chips',
+
+    seven: 'seven',
+    jackpot: 'jackpot',
+
+    crystal: 'crystal',
+
+    clover: 'clover',
+    gold: 'gold',
+
+    bonus: 'bonus',
+    wild: 'wild',
 }
 
 export const SLOTS_HIGHLIGHT = {
-    duration: 100,
+    duration: 200,
     inOut: 400,
-    minAlpha: 0.3,
-    maxScale: 1.2,
+    minAlpha: 0.12,
+    maxScale: 1.16,
     stepAlphaInMS: 0,
     stepScaleInMS: 0,
 }
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - 1) / SLOTS_HIGHLIGHT.inOut
 
-const FC = 7 // 6 types
-const DC = 5 // 3 types
+const FC = 9 // 9 types
 //          x0 x1 x2  x3   x4   x5
-const FCR = [0, 0, 0,  5,  20,  100]
-const DCR = [0, 0, 0, 50, 200, 1000]
+const FCR = [0, 0, 0,  5,  10,  50] // частые
+const DCR = [0, 0, 0, 10,  20, 100] // редкие
+const SCR = [0, 0, 0, 50, 100, 500] // супер редкие
+
+const SET = {images: [SLOTS.cards, SLOTS.dices, SLOTS.chips], rate: 10 }
+const JACKPOT = {countsOf7: {[SLOTS.seven]: 1, [SLOTS.jackpot]: 3}, rate7x7: 1000 }
 
 export const SLOTS_LINES_DATA = {
-    f1: {count: FC, rates: FCR},
-    f2: {count: FC, rates: FCR},
-    f3: {count: FC, rates: FCR},
-    f4: {count: FC, rates: FCR},
-    f5: {count: FC, rates: FCR},
-    f6: {count: FC, rates: FCR},
-    f7: {count: FC, rates: FCR},
+    [SLOTS.apple]: {count: FC, rates: FCR},
+    [SLOTS.banana]: {count: FC, rates: FCR},
+    [SLOTS.blueberry]: {count: FC, rates: FCR},
+    [SLOTS.cherry]: {count: FC, rates: FCR},
+    [SLOTS.grape]: {count: FC, rates: FCR},
+    [SLOTS.lemon]: {count: FC, rates: FCR},
+    [SLOTS.melon]: {count: FC, rates: FCR},
+    [SLOTS.strawberry]: {count: FC, rates: FCR},
+    [SLOTS.peach]: {count: FC, rates: FCR},
 
-    d1: {count: DC, rates: DCR},
-    d2: {count: DC, rates: DCR},
-    d3: {count: DC, rates: DCR},
+    [SLOTS.dices]: {count: 3, rates: DCR, extra: SET.rate},
+    [SLOTS.cards]: {count: 3, rates: DCR, extra: SET.rate},
+    [SLOTS.chips]: {count: 3, rates: DCR, extra: SET.rate},
 
-    wild: {count: 3, rates: FCR},
-    bonus: {count: 1, rates: FCR},
+    [SLOTS.crystal]: {count: 2, rates: SCR},
+
+    [SLOTS.seven]: {count: 3, rates: DCR, extra: JACKPOT.rate7x7},
+    [SLOTS.jackpot]: {count: 1, rates: SCR, extra: JACKPOT.rate7x7},
+
+    [SLOTS.clover]: {count: 1, rates: DCR},
+    [SLOTS.gold]: {count: 1, rates: DCR},
+
+    [SLOTS.wild]: {count: 1, rates: FCR}, // если выпало 1  2  3   4   5
+    [SLOTS.bonus]: {count: 1, rates: DCR}, // выигрыш X
 }
 
-let count = 0
+let imagesInLine = 0
 for (let key in SLOTS_LINES_DATA) {
-    count += SLOTS_LINES_DATA[key].count
+    imagesInLine += SLOTS_LINES_DATA[key].count
 }
-console.log(count)
+console.log('imagesInLine:', imagesInLine)
 
-// P = (1/8)^3 = 1/512 ≈ 0.00195
+////////////////////////////////////////////////
+
+// расчет факториала с мемоизацией
+// factorialMemo(5) -> вернет 120
+const factorialMemo = (() => {
+    const cache = [1] // 0! = 1
+  
+    function fact(n) {
+        if (n < cache.length) return cache[n]
+
+        let last = cache[cache.length - 1]
+        for (let i = cache.length; i <= n; i++) {
+            const next = last * i
+            if (!Number.isSafeInteger(next)) {
+                throw new Error(`Number exceeds MAX_SAFE_INTEGER at n=${i}`)
+            }
+            
+            cache.push(next)
+            last = next
+        }
+
+        return cache[n]
+    }
+  
+    // factorialMemo.clearCache() -> очистка кэша
+    fact.clearCache = () => {
+        cache.length = 1 // оставляем только 0! = 1
+    }
+  
+    return fact
+})()
+
+// ----- сочетания (n choose k) -----
+function nCk(N, k) {
+    if (k === 0) return 1
+
+    let numerator = 1
+    for (let i = 0; i < k; i++) {
+        numerator *= (N - i) // N * (N-1) * ... * (N-k+1)
+    }
+    const denom = factorialMemo(k)
+    return numerator / denom
+}
+
+// расчет вероятности выпадения в любой позиции
+function countChanceInAnyPositions(lineSize, unitsInLine) {
+    // lineSize - число всех элементов в линии
+    // unitsInLine - число искомых элементов в линии
+    const lines = 5
+    const visibleUnitsInLine = 3
+
+    const maxTotal = lines * visibleUnitsInLine
+
+    // вероятность выпадения t символов на одном барабане
+    const P_oneReel = []
+    for (let t = 0; t <= visibleUnitsInLine; t++) {
+        const numerator = nCk(unitsInLine, t) * nCk(lineSize - unitsInLine, visibleUnitsInLine - t)
+        const denom = nCk(lineSize, visibleUnitsInLine)
+        P_oneReel[t] = numerator / denom
+    }
+
+    // массив вероятностей для суммарного числа на всех барабанах
+    // dp[i][k] = вероятность, что после i барабанов сумма = k
+    let dp = new Array(maxTotal + 1).fill(0)
+    dp[0] = 1 // начальное состояние, 0 барабанов → 0 символов
+
+    for (let reel = 0; reel < lines; reel++) {
+        const next = new Array(maxTotal + 1).fill(0)
+        for (let sum = 0; sum <= maxTotal; sum++) {
+            if (dp[sum] === 0) continue
+            for (let t = 0; t <= visibleUnitsInLine; t++) {
+                if (sum + t <= maxTotal) {
+                    next[sum + t] += dp[sum] * P_oneReel[t]
+                }
+            }
+        }
+        dp = next
+    }
+
+    // Вывод в процентах с округлением до 6 знаков
+    for (let k = 0; k <= maxTotal; k++) {
+        const percent = (dp[k] * 100).toFixed(6)
+        console.log(`${k}: ${percent}%`)
+    }
+
+    // Дополнительно: вероятность хотя бы одного символа
+    const atLeastOne = 1 - dp[0]
+    console.log(`\nХотя бы один: ${(atLeastOne * 100).toFixed(6)} %`)
+}
+
+//////////////////////////////////////////////////////////////////
+
+// РАСЧЕТ ВЕРОЯТНОСТЕЙ БЕЗ [WILD] по линиям и диагоналям
+// если нужен [WILD] - то добавляем их число к unitsInLine 
+function calculateExactSequenceProbability(lineSize, unitsInLine) {
+    const p = unitsInLine / lineSize
+    const q = 1 - p
+    
+    const expectedSequences = {
+        2: 48 * p * p * q,
+        3: 36 * p * p * p * q, 
+        4: 24 * Math.pow(p, 4) * q,
+        5: 12 * Math.pow(p, 5)
+    };
+    
+    const probabilityAtLeastOne = {}
+    for (let length in expectedSequences) {
+        probabilityAtLeastOne[length] = 1 - Math.exp(-expectedSequences[length])
+    }
+    
+    const results = {
+        expectedSequences,
+        probabilityAtLeastOne,
+        percent: Object.fromEntries(
+            Object.entries(probabilityAtLeastOne).map(([k, v]) => [k, v * 100])
+        )
+    }
+    
+    console.log(`Примерная вероятность последовательности в сетке 5х3:`)
+    // console.log(`2: ${results.percent[2].toFixed(6)} %`)
+    console.log(`3: ${results.percent[3].toFixed(6)} %`)
+    console.log(`4: ${results.percent[4].toFixed(6)} %`)  
+    console.log(`5: ${results.percent[5].toFixed(6)} %`)
+    console.log('---')   
+}
+
+///////////////////////////////////////////////////////////////////
+function calculateSequencesProbabilities(lineSize, unitsInLine) {
+    const totalLines = { horizontal: 5, diagonal: 6 }
+
+    const p = unitsInLine / lineSize // вероятность выпадения искомого символа или WILD
+    const q = 1 - p
+
+    const results = { 3: 0, 4: 0, 5: 0 }
+
+    // Горизонтальные линии (длина 5)
+    for (let k = 3; k <= 5; k++) {
+        const numPositions = 5 - k + 1 // сколько подряд символов длиной k на горизонтали
+        results[k] += totalLines.horizontal * numPositions * Math.pow(p, k) * Math.pow(q, 5 - k)
+    }
+
+    // Диагональные линии (длина 3)
+    for (let k = 3; k <= 3; k++) { // для диагоналей больше 3 нельзя
+        const numPositions = 3 - k + 1 // 3 - 3 + 1 = 1
+        results[k] += totalLines.diagonal * numPositions * Math.pow(p, k) * Math.pow(q, 3 - k)
+    }
+
+    // Переводим в проценты
+    for (let k in results) results[k] = (results[k] * 100).toFixed(6) + ' %'
+
+    console.log(`Точная вероятность последовательности в сетке 5х3:`)
+    console.log(`3: ${results[3]}`)
+    console.log(`4: ${results[4]}`)
+    console.log(`5: ${results[5]}`)
+    console.log('---')  
+}
+
+///////////////////////////////////////////////////////////////////
+
+const wilds = SLOTS_LINES_DATA[SLOTS.wild].count
+const double = [
+    'cards', 'chips',
+    'banana', 'blueberry', 'cherry', 'grape', 'lemon', 'melon', 'strawberry', 'peach'
+]
 for (let key in SLOTS_LINES_DATA) {
-    const P3 = (SLOTS_LINES_DATA[key].count / count) ** 3
-    const P4 = (SLOTS_LINES_DATA[key].count / count) ** 4
-    const P5 = (SLOTS_LINES_DATA[key].count / count) ** 5
+    const unitCount = SLOTS_LINES_DATA[key].count
+    if (unitCount > 0 && double.includes(key) === false ) {
 
-    const W3 = (1 / P3 / 1000).toFixed(2)
-    const W4 = (1 / P4 / 1000).toFixed(2)
-    const W5 = (1 / P5 / 1000).toFixed(2)
+        if (key === SLOTS.bonus) {
+            console.log(`\n${key}`)
+            countChanceInAnyPositions(imagesInLine, unitCount)
+        } else {
+            console.log(`\n${key}`)
+            calculateExactSequenceProbability(imagesInLine, unitCount + wilds)
+            calculateSequencesProbabilities(imagesInLine, unitCount + wilds)
+            let count = 0
+            if (key === SLOTS.dices) {
+                count = SLOTS_LINES_DATA[SLOTS.dices].count
+                    + SLOTS_LINES_DATA[SLOTS.cards].count
+                    + SLOTS_LINES_DATA[SLOTS.chips].count
+                countChanceInAnyPositions(imagesInLine, count)
+            }
+            if (key === SLOTS.jackpot) {
+                count = SLOTS_LINES_DATA[SLOTS.jackpot].count
+                    + SLOTS_LINES_DATA[SLOTS.seven].count
+                countChanceInAnyPositions(imagesInLine, count)
+            }
+            if (key === SLOTS.clover) {
+                countChanceInAnyPositions(imagesInLine, SLOTS_LINES_DATA[key].count)
+            }
+            if (key === SLOTS.gold) {
+                countChanceInAnyPositions(imagesInLine, SLOTS_LINES_DATA[key].count)
+            }
+        }
 
-    console.log(key, '\nW3:', W3, '\nW4:', W4, '\nW5:', W5, '\n')
+    }
 }

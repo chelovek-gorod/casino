@@ -43,13 +43,8 @@ export function checkRunSlots() {
     return  true
 }
 export function resultSlots(rate = 0) {
-    if (rate > 0) {
-        const winMoney = betsTotal * rate
-        const message = isLangRu ? MESSAGE_TEXT.winMoney.ru : MESSAGE_TEXT.winMoney.en
-        showMessage(`${message} ${formatNumber(winMoney)} !`)
-        addMoney(winMoney)
-    }
-    betsTotal = 0
+    if (rate > 0) addMoney(betsTotal * rate)
+    else betsTotal = 0
 }
 export function returnBet() {
     addMoney(betsTotal)

@@ -2,16 +2,17 @@ import { Container, Sprite } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music } from '../../../app/assets'
 import { setMusic } from '../../../app/sound'
-import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA, MESSAGE } from '../../constants'
+import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA, MESSAGE, SLOTS_HIGHLIGHT, MESSAGE_TEXT } from '../../constants'
 import Line from './Line'
 import Button from '../../UI/Button'
-import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet } from '../../state'
+import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet, betsTotal } from '../../state'
 import LeftMenu from '../../UI/LeftMenu'
 import RightMenu from '../../UI/RightMenu'
 import TopBarMenu from '../../UI/TopBarMenu'
 import Message from '../../UI/Message'
 import Popup from '../../popup/Popup'
 import BackgroundTiling from '../../BG/BackgroundTiling'
+import { showMessage } from '../../../app/events'
 
 export default class Slots extends Container {
     constructor() {
@@ -60,7 +61,10 @@ export default class Slots extends Container {
 
         this.addChild(this.leftUI, this.rightUI, this.topUI, this.popup, this.message)
 
-        this.highlightList = []
+        this.highlightDataList = [] // ordered, key = message type
+        this.bonusRate = 1
+        this.highlightMessageTimeout = SLOTS_HIGHLIGHT.duration + SLOTS_HIGHLIGHT.inOut * 1.5
+        this.highlightTimeout = 300
 
         document.addEventListener('keyup', (e) => {
             if (e.code === "Space") this.run()
@@ -117,8 +121,23 @@ export default class Slots extends Container {
         // [ [top, mid, bot], [top, mid, bot], [top, mid, bot], [top, mid, bot], [top, mid, bot] ]
         const results = this.lines.map( line => line.getResults() )
 
-        let bonuses = 1
-        let bonusesHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        this.bonusRate = 1
+        const bonusesHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        let golds = 0
+        const goldsHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        let clovers = 0
+        const cloversHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        let sevens = 0
+        const sevensHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        const sets = {
+            [SLOTS.cards]: {count: 0, lines: [], indexes: []},
+            [SLOTS.dices]: {count: 0, lines: [], indexes: []},
+            [SLOTS.chips]: {count: 0, lines: [], indexes: []}
+        }
 
         const top = []
         const mid = []
@@ -127,8 +146,33 @@ export default class Slots extends Container {
         results.forEach( (line, lineIndex) => {
             line.forEach( (value, index) => {
                 if (value === SLOTS.bonus) {
-                    bonuses++
+                    this.bonusRate++
                     bonusesHighlights[lineIndex][index] = 1
+                }
+
+                if (value === SLOTS.gold) {
+                    golds++
+                    goldsHighlights[lineIndex][index] = 1
+                }
+
+                if (value === SLOTS.clover) {
+                    clovers++
+                    cloversHighlights[lineIndex][index] = 1
+                }
+
+                if (value === SLOTS.seven) {
+                    sevens++
+                    sevensHighlights[lineIndex][index] = 1
+                }
+                if (value === SLOTS.jackpot) {
+                    sevens += 3
+                    sevensHighlights[lineIndex][index] = 1
+                }
+
+                if (value === SLOTS.cards || value === SLOTS.dices || value === SLOTS.chips) {
+                    sets[value].count++
+                    sets[value].lines.push(lineIndex)
+                    sets[value].indexes.push(index)
                 }
 
                 if (index === 0) top.push(value)
@@ -136,6 +180,20 @@ export default class Slots extends Container {
                 else bot.push(value)
             })
         })
+
+        // update sets
+        let setsHighlightsList = []
+        while (sets[SLOTS.cards].count > 0 && sets[SLOTS.dices].count > 0 && sets[SLOTS.chips].count > 0) {
+            sets[SLOTS.cards].count--
+            sets[SLOTS.dices].count--
+            sets[SLOTS.chips].count--
+
+            const setsHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+            setsHighlights[ sets[SLOTS.cards].lines.shift() ][ sets[SLOTS.cards].indexes.shift() ] = 1
+            setsHighlights[ sets[SLOTS.dices].lines.shift() ][ sets[SLOTS.dices].indexes.shift() ] = 1
+            setsHighlights[ sets[SLOTS.chips].lines.shift() ][ sets[SLOTS.chips].indexes.shift() ] = 1
+            setsHighlightsList.push(setsHighlights)
+        }
 
         // check wins
         const linesFive =  [
@@ -153,7 +211,7 @@ export default class Slots extends Container {
             this.countConsecutive([top[4], mid[3], bot[2]])
         ]
 
-        let totalRate = 0 // without jackpot
+        let totalRate = 0 //sum of rates for 3 or 4 or 5 same in lines or diagonals
 
         linesTree.forEach( (data, index) => {
             for(let key in data) {
@@ -162,39 +220,57 @@ export default class Slots extends Container {
  
                     switch(index) {
                         case 0 : // [top[0], mid[1], bot[2]
-                            this.highlightList.push(
-                                [[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0], [0, 0, 0]]
-                            )
+                            this.highlightDataList.push({
+                                key: 'LINE',
+                                count: data[key].count,
+                                winRate: SLOTS_LINES_DATA[key].rates[data[key].count],
+                                highlight: [[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0], [0, 0, 0]]
+                            })
                         break;
 
                         case 1 : // [top[1], mid[2], bot[3]]
-                            this.highlightList.push(
-                                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]]
-                            )
+                            this.highlightDataList.push({
+                                key: 'LINE',
+                                count: data[key].count,
+                                winRate: SLOTS_LINES_DATA[key].rates[data[key].count],
+                                highlight: [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]]
+                            })
                         break;
 
                         case 2 : // [top[2], mid[3], bot[4]
-                            this.highlightList.push(
-                                [[0, 0, 0], [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
-                            )
+                            this.highlightDataList.push({
+                                key: 'LINE',
+                                count: data[key].count,
+                                winRate: SLOTS_LINES_DATA[key].rates[data[key].count],
+                                highlight: [[0, 0, 0], [0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
+                            })
                         break;
 
                         case 3 : // [top[2], mid[1], bot[0]
-                            this.highlightList.push(
-                                [[0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 0], [0, 0, 0]]
-                            )
+                            this.highlightDataList.push({
+                                key: 'LINE',
+                                count: data[key].count,
+                                winRate: SLOTS_LINES_DATA[key].rates[data[key].count],
+                                highlight: [[0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 0], [0, 0, 0]]
+                            })
                         break;
 
                         case 4 : // [top[3], mid[2], bot[1]
-                            this.highlightList.push(
-                                [[0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 0]]
-                            )
+                            this.highlightDataList.push({
+                                key: 'LINE',
+                                count: data[key].count,
+                                winRate: SLOTS_LINES_DATA[key].rates[data[key].count],
+                                highlight: [[0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 0]]
+                            })
                         break;
 
                         case 5 : // [top[4], mid[3], bot[2]
-                            this.highlightList.push(
-                                [[0, 0, 0], [0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]]
-                            )
+                            this.highlightDataList.push({
+                                key: 'LINE',
+                                count: data[key].count,
+                                winRate: SLOTS_LINES_DATA[key].rates[data[key].count],
+                                highlight: [[0, 0, 0], [0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]]
+                            })
                         break;
                     }
                 }
@@ -207,32 +283,67 @@ export default class Slots extends Container {
 
                     const highlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
                     data[key].indexes.forEach( i => highlights[i][index] = 1 )
-                    this.highlightList.push(highlights)
+                    this.highlightDataList.push({
+                        key: 'LINE',
+                        count: data[key].count,
+                        winRate: SLOTS_LINES_DATA[key].rates[data[key].count],
+                        highlight: highlights
+                    })
                 }
             }
         })
 
-        if (bonuses > 1 && totalRate) this.highlightList.unshift(bonusesHighlights)
-
-        totalRate = totalRate * bonuses
-        /*
-        if (totalRate === 0 && clovers > 0) {
-            this.highlightList.push(cloversHighlights)
-            returnBet()
+        // add bonuses
+        if (totalRate > 0 && this.bonusRate > 1) {
+            this.highlightDataList.push({
+                key: 'BONUS',
+                count: this.bonusRate,
+                winRate: this.bonusRate,
+                highlight: bonusesHighlights
+            })
         }
-        */
 
-        resultSlots(totalRate)
+        // add 7x7+
+        if (sevens > 6) {
+            this.highlightDataList.push({
+                key: '7x7',
+                count: sevens,
+                winRate: SLOTS_LINES_DATA[SLOTS.jackpot].extra,
+                highlight: sevensHighlights
+            })
+        }
 
-        if (totalRate === 0) this.highlightCallback()
-        else setTimeout(() => this.highlightCallback(), MESSAGE.showDuration + MESSAGE.inOutDuration * 2)
+        // sets add
+        setsHighlightsList.forEach( setsHighlight => {
+            this.highlightDataList.push({
+                key: 'SET',
+                count: 1,
+                winRate: SLOTS_LINES_DATA[SLOTS.dices].extra,
+                highlight: setsHighlight
+            })
+        })
 
-        // test
-        console.log('BONUS x', bonuses)
-        console.log('5x', linesFive)
-        console.log('3х:', linesTree)
-        console.log('RATE:', totalRate)
-        console.log('-------------')        
+        // add golds
+        if (golds > 0) {
+            this.highlightDataList.push({
+                key: 'GOLD',
+                count: golds,
+                winRate: golds,
+                highlight: goldsHighlights
+            })
+        }
+
+        // add clovers highlight if need
+        if (clovers > 0 && this.highlightDataList.length === 0) {
+            this.highlightDataList.push({
+                key: 'CLOVER',
+                count: clovers,
+                winRate: 1,
+                highlight: cloversHighlights
+            })
+        }
+
+        this.highlightCallback()     
     }
     countConsecutive(line) {
         const sames = {}
@@ -261,20 +372,66 @@ export default class Slots extends Container {
         
         return sames
     }
-    highlightCallback() {
+    highlightCallback() {  //        
         this.linsRunningCount--
         if (this.linsRunningCount > 0) return
 
-        if (this.highlightList.length === 0) {
+        if (this.highlightDataList.length === 0) {
+            resultSlots(0) // reset bet
             this.runButton.setActive(true)
             return
         }
 
         this.linsRunningCount = 5
-        const highlightData = this.highlightList.shift()
+        const highlightData = this.highlightDataList.pop()
+        // {key: 'BONUS', count: this.bonusRate, highlight: bonusesHighlights}
+        const bonusText = this.bonusRate > 1 ? ' x' + this.bonusRate : ''
+        let messageText = ''
+        switch(highlightData.key) {
+            case 'LINE' :
+                resultSlots(highlightData.winRate * this.bonusRate)
+                messageText = highlightData.count
+                messageText += isLangRu ? MESSAGE_TEXT['LINE'].ru : MESSAGE_TEXT['LINE'].en
+                messageText += `+${highlightData.winRate * betsTotal}${bonusText}`
+                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+            break;
+            case 'BONUS' :
+                messageText = isLangRu ? MESSAGE_TEXT['BONUS'].ru : MESSAGE_TEXT['BONUS'].en
+                messageText += bonusText
+                messageText += isLangRu ? MESSAGE_TEXT['BONUS2'].ru : MESSAGE_TEXT['BONUS2'].en
+                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+            break;
+            case '7x7' :
+                resultSlots(highlightData.winRate)
+                messageText = isLangRu ? MESSAGE_TEXT['7x7'].ru : MESSAGE_TEXT['7x7'].en
+                messageText +=`+${highlightData.winRate * betsTotal}`
+                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+            break; 
+            case 'SET' :
+                resultSlots(highlightData.winRate)
+                messageText = isLangRu ? MESSAGE_TEXT['SET'].ru : MESSAGE_TEXT['SET'].en
+                messageText += `+${highlightData.winRate * betsTotal}`
+                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+            break;
+            case 'GOLD' :
+                resultSlots(highlightData.winRate)
+                messageText = isLangRu ? MESSAGE_TEXT['GOLD'].ru : MESSAGE_TEXT['GOLD'].en
+                messageText += `+${highlightData.winRate * betsTotal}`
+                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+            break;
+            case 'CLOVER' :
+                messageText = isLangRu ? MESSAGE_TEXT['CLOVER'].ru : MESSAGE_TEXT['CLOVER'].en
+                messageText += `+${betsTotal}`
+                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                returnBet()
+            break; 
+            default : 
+        }
 
         this.lines.forEach((line, index) => {
-            line.highlight(highlightData[index], this.highlightCallback.bind(this))
+            setTimeout( () => {
+                line.highlight(highlightData.highlight[index], this.highlightCallback.bind(this))
+            }, this.highlightTimeout)
         })
     }
 
