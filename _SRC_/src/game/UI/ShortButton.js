@@ -41,6 +41,10 @@ export default class ShortButton extends Container {
         }
     }
 
+    setTexture(textureName) {
+        this.image.texture = atlases.short_btn.textures[textureName]
+    }
+
     click() {
         if (!this.isActive) return
 

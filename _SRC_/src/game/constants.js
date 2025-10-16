@@ -664,7 +664,7 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - 1) / SLOTS_HIGHLIGHT.inOut
 
-const FC = 21 // 9 types
+const FC = 7 // 9 types
 //          x0 x1 x2  x3   x4   x5
 const FCR = [0, 0, 0,  5,  10,  50] // частые
 const DCR = [0, 0, 0, 10,  20, 100] // редкие
@@ -682,22 +682,22 @@ export const SLOTS_LINES_DATA = {
     [SLOTS.lemon]: {count: FC, rates: FCR},
     [SLOTS.melon]: {count: FC, rates: FCR},
 
-    [SLOTS.dices]: {count: 9, rates: FCR, extra: SET.rate},
-    [SLOTS.cards]: {count: 9, rates: FCR, extra: SET.rate},
-    [SLOTS.chips]: {count: 9, rates: FCR, extra: SET.rate},
+    [SLOTS.dices]: {count: 3, rates: FCR, extra: SET.rate},
+    [SLOTS.cards]: {count: 3, rates: FCR, extra: SET.rate},
+    [SLOTS.chips]: {count: 3, rates: FCR, extra: SET.rate},
 
-    [SLOTS.crystal]: {count: 3, rates: SCR},
+    [SLOTS.crystal]: {count: 2, rates: SCR},
 
-    [SLOTS.seven]: {count: 5, rates: FCR, extra: JACKPOT.rate7x7},
+    [SLOTS.seven]: {count: 3, rates: FCR, extra: JACKPOT.rate7x7},
     [SLOTS.jackpot]: {count: 1, rates: DCR, extra: JACKPOT.rate7x7},
 
-    [SLOTS.gold]: {count: 1, rates: DCR},
-    [SLOTS.coin]: {count: 5, rates: FCR},
+    [SLOTS.gold]: {count: 2, rates: DCR},
+    [SLOTS.coin]: {count: 7, rates: FCR},
 
     [SLOTS.clover]: {count: 1, rates: FCR},
     [SLOTS.present]: {count: 1, rates: DCR},
 
-    [SLOTS.wild]: {count: 7, rates: FCR}, // если выпало 1  2  3   4   5
+    [SLOTS.wild]: {count: 5, rates: FCR}, // если выпало 1  2  3   4   5
     [SLOTS.bonus]: {count: 2, rates: FCR}, // выигрыш X
 }
 
