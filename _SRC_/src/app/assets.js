@@ -34,6 +34,7 @@ export const images = {
     point: 'point_36x36px.png',
 
     slot_border: 'slots_border.png',
+    slots_bank: 'slots_bank_icon.png',
     
     dpf_1: 'dpf_1.png',
     dpf_2: 'dpf_2.png',

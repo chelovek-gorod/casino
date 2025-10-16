@@ -1,11 +1,12 @@
-import { Container, Sprite } from 'pixi.js'
+import { Container, Graphics, Sprite, Text } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music } from '../../../app/assets'
 import { setMusic } from '../../../app/sound'
-import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA, MESSAGE, SLOTS_HIGHLIGHT, MESSAGE_TEXT } from '../../constants'
+import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA, 
+    SLOTS_HIGHLIGHT, MESSAGE_TEXT, UI } from '../../constants'
 import Line from './Line'
 import Button from '../../UI/Button'
-import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet, betsTotal } from '../../state'
+import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet, betsTotal, slotCoins, addSlotCoins, getSlotCoins } from '../../state'
 import LeftMenu from '../../UI/LeftMenu'
 import RightMenu from '../../UI/RightMenu'
 import TopBarMenu from '../../UI/TopBarMenu'
@@ -13,6 +14,7 @@ import Message from '../../UI/Message'
 import Popup from '../../popup/Popup'
 import BackgroundTiling from '../../BG/BackgroundTiling'
 import { showMessage } from '../../../app/events'
+import { styles } from '../../../app/styles'
 
 export default class Slots extends Container {
     constructor() {
@@ -42,7 +44,18 @@ export default class Slots extends Container {
         this.border = new Sprite(images.slot_border)
         this.gameContainer.addChild( this.border )
         
-        // UI
+        // self UI
+        this.bankIcon = new Sprite(images.slots_bank)
+        this.bankIcon.anchor.set(0.5)
+        this.bankIcon.scale.set(0.75)
+        this.bankIcon.position.set(260, SLOTS_BORDER.height + BUTTON.height * 0.75)
+
+        this.bankText = new Text({text: slotCoins, style: styles.slotsCoins})
+        this.bankText.anchor.set(0, 0.5)
+        this.bankText.position.set(320, SLOTS_BORDER.height + BUTTON.height * 0.75)
+
+        this.gameContainer.addChild(this.bankIcon, this.bankText)
+
         this.runButton = new Button(
             isLangRu ? BUTTON_TEXT.spin.ru : BUTTON_TEXT.spin.en,
             SLOTS_BORDER.width * 0.5, SLOTS_BORDER.height + BUTTON.height * 0.75,
@@ -92,15 +105,15 @@ export default class Slots extends Container {
         this.rightUI.position.set(screenData.centerX, screenData.centerY)
         this.topUI.screenResize(screenData)
 
+        const availableHeight = screenData.height - UI.size - UI.bets.height
+        const slotsHeight = GAME_OFFSET * 2 + SLOTS_BORDER.height + BUTTON.height * 2
         const slotsWidth = GAME_OFFSET * 2 + SLOTS_BORDER.width
-        const slotsHeight = GAME_OFFSET * 2 + SLOTS_BORDER.height + BUTTON.height * 3
-        const scale = Math.min(
-            screenData.width / slotsWidth, screenData.height / slotsHeight
-        )
-        const slotsOffsetX = SLOTS_BORDER.x * scale
-        const slotsOffsetY = SLOTS_BORDER.y * scale
-        this.gameContainer.position.set(slotsOffsetX, slotsOffsetY)
+        const scale = Math.min(1, screenData.width / slotsWidth, availableHeight / slotsHeight)
         this.gameContainer.scale.set(scale)
+
+        const gameContainerX = -slotsWidth * 0.5 * scale + GAME_OFFSET * scale
+        const gameContainerY = -slotsHeight * 0.5 * scale + GAME_OFFSET * 3 * scale
+        this.gameContainer.position.set(gameContainerX, gameContainerY)
     }
 
     run() {
@@ -126,6 +139,12 @@ export default class Slots extends Container {
 
         let golds = 0
         const goldsHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        let coins = 0
+        const coinsHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+        let presents = 0
+        const presentsHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
         let clovers = 0
         const cloversHighlights = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -154,7 +173,15 @@ export default class Slots extends Container {
                     golds++
                     goldsHighlights[lineIndex][index] = 1
                 }
+                if (value === SLOTS.coin) {
+                    coins++
+                    coinsHighlights[lineIndex][index] = 1
+                }
 
+                if (value === SLOTS.present) {
+                    presents++
+                    presentsHighlights[lineIndex][index] = 1
+                }
                 if (value === SLOTS.clover) {
                     clovers++
                     cloversHighlights[lineIndex][index] = 1
@@ -332,7 +359,25 @@ export default class Slots extends Container {
                 highlight: goldsHighlights
             })
         }
+        // add coins
+        if (coins > 0) {
+            this.highlightDataList.push({
+                key: 'COIN',
+                count: coins,
+                winRate: coins,
+                highlight: coinsHighlights
+            })
+        }
 
+        // add presents
+        if (presents > 0) {
+            this.highlightDataList.push({
+                key: 'PRESENT',
+                count: presents,
+                winRate: presents,
+                highlight: presentsHighlights
+            })
+        }
         // add clovers highlight if need
         if (clovers > 0 && this.highlightDataList.length === 0) {
             this.highlightDataList.push({
@@ -413,11 +458,32 @@ export default class Slots extends Container {
                 messageText += `+${highlightData.winRate * betsTotal}`
                 setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
             break;
-            case 'GOLD' :
+            case 'PRESENT' :
                 resultSlots(highlightData.winRate)
-                messageText = isLangRu ? MESSAGE_TEXT['GOLD'].ru : MESSAGE_TEXT['GOLD'].en
+                messageText = isLangRu ? MESSAGE_TEXT['PRESENT'].ru : MESSAGE_TEXT['PRESENT'].en
                 messageText += `+${highlightData.winRate * betsTotal}`
                 setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+            break;
+            case 'COIN' :
+                messageText = isLangRu ? MESSAGE_TEXT['COIN'].ru : MESSAGE_TEXT['COIN'].en
+                messageText += addSlotCoins(highlightData.winRate)
+                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                this.bankText.text = slotCoins
+            break;
+            case 'GOLD' :
+                if (slotCoins < 1) {
+                    this.linsRunningCount = 0
+                    setTimeout( () => this.highlightCallback(), 0)
+                    return
+                }
+
+                const getBank = getSlotCoins(highlightData.winRate)
+                resultSlots( getBank )
+                messageText = isLangRu ? MESSAGE_TEXT['GOLD'].ru : MESSAGE_TEXT['GOLD'].en
+                messageText += `+${getBank}\n${Math.min(100, highlightData.winRate * 10)}%`
+                messageText += isLangRu ? MESSAGE_TEXT['GOLD2'].ru : MESSAGE_TEXT['GOLD2'].en
+                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                this.bankText.text = slotCoins
             break;
             case 'CLOVER' :
                 messageText = isLangRu ? MESSAGE_TEXT['CLOVER'].ru : MESSAGE_TEXT['CLOVER'].en

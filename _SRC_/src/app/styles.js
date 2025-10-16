@@ -38,6 +38,8 @@ export let styles = {
     popupSubTitle: null,
 
     chip: null,
+
+    slotsCoins: null,
 }
 
 export function initFontStyles() {
@@ -209,6 +211,18 @@ export function initFontStyles() {
         fontFamily: fonts.Manrope600,
         fontSize: CHIP_DATA.fontSize,
         fill: '#ffffff',
+    })
+
+    styles.slotsCoins = new TextStyle({
+        fontFamily: fonts.Manrope700,
+        fontSize: 48,
+        fill: '#ffff00',
+
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowBlur: 12,
+        dropShadowAngle: 0,
+        dropShadowDistance: 0,
     })
 
     styles.isReady = true

@@ -80,8 +80,11 @@ export const MESSAGE_TEXT = {
     'BONUS2': {ru: '\nза ряды', en: '\nfor lines'},
     '7x7': {ru: 'Джекпот 7x7 !!!\n', en: 'Jackpot 7x7 !!!\n'},
     'SET': {ru: 'За коллекцию\n', en: 'Set bonus\n'},
-    'GOLD': {ru: 'Находка!\n', en: 'Lucky Find!\n'},
+    'PRESENT': {ru: 'Находка!\n', en: 'Lucky Find!\n'},
     'CLOVER': {ru: 'Возврат ставки\n', en: 'Return bet\n'},
+    'COIN': {ru: 'В банк\n', en: 'Add to bank\n'},
+    'GOLD': {ru: 'Прибыль ', en: 'Income '},
+    'GOLD2': {ru: ' банка', en: ' from bank'},
 }
 
 /*
@@ -631,8 +634,6 @@ export const SLOTS = {
     grape: 'grape',
     lemon: 'lemon',
     melon: 'melon',
-    strawberry: 'strawberry',
-    peach: 'peach',
 
     cards: 'cards',
     dices: 'dices',
@@ -645,9 +646,11 @@ export const SLOTS = {
 
     clover: 'clover',
     gold: 'gold',
+    coin: 'coin',
 
     bonus: 'bonus',
     wild: 'wild',
+    present: 'present',
 }
 
 export const SLOTS_HIGHLIGHT = {
@@ -661,14 +664,14 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - 1) / SLOTS_HIGHLIGHT.inOut
 
-const FC = 9 // 9 types
+const FC = 21 // 9 types
 //          x0 x1 x2  x3   x4   x5
 const FCR = [0, 0, 0,  5,  10,  50] // частые
 const DCR = [0, 0, 0, 10,  20, 100] // редкие
 const SCR = [0, 0, 0, 50, 100, 500] // супер редкие
 
 const SET = {images: [SLOTS.cards, SLOTS.dices, SLOTS.chips], rate: 10 }
-const JACKPOT = {countsOf7: {[SLOTS.seven]: 1, [SLOTS.jackpot]: 3}, rate7x7: 1000 }
+const JACKPOT = {countsOf7: {[SLOTS.seven]: 1, [SLOTS.jackpot]: 3}, rate7x7: 777 }
 
 export const SLOTS_LINES_DATA = {
     [SLOTS.apple]: {count: FC, rates: FCR},
@@ -678,23 +681,24 @@ export const SLOTS_LINES_DATA = {
     [SLOTS.grape]: {count: FC, rates: FCR},
     [SLOTS.lemon]: {count: FC, rates: FCR},
     [SLOTS.melon]: {count: FC, rates: FCR},
-    [SLOTS.strawberry]: {count: FC, rates: FCR},
-    [SLOTS.peach]: {count: FC, rates: FCR},
 
-    [SLOTS.dices]: {count: 3, rates: DCR, extra: SET.rate},
-    [SLOTS.cards]: {count: 3, rates: DCR, extra: SET.rate},
-    [SLOTS.chips]: {count: 3, rates: DCR, extra: SET.rate},
+    [SLOTS.dices]: {count: 9, rates: FCR, extra: SET.rate},
+    [SLOTS.cards]: {count: 9, rates: FCR, extra: SET.rate},
+    [SLOTS.chips]: {count: 9, rates: FCR, extra: SET.rate},
 
-    [SLOTS.crystal]: {count: 2, rates: SCR},
+    [SLOTS.crystal]: {count: 3, rates: SCR},
 
-    [SLOTS.seven]: {count: 3, rates: DCR, extra: JACKPOT.rate7x7},
-    [SLOTS.jackpot]: {count: 1, rates: SCR, extra: JACKPOT.rate7x7},
+    [SLOTS.seven]: {count: 5, rates: FCR, extra: JACKPOT.rate7x7},
+    [SLOTS.jackpot]: {count: 1, rates: DCR, extra: JACKPOT.rate7x7},
 
-    [SLOTS.clover]: {count: 1, rates: DCR},
     [SLOTS.gold]: {count: 1, rates: DCR},
+    [SLOTS.coin]: {count: 5, rates: FCR},
 
-    [SLOTS.wild]: {count: 1, rates: FCR}, // если выпало 1  2  3   4   5
-    [SLOTS.bonus]: {count: 1, rates: DCR}, // выигрыш X
+    [SLOTS.clover]: {count: 1, rates: FCR},
+    [SLOTS.present]: {count: 1, rates: DCR},
+
+    [SLOTS.wild]: {count: 7, rates: FCR}, // если выпало 1  2  3   4   5
+    [SLOTS.bonus]: {count: 2, rates: FCR}, // выигрыш X
 }
 
 let imagesInLine = 0
@@ -864,7 +868,7 @@ function calculateSequencesProbabilities(lineSize, unitsInLine) {
 
 const wilds = SLOTS_LINES_DATA[SLOTS.wild].count
 const double = [
-    'cards', 'chips',
+    'cards', 'chips', 'coin',
     'banana', 'blueberry', 'cherry', 'grape', 'lemon', 'melon', 'strawberry', 'peach'
 ]
 for (let key in SLOTS_LINES_DATA) {

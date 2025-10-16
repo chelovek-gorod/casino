@@ -16,6 +16,8 @@ export let betCurrent = 10
 export let betNearest = 2
 export let results = []
 
+export let slotCoins = 0
+
 const betsData = {
     // key = "n1_n2_n3..."
     // value = money
@@ -49,6 +51,21 @@ export function resultSlots(rate = 0) {
 export function returnBet() {
     addMoney(betsTotal)
     betsTotal = 0
+}
+
+export function addSlotCoins(count) {
+    const addCoins = Math.ceil(count * betsTotal * 0.1)
+    slotCoins += addCoins
+    return addCoins
+}
+export function getSlotCoins(rate) {
+    if (slotCoins < 1) return 0
+
+    const winRate = Math.ceil(slotCoins / 10 * rate)
+    const winCoins = Math.min(winRate, slotCoins)
+
+    slotCoins -= winCoins
+    return winCoins
 }
 
 export function setBet(numbers, numbersList = []) {
