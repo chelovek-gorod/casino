@@ -578,8 +578,8 @@ export const MESSAGE = {
     fontSizeForText: 48,
     bg: 0xffffff,
     alpha: 0.6,
-    showDuration: 600,
-    inOutDuration: 300,
+    showDuration: 800,
+    inOutDuration: 200,
 }
 MESSAGE.y = -MESSAGE.height * 0.5
 
@@ -664,41 +664,41 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - 1) / SLOTS_HIGHLIGHT.inOut
 
-const FC = 7 // 9 types
-//          x0 x1 x2  x3   x4   x5
-const FCR = [0, 0, 0,  5,  10,  50] // частые
-const DCR = [0, 0, 0, 10,  20, 100] // редкие
-const SCR = [0, 0, 0, 50, 100, 500] // супер редкие
+const FRUITS = 21 // 7 types
+//          x0 x1 x2  x3  x4  x5
+const LOW_WIN_RATE = [0, 0, 0,  3,  5, 10] // частые
+const MID_WIN_RATE = [0, 0, 0,  5, 10, 50] // редкие
+const MAX_WIN_RATE = [0, 0, 0, 10, 50, 500] // супер редкие
 
-const SET = {images: [SLOTS.cards, SLOTS.dices, SLOTS.chips], rate: 10 }
+const SET = {images: [SLOTS.cards, SLOTS.dices, SLOTS.chips], rate: 5 }
 const JACKPOT = {countsOf7: {[SLOTS.seven]: 1, [SLOTS.jackpot]: 3}, rate7x7: 777 }
 
 export const SLOTS_LINES_DATA = {
-    [SLOTS.apple]: {count: FC, rates: FCR},
-    [SLOTS.banana]: {count: FC, rates: FCR},
-    [SLOTS.blueberry]: {count: FC, rates: FCR},
-    [SLOTS.cherry]: {count: FC, rates: FCR},
-    [SLOTS.grape]: {count: FC, rates: FCR},
-    [SLOTS.lemon]: {count: FC, rates: FCR},
-    [SLOTS.melon]: {count: FC, rates: FCR},
+    [SLOTS.apple]: {count: FRUITS, rates: LOW_WIN_RATE},
+    [SLOTS.banana]: {count: FRUITS, rates: LOW_WIN_RATE},
+    [SLOTS.blueberry]: {count: FRUITS, rates: LOW_WIN_RATE},
+    [SLOTS.cherry]: {count: FRUITS, rates: LOW_WIN_RATE},
+    [SLOTS.grape]: {count: FRUITS, rates: LOW_WIN_RATE},
+    [SLOTS.lemon]: {count: FRUITS, rates: LOW_WIN_RATE},
+    [SLOTS.melon]: {count: FRUITS, rates: LOW_WIN_RATE},
 
-    [SLOTS.dices]: {count: 3, rates: FCR, extra: SET.rate},
-    [SLOTS.cards]: {count: 3, rates: FCR, extra: SET.rate},
-    [SLOTS.chips]: {count: 3, rates: FCR, extra: SET.rate},
+    [SLOTS.dices]: {count: 6, rates: MID_WIN_RATE, extra: SET.rate},
+    [SLOTS.cards]: {count: 6, rates: MID_WIN_RATE, extra: SET.rate},
+    [SLOTS.chips]: {count: 6, rates: MID_WIN_RATE, extra: SET.rate},
 
-    [SLOTS.crystal]: {count: 2, rates: SCR},
+    [SLOTS.crystal]: {count: 2, rates: MAX_WIN_RATE},
 
-    [SLOTS.seven]: {count: 3, rates: FCR, extra: JACKPOT.rate7x7},
-    [SLOTS.jackpot]: {count: 1, rates: DCR, extra: JACKPOT.rate7x7},
+    [SLOTS.seven]: {count: 5, rates: MID_WIN_RATE, extra: JACKPOT.rate7x7},
+    [SLOTS.jackpot]: {count: 1, rates: MAX_WIN_RATE, extra: JACKPOT.rate7x7},
 
-    [SLOTS.gold]: {count: 2, rates: DCR},
-    [SLOTS.coin]: {count: 7, rates: FCR},
+    [SLOTS.gold]: {count: 2, rates: MID_WIN_RATE},
+    [SLOTS.coin]: {count: 18, rates: LOW_WIN_RATE},
 
-    [SLOTS.clover]: {count: 1, rates: FCR},
-    [SLOTS.present]: {count: 1, rates: DCR},
+    [SLOTS.clover]: {count: 1, rates: LOW_WIN_RATE},
+    [SLOTS.present]: {count: 1, rates: MID_WIN_RATE},
 
-    [SLOTS.wild]: {count: 5, rates: FCR}, // если выпало 1  2  3   4   5
-    [SLOTS.bonus]: {count: 2, rates: FCR}, // выигрыш X
+    [SLOTS.wild]: {count: 3, rates: LOW_WIN_RATE}, // если выпало 1  2  3   4   5
+    [SLOTS.bonus]: {count: 2, rates: MID_WIN_RATE}, // выигрыш X
 }
 
 let imagesInLine = 0

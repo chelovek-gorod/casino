@@ -18,6 +18,18 @@ import { styles } from '../../../app/styles'
 import ShortButton from '../../UI/ShortButton'
 import { formatNumber } from '../../../utils/functions'
 
+const testWinData = {
+    spins: 0,
+    lines_3: {count: 0, money: 0},
+    lines_4: {count: 0, money: 0},
+    lines_5: {count: 0, money: 0},
+    jackpot: {count: 0, money: 0},
+    sets: {count: 0, money: 0},
+    crystals: {count: 0, money: 0},
+    bank: {count: 0, money: 0},
+    presents: {count: 0, money: 0},
+}
+
 export default class Slots extends Container {
     constructor() {
         super()
@@ -450,6 +462,10 @@ export default class Slots extends Container {
 
             setTimeout(() => {if (this.isAutoSpinOn) this.run()}, 300)
 
+            console.clear()
+            testWinData.spins++
+            console.log(testWinData)
+
             return
         }
 
@@ -465,6 +481,9 @@ export default class Slots extends Container {
                 messageText += isLangRu ? MESSAGE_TEXT['LINE'].ru : MESSAGE_TEXT['LINE'].en
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}${bonusText}`
                 setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+
+                testWinData[`lines_${highlightData.count}`].count++
+                testWinData[`lines_${highlightData.count}`].money += highlightData.winRate * betsTotal *this.bonusRate 
             break;
             case 'BONUS' :
                 messageText = isLangRu ? MESSAGE_TEXT['BONUS'].ru : MESSAGE_TEXT['BONUS'].en
@@ -477,18 +496,27 @@ export default class Slots extends Container {
                 messageText = isLangRu ? MESSAGE_TEXT['7x7'].ru : MESSAGE_TEXT['7x7'].en
                 messageText +=`+${formatNumber(highlightData.winRate * betsTotal)}`
                 setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+
+                testWinData.jackpot.count++
+                testWinData.jackpot.money += highlightData.winRate * betsTotal
             break; 
             case 'SET' :
                 resultSlots(highlightData.winRate)
                 messageText = isLangRu ? MESSAGE_TEXT['SET'].ru : MESSAGE_TEXT['SET'].en
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}`
                 setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+
+                testWinData.sets.count++
+                testWinData.sets.money += highlightData.winRate * betsTotal
             break;
             case 'PRESENT' :
                 resultSlots(highlightData.winRate)
                 messageText = isLangRu ? MESSAGE_TEXT['PRESENT'].ru : MESSAGE_TEXT['PRESENT'].en
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}`
                 setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+
+                testWinData.presents.count++
+                testWinData.presents.money += highlightData.winRate * betsTotal
             break;
             case 'COIN' :
                 messageText = isLangRu ? MESSAGE_TEXT['COIN'].ru : MESSAGE_TEXT['COIN'].en
@@ -504,13 +532,15 @@ export default class Slots extends Container {
                 }
 
                 const getBank = getSlotCoins(highlightData.winRate)
-                resultSlots( getBank )
                 messageText = isLangRu ? MESSAGE_TEXT['GOLD'].ru : MESSAGE_TEXT['GOLD'].en
-                messageText += `+${formatNumber(getBank)}\n`
-                messageText += `${Math.min(100, highlightData.winRate * 10)} %`
+                messageText += `${Math.min(100, highlightData.winRate * 10)} %\n`
+                messageText += `+${formatNumber(getBank)}`
                 messageText += isLangRu ? MESSAGE_TEXT['GOLD2'].ru : MESSAGE_TEXT['GOLD2'].en
                 setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
                 this.bankText.text = slotCoins
+
+                testWinData.bank.count++
+                testWinData.bank.money += getBank
             break;
             case 'CLOVER' :
                 messageText = isLangRu ? MESSAGE_TEXT['CLOVER'].ru : MESSAGE_TEXT['CLOVER'].en

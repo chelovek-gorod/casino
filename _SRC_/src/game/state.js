@@ -63,7 +63,7 @@ export function getSlotCoins(rate) {
 
     const winRate = Math.ceil(slotCoins / 10 * rate)
     const winCoins = Math.min(winRate, slotCoins)
-
+    addMoney(winCoins)
     slotCoins -= winCoins
     return winCoins
 }
