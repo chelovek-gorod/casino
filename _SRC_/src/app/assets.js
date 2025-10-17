@@ -66,6 +66,16 @@ export const sounds = {
     se_bonus: 'se_bonus.mp3',
     se_ball_roll: 'se_ball_roll.mp3',
     se_ball_stop: 'se_ball_stop.mp3',
+    se_coins: 'se_coins.mp3',
+    se_coin_to_bank: 'se_coin_to_bank.mp3',
+    se_low_money: 'se_low_money.mp3',
+    se_set: 'se_set.mp3',
+    se_jackpot: 'se_jackpot.mp3',
+    se_fortuna: 'se_fortuna.mp3',
+    se_clover: 'se_clover.mp3',
+    se_line: 'se_line.mp3',
+    se_gold: 'se_gold.mp3',
+    se_slots_spin: 'se_slots_spin.mp3',
 }
 export const voices = {
     // voice_start_1: 'voice_ru_start_first.mp3',

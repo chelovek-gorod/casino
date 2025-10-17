@@ -12,7 +12,15 @@ const SETTINGS = {
     }
 }
 
-let bgMusicVolume = 0.05
+let bgMusicVolume = 0.5
+export function setMusicVolume(value) {
+    let newVolumeValue = 0.5
+    if (typeof value === 'number' && isFinite(value) && value > 0 && value <= 1) {
+        newVolumeValue = value
+    }
+
+    bgMusicVolume = newVolumeValue
+}
 
 let isSoundOn = getStoredValue(SETTINGS.sound)
 let isMusicOn = getStoredValue(SETTINGS.music)

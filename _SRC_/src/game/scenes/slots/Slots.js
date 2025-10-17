@@ -1,7 +1,7 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
-import { atlases, images, music } from '../../../app/assets'
-import { setMusic } from '../../../app/sound'
+import { atlases, images, music, sounds } from '../../../app/assets'
+import { playSound, setMusic } from '../../../app/sound'
 import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA, 
     SLOTS_HIGHLIGHT, MESSAGE_TEXT, UI } from '../../constants'
 import Line from './Line'
@@ -146,12 +146,12 @@ export default class Slots extends Container {
         this.gameContainer.position.set(gameContainerX, gameContainerY)
     }
 
-    setAutoSpin() {
+    setAutoSpin() { console.log(this.isAutoSpinOn)
         // stop auto spin
         if (this.isAutoSpinOn) {
             this.isAutoSpinOn = false
             this.autoButton.setTexture('play')
-        // run auto spin
+        // run auto spin 
         } else {
             this.isAutoSpinOn = true
             this.autoButton.setTexture('stop')
@@ -169,6 +169,7 @@ export default class Slots extends Container {
         this.runButton.setActive(false)
         this.linsRunningCount = 5
         this.lines.forEach((line, i) => line.run(i))
+        playSound(sounds.se_slots_spin)
     }
     lineStopped() {
         this.linsRunningCount -= 1
@@ -496,6 +497,7 @@ export default class Slots extends Container {
                     showMessage(messageText)
                     this.coinEffects.start()
                 }, this.highlightMessageTimeout)
+                setTimeout( () => playSound(sounds.se_line), SLOTS_HIGHLIGHT.inOut)
 
                 testWinData[`lines_${highlightData.count}`].count++
                 testWinData[`lines_${highlightData.count}`].money += highlightData.winRate * betsTotal *this.bonusRate 
@@ -504,7 +506,10 @@ export default class Slots extends Container {
                 messageText = isLangRu ? MESSAGE_TEXT['BONUS'].ru : MESSAGE_TEXT['BONUS'].en
                 messageText += bonusText
                 messageText += isLangRu ? MESSAGE_TEXT['BONUS2'].ru : MESSAGE_TEXT['BONUS2'].en
-                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                setTimeout( () => {
+                    showMessage(messageText)
+                }, this.highlightMessageTimeout)
+                setTimeout( () => playSound(sounds.se_bonus), SLOTS_HIGHLIGHT.inOut)
             break;
             case '7x7' :
                 resultSlots(highlightData.winRate)
@@ -514,6 +519,7 @@ export default class Slots extends Container {
                     showMessage(messageText)
                     this.coinEffects.start()
                 }, this.highlightMessageTimeout)
+                setTimeout( () => playSound(sounds.se_jackpot), SLOTS_HIGHLIGHT.inOut)
 
                 testWinData.jackpot.count++
                 testWinData.jackpot.money += highlightData.winRate * betsTotal
@@ -526,6 +532,7 @@ export default class Slots extends Container {
                     showMessage(messageText)
                     this.coinEffects.start()
                 }, this.highlightMessageTimeout)
+                setTimeout( () => playSound(sounds.se_set), SLOTS_HIGHLIGHT.inOut)
 
                 testWinData.sets.count++
                 testWinData.sets.money += highlightData.winRate * betsTotal
@@ -538,6 +545,7 @@ export default class Slots extends Container {
                     showMessage(messageText)
                     this.coinEffects.start()
                 }, this.highlightMessageTimeout)
+                setTimeout( () => playSound(sounds.se_fortuna), SLOTS_HIGHLIGHT.inOut)
 
                 testWinData.presents.count++
                 testWinData.presents.money += highlightData.winRate * betsTotal
@@ -545,13 +553,18 @@ export default class Slots extends Container {
             case 'COIN' :
                 messageText = isLangRu ? MESSAGE_TEXT['COIN'].ru : MESSAGE_TEXT['COIN'].en
                 messageText += addSlotCoins(formatNumber(highlightData.winRate))
-                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                setTimeout( () => {
+                    showMessage(messageText)
+                }, this.highlightMessageTimeout)
                 this.bankText.text = slotCoins
+                setTimeout( () => playSound(sounds.se_coin_to_bank), SLOTS_HIGHLIGHT.inOut)
             break;
             case 'GOLD' :
                 if (slotCoins < 1) {
                     this.linsRunningCount = 0
-                    setTimeout( () => this.highlightCallback(), 0)
+                    setTimeout( () => {
+                        this.highlightCallback()
+                    }, 0)
                     return
                 }
 
@@ -565,6 +578,7 @@ export default class Slots extends Container {
                     this.coinEffects.start()
                 }, this.highlightMessageTimeout)
                 this.bankText.text = slotCoins
+                setTimeout( () => playSound(sounds.se_gold), SLOTS_HIGHLIGHT.inOut)
 
                 testWinData.bank.count++
                 testWinData.bank.money += getBank
@@ -572,8 +586,11 @@ export default class Slots extends Container {
             case 'CLOVER' :
                 messageText = isLangRu ? MESSAGE_TEXT['CLOVER'].ru : MESSAGE_TEXT['CLOVER'].en
                 messageText += `${formatNumber(betsTotal)}`
-                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                setTimeout( () => {
+                    showMessage(messageText)
+                }, this.highlightMessageTimeout)
                 returnBet()
+                setTimeout( () => playSound(sounds.se_clover), SLOTS_HIGHLIGHT.inOut)
             break; 
             default : 
         }

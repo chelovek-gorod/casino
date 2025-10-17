@@ -1,5 +1,7 @@
+import { sounds } from "../app/assets"
 import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber,
     showMessage, clearOneBet, clearAllBets, EventHub, events} from "../app/events"
+import { playSound } from "../app/sound"
 import { formatNumber } from "../utils/functions"
 import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO, MAX_BET, SCENE_NAME } from "./constants"
 
@@ -37,6 +39,7 @@ export function checkRunSlots() {
         showMessage(
             isLangRu ? MESSAGE_TEXT.lowMoney.ru : MESSAGE_TEXT.lowMoney.en
         )
+        playSound(sounds.se_low_money)
         return  false
     }
 
@@ -74,6 +77,7 @@ export function setBet(numbers, numbersList = []) {
     const totalBet = betCurrent * numbers.length + betCurrent * numbersList.length
     if (money < totalBet) {
         showMessage( isLangRu ? MESSAGE_TEXT.lowMoney.ru : MESSAGE_TEXT.lowMoney.en )
+        playSound(sounds.se_low_money)
         return false
     }
 

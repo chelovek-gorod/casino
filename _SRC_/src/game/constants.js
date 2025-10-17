@@ -879,39 +879,39 @@ function calculateSequencesProbabilities(lineSize, unitsInLine) {
 
 const wilds = SLOTS_LINES_DATA[SLOTS.wild].count
 const double = [
-    'cards', 'chips', 'coin',
-    'banana', 'blueberry', 'cherry', 'grape', 'lemon', 'melon', 'strawberry', 'peach'
+    'cards', 'chips',
+
+    'avocado', 'banana', 'blackberry', 'blueberry', 'cherry', 'grape',
+    'lemon', 'melon', 'orange', 'plum', 'strawberry'
 ]
 for (let key in SLOTS_LINES_DATA) {
     const unitCount = SLOTS_LINES_DATA[key].count
     if (unitCount > 0 && double.includes(key) === false ) {
 
-        if (key === SLOTS.bonus) {
-            console.log(`\n${key}`)
-            countChanceInAnyPositions(imagesInLine, unitCount)
-        } else {
-            console.log(`\n${key}`)
-            calculateExactSequenceProbability(imagesInLine, unitCount + wilds)
-            calculateSequencesProbabilities(imagesInLine, unitCount + wilds)
-            let count = 0
-            if (key === SLOTS.dices) {
-                count = SLOTS_LINES_DATA[SLOTS.dices].count
-                    + SLOTS_LINES_DATA[SLOTS.cards].count
-                    + SLOTS_LINES_DATA[SLOTS.chips].count
-                countChanceInAnyPositions(imagesInLine, count)
-            }
-            if (key === SLOTS.jackpot) {
-                count = SLOTS_LINES_DATA[SLOTS.jackpot].count
-                    + SLOTS_LINES_DATA[SLOTS.seven].count
-                countChanceInAnyPositions(imagesInLine, count)
-            }
-            if (key === SLOTS.clover) {
-                countChanceInAnyPositions(imagesInLine, SLOTS_LINES_DATA[key].count)
-            }
-            if (key === SLOTS.gold) {
-                countChanceInAnyPositions(imagesInLine, SLOTS_LINES_DATA[key].count)
-            }
+        console.log(`\n${key}`)
+        calculateExactSequenceProbability(imagesInLine, unitCount + wilds)
+        calculateSequencesProbabilities(imagesInLine, unitCount + wilds)
+        let count = 0
+        if (key === SLOTS.dices) {
+            count = SLOTS_LINES_DATA[SLOTS.dices].count
+                + SLOTS_LINES_DATA[SLOTS.cards].count
+                + SLOTS_LINES_DATA[SLOTS.chips].count
+            console.log('dices + cards + chips')
+            countChanceInAnyPositions(imagesInLine, count)
+            console.log('one type of set (dices || cards || chips)')
+            countChanceInAnyPositions(imagesInLine, SLOTS_LINES_DATA[key].count)
         }
-
+        if (key === SLOTS.jackpot) {
+            count = SLOTS_LINES_DATA[SLOTS.jackpot].count
+                + SLOTS_LINES_DATA[SLOTS.seven].count
+            console.log('7 + 777')
+            countChanceInAnyPositions(imagesInLine, count)
+            console.log('777')
+            countChanceInAnyPositions(imagesInLine, SLOTS_LINES_DATA[SLOTS.jackpot].count)
+        }
+        if (key === SLOTS.seven || key === SLOTS.clover || key === SLOTS.gold || key === SLOTS.coin
+        || key === SLOTS.wild || key === SLOTS.present || key === SLOTS.bonus) {
+            countChanceInAnyPositions(imagesInLine, SLOTS_LINES_DATA[key].count)
+        }
     }
 }
