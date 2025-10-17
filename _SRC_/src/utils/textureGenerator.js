@@ -1,5 +1,99 @@
-import { BlurFilter, Container, Graphics, RenderTexture } from "pixi.js"
+import { BlurFilter, Container, Graphics, RenderTexture, Sprite, Texture } from "pixi.js"
 import { getAppRenderer } from "../app/application"
+
+// helper: number (0xff0000) -> '#ff0000'
+function colorToCss(color) {
+    if (typeof color === "string") return color
+    return "#" + color.toString(16).padStart(6, "0")
+}
+  
+/**
+ * Создает Texture прямоугольника или радиального градиента (PixiJS v8)
+ * fill может быть:
+ *  - number / string  → сплошной цвет
+ *  - объект { type: 'radial-gradient', stops: [...], x0,y0,radius0,x1,y1,radius1 }
+ */
+ export function getRecTexture(width, height, fill) {
+    const renderer = getAppRenderer()
+    const resolution = renderer?.resolution ?? 1
+
+    // --- Градиент через canvas ---
+    if (fill && fill.type === "radial-gradient") {
+        const canvas = document.createElement("canvas")
+        canvas.width = Math.ceil(width * resolution)
+        canvas.height = Math.ceil(height * resolution)
+        const ctx = canvas.getContext("2d")
+
+        if (resolution !== 1) ctx.scale(resolution, resolution)
+
+        const {
+            x0 = width / 2,
+            y0 = height / 2,
+            radius0 = 0,
+            x1 = width / 2,
+            y1 = height / 2,
+            radius1 = Math.max(width, height) / 2,
+            stops = []
+        } = fill
+
+        const grad = ctx.createRadialGradient(x0, y0, radius0, x1, y1, radius1)
+        for (const stop of stops) {
+            grad.addColorStop(
+                Math.max(0, Math.min(1, stop.offset)),
+                colorToCss(stop.color)
+            )
+        }
+
+        ctx.fillStyle = grad
+        ctx.fillRect(0, 0, width, height)
+
+        // создаем PIXI.Texture из canvas
+        const tex = Texture.from(canvas, { resolution })
+        return tex
+    }
+
+    // --- Обычный цвет ---
+    const canvas = document.createElement("canvas")
+    canvas.width = Math.ceil(width * resolution)
+    canvas.height = Math.ceil(height * resolution)
+    const ctx = canvas.getContext("2d")
+
+    if (resolution !== 1) ctx.scale(resolution, resolution)
+    ctx.fillStyle = colorToCss(fill || 0x000000)
+    ctx.fillRect(0, 0, width, height)
+
+    return Texture.from(canvas, { resolution })
+}
+
+/*
+export function getRecTexture(width, height, fill) {
+    const appRenderer = getAppRenderer()
+
+    const container = new Container()
+
+    const G = new Graphics()
+    G.rect(0, 0, width, height)
+    G.fill(fill)
+    container.addChild(G)
+  
+    const resolution = appRenderer.resolution ?? 1
+    const rt = RenderTexture.create({
+        width: Math.ceil(width),
+        height: Math.ceil(height),
+        resolution,
+    })
+  
+    appRenderer.render({
+        container: container,
+        target: rt
+    })
+
+    G.destroy()
+    container.destroy()
+  
+    return rt
+}
+*/
 
 export function getRRTexture(width, height, borderRadius, color, alpha = 1) {
     const appRenderer = getAppRenderer()

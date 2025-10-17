@@ -2,9 +2,12 @@ import { EventEmitter } from "pixi.js"
 
 export const EventHub = new EventEmitter()
 
+let isFirstUserAction = false
+
 export const events = {
     screenResize: 'screenResize',
     changeFocus: 'changeFocus',
+    getUserAction: 'getUserAction',
 
     startScene: 'startScene',
 
@@ -31,8 +34,16 @@ export function screenResize( data ) {
 export function changeFocus( isOnFocus ) {
     EventHub.emit( events.changeFocus, isOnFocus )
 }
+export function getUserAction() {
+    EventHub.emit( events.getUserAction )
+}
 
 export function startScene( sceneName ) {
+    if (! isFirstUserAction) {
+        isFirstUserAction = true
+        getUserAction()
+    }
+
     EventHub.emit( events.startScene, sceneName )
 }
 

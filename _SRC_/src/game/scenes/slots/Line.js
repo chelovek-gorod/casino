@@ -57,6 +57,7 @@ export default class Line extends Container {
 
         this.visibleImages.forEach( (image, index) => {
             image.anchor.set(0.5)
+            image.scale.set(SLOTS_HIGHLIGHT.minScale)
             image.position.set(
                 SLOTS_LINES.slotHalfWidth, SLOTS_LINES.positionsY[index] + SLOTS_LINES.slotHalfHeight
             )
@@ -75,7 +76,7 @@ export default class Line extends Container {
             valuesList: [],
             callback: null,
             duration: SLOTS_HIGHLIGHT.duration,
-            scale: 1,
+            scale: SLOTS_HIGHLIGHT.minScale,
             alpha: 1,
         }
         this.highlightCallbackTimeout = MESSAGE.showDuration + MESSAGE.inOutDuration * 2
@@ -102,21 +103,6 @@ export default class Line extends Container {
     }
 
     stop() {
-        /*
-        this.state = STATE.stop
-        this.speed = 0
-        tickerRemove(this)
-
-        this.visibleImages.forEach( (image, index) => {
-            image.position.set(
-                SLOTS_LINES.slotHalfWidth, SLOTS_LINES.positionsY[index] + SLOTS_LINES.slotHalfHeight
-            )
-            // this.imagesContainer.addChildAt(image, 0)
-        })
-
-        this.stopCallback()
-        */
-
         this.imagesContainer.position.y = 0
 
         this.visibleImages.forEach( (image, index) => {
@@ -152,7 +138,7 @@ export default class Line extends Container {
         this.highlightData.valuesList = arr
         this.highlightData.callback = callback
         this.highlightData.duration = SLOTS_HIGHLIGHT.duration
-        this.highlightData.scale = 1
+        this.highlightData.scale = SLOTS_HIGHLIGHT.minScale
         this.highlightData.alpha = 1
 
         this.state = STATE.highlightIn
@@ -208,10 +194,10 @@ export default class Line extends Container {
                 this.highlightData.alpha + SLOTS_HIGHLIGHT.stepAlphaInMS * time.deltaMS
             )
             this.highlightData.scale = Math.max(
-                1,
+                SLOTS_HIGHLIGHT.minScale,
                 this.highlightData.scale - SLOTS_HIGHLIGHT.stepScaleInMS * time.deltaMS
             )
-            if (this.highlightData.scale === 1) {
+            if (this.highlightData.scale === SLOTS_HIGHLIGHT.minScale) {
                 this.state = STATE.idle
                 tickerRemove(this)
                 setTimeout(() => this.highlightData.callback(), this.highlightCallbackTimeout)

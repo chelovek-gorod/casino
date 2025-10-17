@@ -17,6 +17,7 @@ import { showMessage } from '../../../app/events'
 import { styles } from '../../../app/styles'
 import ShortButton from '../../UI/ShortButton'
 import { formatNumber } from '../../../utils/functions'
+import Coins from '../../effects/Coins'
 
 const testWinData = {
     spins: 0,
@@ -57,6 +58,10 @@ export default class Slots extends Container {
 
         this.border = new Sprite(images.slot_border)
         this.gameContainer.addChild( this.border )
+
+        // effects
+        this.coinEffects = new Coins()
+        this.addChild(this.coinEffects)
         
         // self UI
         this.bankIcon = new Sprite(images.slots_bank)
@@ -98,7 +103,7 @@ export default class Slots extends Container {
 
         this.highlightDataList = [] // ordered, key = message type
         this.bonusRate = 1
-        this.highlightMessageTimeout = SLOTS_HIGHLIGHT.duration + SLOTS_HIGHLIGHT.inOut * 1.5
+        this.highlightMessageTimeout = SLOTS_HIGHLIGHT.duration + SLOTS_HIGHLIGHT.inOut * 2
         this.highlightTimeout = 300
 
         document.addEventListener('keyup', (e) => {
@@ -115,6 +120,9 @@ export default class Slots extends Container {
 
         // repeat bg tile in full screen (width and height)
         this.bg.screenResize(screenData)
+
+        // update effects scaling
+        this.coinEffects.screenResize(screenData)
 
         // update popup
         this.popup.screenResize(screenData)
@@ -152,7 +160,11 @@ export default class Slots extends Container {
     }
 
     run() {
-        if (this.linsRunningCount > 0 || !checkRunSlots()) return this.isAutoSpinOn = false
+        if (this.linsRunningCount > 0 || !checkRunSlots()) {
+            this.autoButton.setTexture('play')
+            this.isAutoSpinOn = false
+            return 
+        }
 
         this.runButton.setActive(false)
         this.linsRunningCount = 5
@@ -480,7 +492,10 @@ export default class Slots extends Container {
                 messageText = highlightData.count
                 messageText += isLangRu ? MESSAGE_TEXT['LINE'].ru : MESSAGE_TEXT['LINE'].en
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}${bonusText}`
-                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                setTimeout( () => {
+                    showMessage(messageText)
+                    this.coinEffects.start()
+                }, this.highlightMessageTimeout)
 
                 testWinData[`lines_${highlightData.count}`].count++
                 testWinData[`lines_${highlightData.count}`].money += highlightData.winRate * betsTotal *this.bonusRate 
@@ -495,7 +510,10 @@ export default class Slots extends Container {
                 resultSlots(highlightData.winRate)
                 messageText = isLangRu ? MESSAGE_TEXT['7x7'].ru : MESSAGE_TEXT['7x7'].en
                 messageText +=`+${formatNumber(highlightData.winRate * betsTotal)}`
-                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                setTimeout( () => {
+                    showMessage(messageText)
+                    this.coinEffects.start()
+                }, this.highlightMessageTimeout)
 
                 testWinData.jackpot.count++
                 testWinData.jackpot.money += highlightData.winRate * betsTotal
@@ -504,7 +522,10 @@ export default class Slots extends Container {
                 resultSlots(highlightData.winRate)
                 messageText = isLangRu ? MESSAGE_TEXT['SET'].ru : MESSAGE_TEXT['SET'].en
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}`
-                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                setTimeout( () => {
+                    showMessage(messageText)
+                    this.coinEffects.start()
+                }, this.highlightMessageTimeout)
 
                 testWinData.sets.count++
                 testWinData.sets.money += highlightData.winRate * betsTotal
@@ -513,7 +534,10 @@ export default class Slots extends Container {
                 resultSlots(highlightData.winRate)
                 messageText = isLangRu ? MESSAGE_TEXT['PRESENT'].ru : MESSAGE_TEXT['PRESENT'].en
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}`
-                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                setTimeout( () => {
+                    showMessage(messageText)
+                    this.coinEffects.start()
+                }, this.highlightMessageTimeout)
 
                 testWinData.presents.count++
                 testWinData.presents.money += highlightData.winRate * betsTotal
@@ -536,7 +560,10 @@ export default class Slots extends Container {
                 messageText += `${Math.min(100, highlightData.winRate * 10)} %\n`
                 messageText += `+${formatNumber(getBank)}`
                 messageText += isLangRu ? MESSAGE_TEXT['GOLD2'].ru : MESSAGE_TEXT['GOLD2'].en
-                setTimeout( () => showMessage(messageText), this.highlightMessageTimeout)
+                setTimeout( () => {
+                    showMessage(messageText)
+                    this.coinEffects.start()
+                }, this.highlightMessageTimeout)
                 this.bankText.text = slotCoins
 
                 testWinData.bank.count++

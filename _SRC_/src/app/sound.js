@@ -27,7 +27,12 @@ function setStoredValue(storageData, isOn) {
     localStorage.setItem(storageData.storageKey, !!isOn)
 }
 
-let isSoundAvailable = true // is game in focus
+let isSoundAvailable = false // is game in focus
+EventHub.on( events.getUserAction, getFirstUserAction )
+function getFirstUserAction() {
+    isSoundAvailable = true
+    EventHub.off( events.getUserAction, getFirstUserAction )
+}
 
 EventHub.on( events.changeFocus, changeFocus )
 function changeFocus( isOnFocus ) {

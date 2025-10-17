@@ -1,4 +1,5 @@
 import { Sprite } from 'pixi.js'
+import { getAppScreen } from '../../app/application'
 
 export default class BackgroundImage extends Sprite {
     constructor(image) {
@@ -7,8 +8,6 @@ export default class BackgroundImage extends Sprite {
         this.bgWidth = image.width
         this.bgHeight = image.height
         this.anchor.set(0.5)
-
-        this.screenData = {width: 0, height: 0}
     }
 
     screenResize(screenData) {

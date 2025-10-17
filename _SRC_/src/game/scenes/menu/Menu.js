@@ -1,19 +1,22 @@
-import { Container, Sprite } from 'pixi.js'
+import { AnimatedSprite, Container, Sprite } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
-import { images, music } from '../../../app/assets'
+import { atlases, images, music } from '../../../app/assets'
 import { startScene } from '../../../app/events'
 import { setMusic } from '../../../app/sound'
 import { MENU_BG_SIZE, MENU_TEXT, SCENE_NAME } from '../../constants'
 import { isLangRu } from '../../state'
 import Button from '../../UI/Button'
 import BackgroundTiling from '../../BG/BackgroundTiling'
+import Coins from '../../effects/Coins'
+import BackgroundGradient from '../../BG/BackgroundGradient'
+import BackgroundCasino from '../../BG/BackfroundCasino'
 
 export default class Menu extends Container {
     constructor() {
         super()
         this.alpha = 0
 
-        this.bg = new BackgroundTiling(images.bg_blue)
+        this.bg = new BackgroundCasino()
         this.addChild(this.bg)
 
         this.rouletteButton = new Button(
