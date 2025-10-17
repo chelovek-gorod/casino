@@ -146,7 +146,7 @@ export default class Slots extends Container {
         this.gameContainer.position.set(gameContainerX, gameContainerY)
     }
 
-    setAutoSpin() { console.log(this.isAutoSpinOn)
+    setAutoSpin() {
         // stop auto spin
         if (this.isAutoSpinOn) {
             this.isAutoSpinOn = false
@@ -164,8 +164,8 @@ export default class Slots extends Container {
 
     run() {
         if (this.linsRunningCount > 0 || !checkRunSlots()) {
-            this.autoButton.setTexture('play')
             this.isAutoSpinOn = false
+            this.autoButton.setTexture('play')
             return 
         }
 

@@ -41,7 +41,7 @@ export default class ShortButton extends Container {
         }
     }
 
-    setTexture(textureName) { 
+    setTexture(textureName) {
         this.image.texture = atlases.short_btn.textures[textureName]
     }
 
