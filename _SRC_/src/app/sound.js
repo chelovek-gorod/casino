@@ -7,7 +7,7 @@ const SETTINGS = {
         storageKey: 'soundOn',
     },
     music: {
-        isOnByDefault: true, // true
+        isOnByDefault: false, // true
         storageKey: 'musicOn',
     }
 }

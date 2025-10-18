@@ -162,10 +162,11 @@ export default class Slots extends Container {
         if (event.code === "Space") this.run()
     }
 
-    run() {
+    run() { console.log(this.isAutoSpinOn)
         if (this.linsRunningCount > 0 || !checkRunSlots()) {
             this.isAutoSpinOn = false
             this.autoButton.setTexture('play')
+            console.log('мы все остановили...')
             return 
         }
 
