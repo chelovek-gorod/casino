@@ -1,6 +1,21 @@
-import { TextStyle } from "pixi.js"
+import { TextStyle, FillGradient } from "pixi.js"
 import { CHIP_DATA, LOGS, MESSAGE } from "../game/constants"
 import { fonts } from "./assets"
+
+const fillButtonGradient = new FillGradient({
+    type: 'linear',
+    colorStops: [
+      { offset: 0, color: '#ffffff' },
+      { offset: 1, color: '#f8fe5e' },
+    ],
+});
+const fillButtonOnGradient = new FillGradient({
+    type: 'linear',
+    colorStops: [
+      { offset: 0, color: '#524b14' },
+      { offset: 1, color: '#8a8e1c' },
+    ],
+});
 
 export let styles = {
     isReady: false, /* if true -> fonts is already loaded */
@@ -11,6 +26,8 @@ export let styles = {
     buttonHover: null,
     shortButton: null,
     shortButtonHover: null,
+    buttonLight: null,
+    buttonLightOn: null,
     numbersList: null,
     money: null,
 
@@ -67,6 +84,29 @@ export function initFontStyles() {
         dropShadow: true,
         dropShadowColor: '#000000',
         dropShadowBlur: 20,
+        dropShadowAngle: 0,
+        dropShadowDistance: 0,
+    })
+
+    styles.buttonLight = new TextStyle({
+        fontFamily: fonts.Manrope700,
+        fontSize: 40,
+        fill: fillButtonGradient,
+
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowBlur: 4,
+        dropShadowAngle: 0,
+        dropShadowDistance: 0,
+    })
+    styles.buttonLightOn = new TextStyle({
+        fontFamily: fonts.Manrope700,
+        fontSize: 40,
+        fill: fillButtonOnGradient,
+
+        dropShadow: true,
+        dropShadowColor: '#ffff00',
+        dropShadowBlur: 4,
         dropShadowAngle: 0,
         dropShadowDistance: 0,
     })

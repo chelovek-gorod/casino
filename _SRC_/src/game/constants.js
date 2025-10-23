@@ -670,7 +670,7 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - SLOTS_HIGHLIGHT.minScale) / SLOTS_HIGHLIGHT.inOut
 
-const FRUITS = 12 // 7 types
+const FRUITS = 5 // 12 types
 //          x0 x1 x2  x3  x4  x5
 const LOW_WIN_RATE = [0, 0, 0,  3,  5, 10] // частые
 const MID_WIN_RATE = [0, 0, 0,  5, 10, 50] // редкие
@@ -693,22 +693,22 @@ export const SLOTS_LINES_DATA = {
     [SLOTS.plum]: {count: FRUITS, rates: LOW_WIN_RATE},
     [SLOTS.strawberry]: {count: FRUITS, rates: LOW_WIN_RATE},
 
-    [SLOTS.dices]: {count: 6, rates: MID_WIN_RATE, extra: SET.rate},
-    [SLOTS.cards]: {count: 6, rates: MID_WIN_RATE, extra: SET.rate},
-    [SLOTS.chips]: {count: 6, rates: MID_WIN_RATE, extra: SET.rate},
+    [SLOTS.dices]: {count: 3, rates: MID_WIN_RATE, extra: SET.rate},
+    [SLOTS.cards]: {count: 3, rates: MID_WIN_RATE, extra: SET.rate},
+    [SLOTS.chips]: {count: 3, rates: MID_WIN_RATE, extra: SET.rate},
 
-    [SLOTS.crystal]: {count: 2, rates: MAX_WIN_RATE},
+    [SLOTS.crystal]: {count: 1, rates: MAX_WIN_RATE},
 
-    [SLOTS.seven]: {count: 7, rates: MID_WIN_RATE, extra: JACKPOT.rate7x7},
+    [SLOTS.seven]: {count: 3, rates: MID_WIN_RATE, extra: JACKPOT.rate7x7},
     [SLOTS.jackpot]: {count: 1, rates: MAX_WIN_RATE, extra: JACKPOT.rate7x7},
 
-    [SLOTS.gold]: {count: 2, rates: MID_WIN_RATE},
+    [SLOTS.gold]: {count: 3, rates: MID_WIN_RATE},
     [SLOTS.coin]: {count: 15, rates: LOW_WIN_RATE},
 
     [SLOTS.clover]: {count: 1, rates: LOW_WIN_RATE},
     [SLOTS.present]: {count: 1, rates: MID_WIN_RATE},
 
-    [SLOTS.wild]: {count: 7, rates: LOW_WIN_RATE},
+    [SLOTS.wild]: {count: 4, rates: LOW_WIN_RATE},
     [SLOTS.bonus]: {count: 2, rates: MID_WIN_RATE}, // выигрыш X
 }
 

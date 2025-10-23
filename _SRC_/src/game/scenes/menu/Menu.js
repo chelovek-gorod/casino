@@ -10,6 +10,7 @@ import BackgroundTiling from '../../BG/BackgroundTiling'
 import Coins from '../../effects/Coins'
 import BackgroundGradient from '../../BG/BackgroundGradient'
 import BackgroundCasino from '../../BG/BackfroundCasino'
+import ButtonLight from '../../UI/ButtonLight'
 
 export default class Menu extends Container {
     constructor() {
@@ -19,16 +20,18 @@ export default class Menu extends Container {
         this.bg = new BackgroundCasino()
         this.addChild(this.bg)
 
-        this.rouletteButton = new Button(
+        this.rouletteButton = new ButtonLight(
             isLangRu ? MENU_TEXT.rouletteButton.ru : MENU_TEXT.rouletteButton.en,
-            0, -100, () => startScene(SCENE_NAME.Roulette)
+            () => startScene(SCENE_NAME.Roulette)
         )
+        this.rouletteButton.position.set(0, 0)
         this.addChild(this.rouletteButton)
 
-        this.slotsButton = new Button(
+        this.slotsButton = new ButtonLight(
             isLangRu ? MENU_TEXT.slotsButton.ru : MENU_TEXT.slotsButton.en,
-            0, 100, () => startScene(SCENE_NAME.Slots)
+            () => startScene(SCENE_NAME.Slots)
         )
+        this.slotsButton.position.set(0, 130)
         this.addChild(this.slotsButton)
     }
 

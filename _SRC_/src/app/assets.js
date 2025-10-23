@@ -57,7 +57,7 @@ export const atlases = {
    spiel_light: 'spiel_light.json',
    slots: 'slots.json',
    coin: 'coin.json',
-
+   button_lamps: 'button_lamps.json',
    for_bg: 'for_bg.json',
 }
 export const sounds = {
