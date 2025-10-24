@@ -76,8 +76,8 @@ export const MESSAGE_TEXT = {
     },
 
     'LINE': {ru: ' в ряд\n', en: ' in line\n'},
-    'BONUS': {ru: 'БОНУС x', en: 'Bonus '},
-    'BONUS2': {ru: '\nза ряды', en: '\nfor lines'},
+    'BONUS': {ru: 'БОНУС\n', en: 'BONUS\n'},
+    'BONUS2': {ru: ' за ряды', en: ' for lines'},
     '7x7': {ru: 'Джекпот 7x7 !!!\n', en: 'Jackpot 7x7 !!!\n'},
     'SET': {ru: 'За коллекцию\n', en: 'Set bonus\n'},
     'PRESENT': {ru: 'Находка!\n', en: 'Lucky Find!\n'},
@@ -605,15 +605,17 @@ export const SLOTS_LINES = {
     slotHeight: 240,
     slotHalfWidth: 0,
     slotHalfHeight: 0,
-    acceleration: 0.003,
-    minSpeed: 6.5,
-    maxSpeed: 7.5,
+    acceleration: 0.005,
+    minSpeed: 5.5,
+    maxSpeed: 6.5,
     stopSpeed: 1,
     minTimeout: 100,
-    maxTimeout: 200,
-    delayRate: 200,
-    duration: 1800
+    maxTimeout: 150,
+    delay: 0,
+    durationMin: 1500,
+    durationMax: 1700
 }
+SLOTS_LINES.delay = SLOTS_LINES.maxTimeout + SLOTS_LINES.durationMax - SLOTS_LINES.durationMin
 SLOTS_LINES.slotHalfWidth = SLOTS_LINES.slotWidth * 0.5
 SLOTS_LINES.slotHalfHeight = SLOTS_LINES.slotHeight * 0.5
 for(let i = 1; i < 5; i++){
@@ -670,7 +672,7 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - SLOTS_HIGHLIGHT.minScale) / SLOTS_HIGHLIGHT.inOut
 
-const FRUITS = 5 // 12 types
+const FRUITS = 6 // 12 types
 //          x0 x1 x2  x3  x4  x5
 const LOW_WIN_RATE = [0, 0, 0,  3,  5, 10] // частые
 const MID_WIN_RATE = [0, 0, 0,  5, 10, 50] // редкие
@@ -702,13 +704,13 @@ export const SLOTS_LINES_DATA = {
     [SLOTS.seven]: {count: 3, rates: MID_WIN_RATE, extra: JACKPOT.rate7x7},
     [SLOTS.jackpot]: {count: 1, rates: MAX_WIN_RATE, extra: JACKPOT.rate7x7},
 
-    [SLOTS.gold]: {count: 3, rates: MID_WIN_RATE},
-    [SLOTS.coin]: {count: 15, rates: LOW_WIN_RATE},
+    [SLOTS.gold]: {count: 2, rates: MID_WIN_RATE},
+    [SLOTS.coin]: {count: 6, rates: LOW_WIN_RATE},
 
     [SLOTS.clover]: {count: 1, rates: LOW_WIN_RATE},
     [SLOTS.present]: {count: 1, rates: MID_WIN_RATE},
 
-    [SLOTS.wild]: {count: 4, rates: LOW_WIN_RATE},
+    [SLOTS.wild]: {count: 2, rates: LOW_WIN_RATE},
     [SLOTS.bonus]: {count: 2, rates: MID_WIN_RATE}, // выигрыш X
 }
 

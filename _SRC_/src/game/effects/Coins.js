@@ -79,9 +79,9 @@ export default class Coins extends Container {
         this.maxY = screenData.centerY
     }
 
-    start() {
+    start(rate = 1) {
         this.nextCoinTimeout = getRandom(settings.addCoinMinDelay, settings.addCoinMinDelay)
-        this.counter = this.maxCoins
+        this.counter = Math.ceil(this.maxCoins * rate)
         this.addCoin()
         tickerAdd(this)
         playSound(sounds.se_coins)

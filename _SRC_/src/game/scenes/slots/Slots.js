@@ -162,11 +162,10 @@ export default class Slots extends Container {
         if (event.code === "Space") this.run()
     }
 
-    run() { console.log(this.isAutoSpinOn)
+    run() {
         if (this.linsRunningCount > 0 || !checkRunSlots()) {
             this.isAutoSpinOn = false
             this.autoButton.setTexture('play')
-            console.log('мы все остановили...')
             return 
         }
 
@@ -503,7 +502,7 @@ export default class Slots extends Container {
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     showMessage(messageText)
-                    this.coinEffects.start()
+                    this.coinEffects.start(0.15 * highlightData.count * this.bonusRate)
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -533,7 +532,7 @@ export default class Slots extends Container {
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     showMessage(messageText)
-                    this.coinEffects.start()
+                    this.coinEffects.start(1.5)
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -550,7 +549,7 @@ export default class Slots extends Container {
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     showMessage(messageText)
-                    this.coinEffects.start()
+                    this.coinEffects.start(0.6)
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -567,7 +566,7 @@ export default class Slots extends Container {
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     showMessage(messageText)
-                    this.coinEffects.start()
+                    this.coinEffects.start(0.1 * highlightData.winRate)
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -608,7 +607,7 @@ export default class Slots extends Container {
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     showMessage(messageText)
-                    this.coinEffects.start()
+                    this.coinEffects.start(0.07 * highlightData.winRate)
                 }, this.highlightMessageTimeout)
                 this.bankText.text = slotCoins
                 setTimeout( () => {
