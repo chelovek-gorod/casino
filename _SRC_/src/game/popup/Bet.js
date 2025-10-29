@@ -3,7 +3,8 @@ import { atlases } from "../../app/assets";
 import { EventHub, events } from "../../app/events";
 import { styles } from "../../app/styles";
 import { removeCursorPointer, setCursorPointer } from "../../utils/functions";
-import { CHIP, POPUP_TEXT, SCENE_NAME } from "../constants";
+import { POPUP_TEXT } from "../constants";
+import { SCENE_NAME } from "../scenes/constants";
 import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest, isSingleBetsInSectors, currentScene } from "../state";
 import ShortButton from "../UI/ShortButton";
 

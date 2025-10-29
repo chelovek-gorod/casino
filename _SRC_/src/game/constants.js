@@ -1,10 +1,4 @@
-export const SCENE_ALPHA_STEP = 0.001
 
-export const SCENE_NAME = {
-    Menu : 'Menu',
-    Roulette : 'Roulette',
-    Slots : 'Slots',
-}
 
 // main menu
 export const MENU_BG_SIZE = 1920
@@ -71,8 +65,8 @@ export const MESSAGE_TEXT = {
     lowMoney: {ru: 'Сумма ставки\nпревышает баланс', en: 'Bet amount\nexceeds balance'},
     winMoney: {ru: 'Вы выиграли\n', en: 'You win\n'},
     betLimit: {
-        ru: 'Лимит ставки превышен\nдля этой части поля!',
-        en: 'This bet is too high\nfor this spo!'
+        ru: 'Лимит ставки\nпревышен!',
+        en: 'This bet\n is too high!'
     },
 
     'LINE': {ru: ' в ряд\n', en: ' in line\n'},

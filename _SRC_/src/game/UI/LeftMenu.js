@@ -1,5 +1,6 @@
 import { Container, Sprite } from "pixi.js";
-import { HELP_TEXT, POPUP_TYPE, SCENE_NAME, UI } from "../constants";
+import { HELP_TEXT, POPUP_TYPE, UI } from "../constants";
+import { SCENE_NAME } from "../scenes/constants";
 import ButtonUI from "./ButtonUI";
 import { getRRTextureWithShadow } from "../../utils/textureGenerator";
 import { showPopup } from "../../app/events";

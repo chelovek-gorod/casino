@@ -11,7 +11,10 @@ const settings = {
     coinScaleSpeedMin: 0.0006,
     coinScaleSpeedMax: 0.0012,
     animationSpeedMin: 0.4,
-    animationSpeedMax: 0.7
+    animationSpeedMax: 0.7,
+
+    screenWidthScale: 0.8,
+    screenHeightScale: 0.6,
 }
 
 class Coin extends AnimatedSprite {
@@ -73,10 +76,10 @@ export default class Coins extends Container {
 
     screenResize(screenData) {
         this.maxCoins = Math.floor( (screenData.width * screenData.height) / 21000 )
-        this.minX = -screenData.centerX
-        this.minY = -screenData.centerY
-        this.maxX = screenData.centerX
-        this.maxY = screenData.centerY
+        this.minX = -screenData.centerX * settings.screenWidthScale
+        this.minY = -screenData.centerY * settings.screenHeightScale
+        this.maxX = screenData.centerX * settings.screenWidthScale
+        this.maxY = screenData.centerY * settings.screenHeightScale
     }
 
     start(rate = 1) {

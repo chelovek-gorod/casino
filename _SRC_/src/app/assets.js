@@ -1,3 +1,12 @@
+export const assetType = {
+    images : 'images',
+    atlases: 'atlases',
+    sounds : 'sounds',
+    music : 'music',
+    voices : 'voices',
+    fonts : 'fonts',
+}
+
 export const path = {
     images : './images/',
     atlases: './atlases/',
@@ -90,8 +99,34 @@ export const music = {
     bgm_5: 'bgm_5.mp3',
 }
 
-export const loadConfig = {
-    musicKey: null, // String or null
-    imageKey: 'bg_blue', // String or null
-    isImageTile: true, // true/false
+export const assets = {fonts, images, atlases, sounds, voices, music}
+for (let assetType in assets) {
+    for (let key in assets[assetType]) {
+        assets[assetType][key] = path[assetType] + assets[assetType][key]
+    }
+}
+
+// check duplicated keys
+const allKeys = new Map()
+const duplicates = new Set()
+
+for (const [assetTypeName, assetCollection] of Object.entries(assets)) {
+    for (const key of Object.keys(assetCollection)) {
+        if (allKeys.has(key)) duplicates.add(key)
+        allKeys.set(key, assetTypeName)
+    }
+}
+
+if (duplicates.size > 0) {
+    const duplicateDetails = Array.from(duplicates).map(key => {
+        const types = []
+        for (const [typeName, assetCollection] of Object.entries(assets)) {
+            if (Object.prototype.hasOwnProperty.call(assetCollection, key)) {
+                types.push(typeName)
+            }
+        }
+        return `"${key}" (${types.join(', ')})`
+    }).join(', ')
+    
+    throw new Error(`Duplicate asset keys detected: ${duplicateDetails}`)
 }

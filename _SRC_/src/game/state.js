@@ -3,7 +3,8 @@ import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNeares
     showMessage, clearOneBet, clearAllBets, EventHub, events} from "../app/events"
 import { playSound } from "../app/sound"
 import { formatNumber } from "../utils/functions"
-import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO, MAX_BET, SCENE_NAME } from "./constants"
+import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO, MAX_BET } from "./constants"
+import { SCENE_NAME } from "../game/scenes/constants"
 
 export let isLangRu = true
 

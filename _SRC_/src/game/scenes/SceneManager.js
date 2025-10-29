@@ -1,6 +1,6 @@
 import { getAppScreen, sceneAdd, sceneRemove, tickerAdd, tickerRemove } from "../../app/application"
 import { EventHub, events } from "../../app/events"
-import { SCENE_ALPHA_STEP } from "../constants"
+import { SCENE_ALPHA_STEP, SCENE_ALPHA_MIN, SCENE_ALPHA_MAX } from "./constants"
 
 let sceneManager = null
 
@@ -33,7 +33,7 @@ export default class SceneManager {
         else {
             this.currentScene = scene
             this.updateSceneSize()
-            this.currentScene.alpha = 0
+            this.currentScene.alpha = SCENE_ALPHA_MIN
             sceneAdd(this.currentScene)
         }
         tickerAdd(this)
@@ -45,23 +45,23 @@ export default class SceneManager {
         this.currentScene = this.nextScene
         this.updateSceneSize()
         this.nextScene = null
-        this.currentScene.alpha = 0
+        this.currentScene.alpha = SCENE_ALPHA_MIN
         sceneAdd(this.currentScene)
     }
 
     scenesReady() {
         tickerRemove(this)
-        this.currentScene.alpha = 1
+        this.currentScene.alpha = SCENE_ALPHA_MAX
     }
 
     tick(time) {
         if (this.nextScene && this.currentScene) {
             this.currentScene.alpha -= time.elapsedMS * SCENE_ALPHA_STEP
-            if (this.currentScene.alpha <= 0) this.replaceScenes()
+            if (this.currentScene.alpha <= SCENE_ALPHA_MIN) this.replaceScenes()
             return
         } else {
             this.currentScene.alpha += time.elapsedMS * SCENE_ALPHA_STEP
-            if (this.currentScene.alpha >= 1) this.scenesReady()
+            if (this.currentScene.alpha >= SCENE_ALPHA_MAX) this.scenesReady()
         }
     }
 

@@ -1,5 +1,6 @@
 import { Container, Texture, Sprite, Text } from "pixi.js"
-import { HELP_TEXT, SCENE_NAME, UI } from "../constants"
+import { HELP_TEXT, UI } from "../constants"
+import { SCENE_NAME } from "../scenes/constants"
 import ButtonUI from "./ButtonUI"
 import { addMoney, isLangRu, money } from "../state"
 import { styles } from "../../app/styles"

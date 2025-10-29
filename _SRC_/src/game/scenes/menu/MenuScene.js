@@ -3,13 +3,14 @@ import { tickerRemove } from '../../../app/application'
 import { atlases, images, music } from '../../../app/assets'
 import { startScene } from '../../../app/events'
 import { setMusic } from '../../../app/sound'
-import { MENU_BG_SIZE, MENU_TEXT, SCENE_NAME } from '../../constants'
+import { MENU_BG_SIZE, MENU_TEXT } from '../../constants'
+import { SCENE_NAME } from '../constants'
 import { isLangRu } from '../../state'
 import Button from '../../UI/Button'
 import BackgroundTiling from '../../BG/BackgroundTiling'
 import Coins from '../../effects/Coins'
 import BackgroundGradient from '../../BG/BackgroundGradient'
-import BackgroundCasino from '../../BG/BackfroundCasino'
+import BackgroundCasino from '../../BG/BackgroundCasino'
 import ButtonLight from '../../UI/ButtonLight'
 
 export default class Menu extends Container {
@@ -33,6 +34,8 @@ export default class Menu extends Container {
         )
         this.slotsButton.position.set(0, 130)
         this.addChild(this.slotsButton)
+
+        setMusic([music.bgm_0])
     }
 
     screenResize(screenData) {

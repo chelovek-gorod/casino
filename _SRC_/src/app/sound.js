@@ -7,7 +7,7 @@ const SETTINGS = {
         storageKey: 'soundOn',
     },
     music: {
-        isOnByDefault: false, // true
+        isOnByDefault: true, // true
         storageKey: 'musicOn',
     }
 }
@@ -162,7 +162,7 @@ function loadBgMusic() {
         preload: true,
         loaded: function(err, sound) {
             if (token !== bgMusicToken) return sound.destroy()
-
+            console.log('bg music loaded',isSoundAvailable,isMusicOn)
             bgMusicAudio = sound
             sound.play({ volume: bgMusicVolume }).on('end', nextBgMusic)
             if (!isSoundAvailable || !isMusicOn) stopMusic()

@@ -1,6 +1,5 @@
 import { Application } from 'pixi.js'
 import { changeFocus, screenResize } from './events'
-import { uploadAssets } from './loader'
 
 // app settings
 let isGlobalAppCursor = false
@@ -22,14 +21,14 @@ const appSettings = {
 // app logic
 let app = null
 let appContainer = null
-let startCallback = null
+let appReadyCallback = null
 
 export default function initApp(container, callback) {
     if (app) return
 
     app = new Application()
     appContainer = container
-    startCallback = callback
+    appReadyCallback = callback
 
     appSettings.resizeTo = appContainer
     Promise.all( [app.init( appSettings )] ).then( appReady )
@@ -49,7 +48,7 @@ function appReady() {
         app.stage.on('pointermove', (event) => appPointer = event.data)
     }
 
-    uploadAssets(startCallback)
+    appReadyCallback()
 }
 
 let tickerArr = []
