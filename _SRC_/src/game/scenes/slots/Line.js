@@ -93,9 +93,12 @@ export default class Line extends Container {
     }
 
     run(delayIndex) {
-        this.startTimeout = SLOTS_LINES.delay * delayIndex
-            + getRandom(SLOTS_LINES.minTimeout, SLOTS_LINES.maxTimeout)
-        this.runTime = getRandom(SLOTS_LINES.durationMin, SLOTS_LINES.durationMax)
+        let timeout = SLOTS_LINES.delay * delayIndex
+        timeout += getRandom(SLOTS_LINES.minTimeout, SLOTS_LINES.maxTimeout)
+        timeout *= 0.5
+
+        this.startTimeout = timeout
+        this.runTime = getRandom(SLOTS_LINES.durationMin, SLOTS_LINES.durationMax) + timeout
         this.normalSpeed = getRandom(SLOTS_LINES.minSpeed, SLOTS_LINES.maxSpeed)
         this.speed = 0
         this.state = STATE.start

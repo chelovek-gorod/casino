@@ -481,9 +481,9 @@ export default class Slots extends Container {
                 if (this.isAutoSpinOn) this.run()
             }, 300)
 
-            console.clear()
+            // console.clear()
             testWinData.spins++
-            console.log(testWinData)
+            // console.log(testWinData)
 
             return
         }

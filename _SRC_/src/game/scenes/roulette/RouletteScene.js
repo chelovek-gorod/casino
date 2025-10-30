@@ -49,7 +49,7 @@ export default class Roulette extends Container {
         setMusic([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
     }
 
-    screenResize(screenData) { console.log('RR')
+    screenResize(screenData) {
         // set scene container in center of screen
         this.position.set( screenData.centerX, screenData.centerY )
 
@@ -92,10 +92,6 @@ export default class Roulette extends Container {
         this.rightUI.position.set(screenData.centerX, screenData.centerY)
 
         this.topUI.screenResize(screenData)
-    }
-
-    setActiveChip() {
-        console.log('chip')
     }
 
     kill() {

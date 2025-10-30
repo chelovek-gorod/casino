@@ -83,10 +83,6 @@ export default class TopBarMenu extends Container {
         showPopup()
     }
 
-    testClick() {
-        console.log('get click')
-    }
-
     kill() {
         this.money.eventMode = 'none'
         this.money.off('pointerover', () => setHelpText(HELP_TEXT.money))

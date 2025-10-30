@@ -370,6 +370,7 @@ export default class Field extends Container {
     onClick(event) {
         if (isOnSpin) return
 
+        /*
         console.log(
             '\ntitle:', event.target.title,
             '\nnumbers:', event.target.numbers,
@@ -377,6 +378,7 @@ export default class Field extends Container {
             '\npos:', event.target.position,
             '\nisRightBtnClick', event.data.button == 2
         )
+        */
 
         this.clickDuration = Date.now()
         this.clickTarget = event.target
@@ -391,13 +393,15 @@ export default class Field extends Container {
         const dt = Date.now() - this.clickDuration
         this.clickDuration = 0
         if(dt >= UI.contextOpenMinDuration || event.data.button === 2) {
+            /*
             console.log(
                 'POPUP DATA:',
                 '\ntitle:', event.target.title,
                 '\nnumbers:', event.target.numbers,
                 '\ntype:', event.target.field
             )
-
+            */
+           
             // disable to set and edit bets in spiel field !!!
             if (event.target.field === FIELD_TYPE.spiel) return
 

@@ -123,7 +123,7 @@ export default class LoadScene extends Container {
         this.progressText.text = range + '%'
     }
 
-    drawProgress(range) { console.log(range)
+    drawProgress(range) {
         this.progressBar.clear()
 
         this.progressBar.roundRect(
