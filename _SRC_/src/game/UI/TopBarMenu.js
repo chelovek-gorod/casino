@@ -7,7 +7,7 @@ import { styles } from "../../app/styles"
 import { formatNumber } from "../../utils/functions"
 import { getRRTexture, getRRTextureWithShadow } from "../../utils/textureGenerator"
 import { EventHub, events, setHelpText, showPopup, startScene } from "../../app/events"
-import { tickerRemove } from "../../app/application"
+import { kill, tickerRemove } from "../../app/application"
 
 export default class TopBarMenu extends Container {
     constructor() {
@@ -93,7 +93,7 @@ export default class TopBarMenu extends Container {
 
         while(this.children.length) {
             tickerRemove(this.children[0])
-            if ('kill' in this.children[0]) this.children[0].kill()
+            if ('kill' in this.children[0]) kill(this.children[0])
             else this.children[0].destroy()
         }
         this.destroy()

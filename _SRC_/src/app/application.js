@@ -2,11 +2,19 @@ import { Application } from 'pixi.js'
 import { changeFocus, screenResize } from './events'
 
 // app settings
-let isGlobalAppCursor = false
+let isGlobalAppCursor = false // NEED DEPRECIATED
 export let appPointer = null
 
 const isCursorHidden = false // use custom image
 if (isCursorHidden) document.body.style.cursor = 'none'
+
+// ticker list
+let tickerArr = []
+
+// queues
+const tickerAddQueue = new Set()
+const tickerRemoveQueue = new Set()
+const killQueue = new Set()
 
 // pixi app settings
 const appSettings = {
@@ -50,8 +58,6 @@ function appReady() {
 
     appReadyCallback()
 }
-
-let tickerArr = []
 
 const appScreen = {
     width: 0,
@@ -120,23 +126,113 @@ function updateVisibilityState( ) {
 // update visibility with app init
 setTimeout(updateVisibilityState, 0)
 
+// check device info
+const deviceInfo = (() => {
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    const isTablet = /iPad|Android/i.test(navigator.userAgent) && !isMobile
+    
+    return {
+        deviceType: isTablet ? 'tablet' : isMobile ? 'mobile' : isTouch ? 'touch-desktop' : 'desktop',
+        capabilities: {
+            touch: isTouch,
+            mouse: window.matchMedia('(hover: hover) and (pointer: fine)').matches,
+            keyboard: window.matchMedia('(hover: hover)').matches,
+            gamepad: 'getGamepads' in navigator
+        }
+    }
+})()
+
+export function getDeviceType() {
+    return deviceInfo.deviceType
+}
+
+export function getInputCapabilities() {
+    return deviceInfo.capabilities
+}
+
+// ticker
+
+export function tickerAdd(element) {
+    if (!element?.tick) {
+        console.warn('TRY TO ADD ELEMENT IN TICKER WITHOUT .tick() METHOD:', element)
+        return
+    }
+
+    if (killQueue.has(element)) return
+    
+    tickerRemoveQueue.delete(element)
+    
+    tickerAddQueue.add(element)
+}
+
+export function tickerRemove(element) {
+    if (!element) return
+    
+    tickerAddQueue.delete(element) // не выходим !!!
+    
+    tickerRemoveQueue.add(element)
+}
+
+export function kill(element) {
+    if (!element) return
+    if (killQueue.has(element)) return
+    
+    const stack = [element]
+    
+    while (stack.length > 0) {
+        const current = stack.pop()
+        
+        tickerAddQueue.delete(current)
+        tickerRemoveQueue.delete(current)
+        killQueue.add(current)
+        
+        const children = current.children
+        if (children && children.length > 0) {
+            for (let i = children.length; i--;) {
+                stack.push(children[i])
+            }
+        }
+    }
+}
+
 function tick(time) {
     // if (delta = 1) -> FPS = 60 (16.66ms per frame)
-    tickerArr.forEach( element => element.tick(time) )
-    // time.elapsedMS - in milliseconds
-    // time.deltaMS   - ???
-    // time.deltaTime - in frame
+    for (let i = 0; i < tickerArr.length; i++) tickerArr[i].tick(time)
+    // time.elapsedMS - milliseconds after start app
+    // time.deltaMS   - milliseconds after previous frame
+    // time.deltaTime - FPS rate (from 60 FPS) ~1 (= 1 FPS)    
+
+    if (tickerAddQueue.size > 0) {
+        for (const obj of tickerAddQueue) tickerArr.push(obj)
+        tickerAddQueue.clear()
+    }
+            
+    if (tickerRemoveQueue.size > 0) filterTickerArrBySet( tickerRemoveQueue )
+            
+    if (killQueue.size > 0) {
+        const killArr = Array.from(killQueue)
+        filterTickerArrBySet( killQueue )
+            
+        while (killArr.length > 0) {
+            const obj = killArr.pop()
+            if (obj.kill) obj.kill()
+            else if (obj.destroy) obj.destroy({ children: true })
+        }
+    }
 }
 
-export function tickerAdd( element ) {
-    if ('tick' in element) tickerArr.push( element )
-    else console.warn( 'TRY TO ADD ELEMENT IN TICKER WITHOUT .tick() METHOD:', element)
+function filterTickerArrBySet( set ) {
+    let writeIndex = 0
+    for (let i = 0; i < tickerArr.length; i++) {
+        if (!set.has(tickerArr[i])) {
+            tickerArr[writeIndex++] = tickerArr[i]
+        }
+    }
+    tickerArr.length = writeIndex
+    set.clear()
 }
 
-export function tickerRemove( element ) {
-    tickerArr = tickerArr.filter( e => e !== element )
-}
-
-export function isInTicker( element ) {
-    return !!tickerArr.find( e => e === element )
+export function isInTicker(element) {
+    return tickerArr.includes(element)
 }

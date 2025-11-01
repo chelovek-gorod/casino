@@ -1,4 +1,4 @@
-import { getAppScreen, sceneAdd, sceneRemove, tickerAdd, tickerRemove } from "../../app/application"
+import { getAppScreen, kill, sceneAdd, sceneRemove, tickerAdd, tickerRemove } from "../../app/application"
 import { EventHub, events } from "../../app/events"
 import { SCENE_ALPHA_STEP, SCENE_ALPHA_MIN, SCENE_ALPHA_MAX } from "./constants"
 
@@ -8,8 +8,7 @@ export default class SceneManager {
     constructor() {
         if (sceneManager) return sceneManager
 
-        this.currentScene = null
-        this.nextScene = null
+        this.scenesQueue = []
         this.screenData = getAppScreen()
 
         sceneManager = this
@@ -19,56 +18,53 @@ export default class SceneManager {
 
     screenResize(screenData) {
         this.screenData = screenData
-        this.updateSceneSize()
+        if (this.scenesQueue.length > 0) this.updateSceneSize()
     }
     
     updateSceneSize() {
-        if ('screenResize' in this.currentScene) {
-            this.currentScene.screenResize(this.screenData)
+        if ('screenResize' in this.scenesQueue[0]) {
+            this.scenesQueue[0].screenResize(this.screenData)
         }
     }
 
     add( scene ) {
-        if (this.currentScene) this.nextScene = scene
-        else {
-            this.currentScene = scene
+        this.scenesQueue.push(scene)
+        if (this.scenesQueue.length === 1) {
             this.updateSceneSize()
-            this.currentScene.alpha = SCENE_ALPHA_MIN
-            sceneAdd(this.currentScene)
+            this.scenesQueue[0].alpha = SCENE_ALPHA_MIN
+            sceneAdd(this.scenesQueue[0])
         }
         tickerAdd(this)
     }
 
     replaceScenes() {
-        sceneRemove(this.currentScene)
-        this.currentScene.kill()
-        this.currentScene = this.nextScene
+        sceneRemove(this.scenesQueue[0])
+        kill(this.scenesQueue[0])
+        this.scenesQueue[0] = this.scenesQueue.pop()
+        while(this.scenesQueue.length > 1) kill(this.scenesQueue[1])
         this.updateSceneSize()
-        this.nextScene = null
-        this.currentScene.alpha = SCENE_ALPHA_MIN
-        sceneAdd(this.currentScene)
+        this.scenesQueue[0].alpha = SCENE_ALPHA_MIN
+        sceneAdd(this.scenesQueue[0])
     }
 
     scenesReady() {
         tickerRemove(this)
-        this.currentScene.alpha = SCENE_ALPHA_MAX
+        this.scenesQueue[0].alpha = SCENE_ALPHA_MAX
     }
 
     tick(time) {
-        if (this.nextScene && this.currentScene) {
-            this.currentScene.alpha -= time.elapsedMS * SCENE_ALPHA_STEP
-            if (this.currentScene.alpha <= SCENE_ALPHA_MIN) this.replaceScenes()
+        if (this.scenesQueue.length > 1) {
+            this.scenesQueue[0].alpha -= time.elapsedMS * SCENE_ALPHA_STEP
+            if (this.scenesQueue[0].alpha <= SCENE_ALPHA_MIN) this.replaceScenes()
             return
         } else {
-            this.currentScene.alpha += time.elapsedMS * SCENE_ALPHA_STEP
-            if (this.currentScene.alpha >= SCENE_ALPHA_MAX) this.scenesReady()
+            this.scenesQueue[0].alpha += time.elapsedMS * SCENE_ALPHA_STEP
+            if (this.scenesQueue[0].alpha >= SCENE_ALPHA_MAX) this.scenesReady()
         }
     }
 
     kill() {
         EventHub.off( events.screenResize, this.screenResize, this)
-
-        this.currentScene.kill()
-        this.nextScene.kill()
+        while(this.scenesQueue.length) kill(this.scenesQueue[0])
     }
 }

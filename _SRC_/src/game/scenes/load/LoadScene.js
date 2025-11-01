@@ -1,5 +1,5 @@
 import { Container, Text, Sprite, Graphics } from 'pixi.js'
-import { assetType, assets } from '../../../app/assets'
+import { assetType, assets, sounds } from '../../../app/assets'
 import { styles } from '../../../app/styles'
 import { getAppScreen, tickerAdd, tickerRemove } from '../../../app/application'
 import { ALPHA_STEP, PROGRESS_TEXT, PROGRESS_BAR, DONE_TEXT } from './constants'
@@ -9,6 +9,7 @@ import { removeCursorPointer, setCursorPointer } from '../../../utils/functions'
 import { startScene } from '../../../app/events'
 import { SCENE_NAME } from '../constants'
 import { isLangRu } from '../../state'
+import { getFirstUserAction, playSound } from '../../../app/sound'
 
 let isFirstLoading = true
 
@@ -148,6 +149,9 @@ export default class LoadScene extends Container {
 
     getClick() {
         if (!this.isLoadingDone) return
+
+        getFirstUserAction()
+        playSound(sounds.se_click)
 
         startScene(SCENE_NAME.Menu)
     }

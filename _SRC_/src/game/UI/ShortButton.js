@@ -62,7 +62,6 @@ export default class ShortButton extends Container {
         this.image.off('pointerdown', this.click, this)
         this.image.off('pointerover', this.onHover, this)
         this.image.off('pointerout', this.onOut, this)
-        this.label.style = styles.shortButton
     }
 
     kill() {

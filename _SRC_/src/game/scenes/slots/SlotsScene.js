@@ -1,7 +1,7 @@
 import { Container, Sprite, Text } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music, sounds } from '../../../app/assets'
-import { playSound, setMusic } from '../../../app/sound'
+import { playSound, setMusic, stopMusic } from '../../../app/sound'
 import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA, 
     SLOTS_HIGHLIGHT, MESSAGE_TEXT, UI } from '../../constants'
 import Line from './Line'

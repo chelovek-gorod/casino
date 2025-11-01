@@ -20,6 +20,8 @@ export function setMusicVolume(value) {
     }
 
     bgMusicVolume = newVolumeValue
+
+    if (bgMusicPlayingInstance) bgMusicPlayingInstance.volume = bgMusicVolume
 }
 
 let isSoundOn = getStoredValue(SETTINGS.sound)
@@ -36,10 +38,8 @@ function setStoredValue(storageData, isOn) {
 }
 
 let isSoundAvailable = false // is game in focus
-EventHub.on( events.getUserAction, getFirstUserAction )
-function getFirstUserAction() {
+export function getFirstUserAction() {
     isSoundAvailable = true
-    EventHub.off( events.getUserAction, getFirstUserAction )
 }
 
 EventHub.on( events.changeFocus, changeFocus )
@@ -78,7 +78,7 @@ export function musicGetState() {
     return isMusicOn
 }
 
-// 
+// voices
 
 const voicesSet = new Set()
 let voiceInstance = null
@@ -103,6 +103,8 @@ export function stopVoices() {
     voicesSet.clear()
 }
 
+// sounds
+
 export function playSound( se ) {
     if (!isSoundOn || !isSoundAvailable) return
     // se.stop()
@@ -112,7 +114,7 @@ export function stopSound( se ) {
     se.stop()
 }
 
-let bgMusicSound = null
+let bgMusicPlayingInstance = null
 let bgMusicAudio = null
 let bgMusicList = null
 let bgMusicIndex = 0
@@ -133,7 +135,6 @@ export function setMusic(music, startIndex = null) {
 }
 
 export function stopMusic() {
-    isSoundAvailable = false
     if (!bgMusicAudio) return
 
     if (bgMusicAudio.isPlaying) bgMusicAudio.pause()
@@ -141,7 +142,6 @@ export function stopMusic() {
 }
 
 export function playMusic() {
-    isSoundAvailable = true
     if (!isMusicOn || !bgMusicAudio || !bgMusicList) return
 
     if (bgMusicAudio.paused) bgMusicAudio.resume()
@@ -157,13 +157,13 @@ function loadBgMusic() {
         bgMusicAudio = null
     }
 
-    bgMusicSound = Sound.from({
+    Sound.from({
         url: bgMusicList[bgMusicIndex],
         preload: true,
         loaded: function(err, sound) {
             if (token !== bgMusicToken) return sound.destroy()
             bgMusicAudio = sound
-            sound.play({ volume: bgMusicVolume }).on('end', nextBgMusic)
+            bgMusicPlayingInstance = sound.play({ volume: bgMusicVolume }).on('end', nextBgMusic)
             if (!isSoundAvailable || !isMusicOn) stopMusic()
         }
     })
