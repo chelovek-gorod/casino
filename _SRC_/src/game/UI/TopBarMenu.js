@@ -1,5 +1,5 @@
 import { Container, Texture, Sprite, Text } from "pixi.js"
-import { HELP_TEXT, UI } from "../constants"
+import { HELP_TEXT, UI } from "./constants"
 import { SCENE_NAME } from "../scenes/constants"
 import ButtonUI from "./ButtonUI"
 import { addMoney, isLangRu, money } from "../state"
@@ -90,12 +90,5 @@ export default class TopBarMenu extends Container {
 
         EventHub.off( events.updateMoney, this.updateMoney, this )
         EventHub.off( events.setHelpText, this.setHelpText, this )
-
-        while(this.children.length) {
-            tickerRemove(this.children[0])
-            if ('kill' in this.children[0]) kill(this.children[0])
-            else this.children[0].destroy()
-        }
-        this.destroy()
     }
 }

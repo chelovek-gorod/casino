@@ -2,8 +2,8 @@ import { Container, Sprite, Text } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music, sounds } from '../../../app/assets'
 import { playSound, setMusic, stopMusic } from '../../../app/sound'
-import { BUTTON, BUTTON_TEXT, SLOTS_BORDER, SLOTS_LINES, GAME_OFFSET, SLOTS, SLOTS_LINES_DATA, 
-    SLOTS_HIGHLIGHT, MESSAGE_TEXT, UI } from '../../constants'
+import { BUTTON, BUTTON_TEXT, GAME_OFFSET, MESSAGE_TEXT, UI } from '../../UI/constants'
+import { SLOTS_BORDER, SLOTS_LINES, SLOTS, SLOTS_LINES_DATA, SLOTS_HIGHLIGHT } from './constants'
 import Line from './Line'
 import Button from '../../UI/Button'
 import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet, betsTotal, slotCoins, addSlotCoins, getSlotCoins } from '../../state'
@@ -108,7 +108,7 @@ export default class Slots extends Container {
         this.highlightTimeout = 300
 
         this.autoSpinByKeySpace_bind = this.setAutoSpinByKeySpace.bind(this)
-        document.addEventListener('keyup', this.autoSpinByKeySpace_bind )
+        document.addEventListener('keyup', this.autoSpinByKeySpace_bind)
 
         // done
         setMusic([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
@@ -648,12 +648,5 @@ export default class Slots extends Container {
 
         clearTimeout(this.autoSpinTimeout)
         this.isAutoSpinOn = false
-        tickerRemove(this)
-        while(this.children.length) {
-            tickerRemove(this.children[0])
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
     }
 }

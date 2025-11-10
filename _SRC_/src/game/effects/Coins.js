@@ -119,12 +119,9 @@ export default class Coins extends Container {
     }
 
     kill() {
-        tickerRemove(this)
-        while(this.children.length) this.children[0].destroy()
         while(this.coinsPull.length) {
             const coin = this.coinsPull.pop()
-            coin.destroy()
+            coin.destroy({children: true})
         }
-        this.destroy()
     }
 }

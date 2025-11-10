@@ -3,13 +3,19 @@ import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNeares
     showMessage, clearOneBet, clearAllBets, EventHub, events} from "../app/events"
 import { playSound } from "../app/sound"
 import { formatNumber } from "../utils/functions"
-import { MESSAGE_TEXT, BET_RATIO, MESSAGE, MAX_BET_RATIO, MAX_BET } from "./constants"
+import { MAX_BET_RATIO, BET_RATIO } from "./scenes/roulette/constants"
+import { MESSAGE_TEXT } from "./UI/constants"
 import { SCENE_NAME } from "../game/scenes/constants"
 
 export let isLangRu = true
 
 export let currentScene = SCENE_NAME.Menu
 EventHub.on( events.startScene, (scene) => currentScene = scene )
+
+export let betRate = 1
+export let maxBet = 10000
+export function setBetRate(value) {betRate = value}
+export function setMaxBet(value) {maxBet = value}
 
 export let isOnSpin = false
 export let isSingleBetsInSectors = false
@@ -33,6 +39,7 @@ export let editedBetInfo = {
 
 export function resetState() {
     betsTotal = 0
+    isOnSpin = false
 }
 
 export function checkRunSlots() {
@@ -128,7 +135,7 @@ export function editBet(value, isChip = false) {
     }
 
     if (!isChip) {
-        betCurrent = Math.min(MAX_BET, Math.max(1, betCurrent + value))
+        betCurrent = Math.min(maxBet, Math.max(1, betCurrent + value))
         return checkBet()
     }
 
@@ -137,7 +144,7 @@ export function editBet(value, isChip = false) {
         return checkBet()
     }
 
-    betCurrent = Math.min(MAX_BET, Math.max(1, betCurrent + value))
+    betCurrent = Math.min(maxBet, Math.max(1, betCurrent + value))
     checkBet()
 }
 

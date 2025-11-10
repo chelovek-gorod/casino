@@ -1,7 +1,8 @@
 import { Container, Text, Graphics } from "pixi.js";
 import { EventHub, events } from "../../app/events";
 import { styles } from "../../app/styles";
-import { POPUP, POPUP_TEXT, LOGS, SECTOR, SECTOR_NUMBERS } from "../constants";
+import { SECTOR, SECTOR_NUMBERS } from "../scenes/roulette/constants";
+import { POPUP_TEXT, LOGS } from "./constants";
 import { isLangRu, results } from "../state";
 
 const SIZE_TYPE = {
@@ -99,14 +100,5 @@ export default class Logs extends Container {
 
     kill() {
         EventHub.off(events.addLog, this.addLog, this)
-
-        while(this.logs.children.length) this.logs.children[0].destroy()
-
-        while(this.children.length) {
-            tickerRemove(this.children[0])
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
     }
 }

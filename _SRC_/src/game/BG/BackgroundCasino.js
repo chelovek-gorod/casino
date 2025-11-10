@@ -54,12 +54,6 @@ class ImageBG extends Container {
             if ( this.lime.alpha === 0) this.isLimeAlphaUp = true
         }
     }
-
-    kill() {
-        while(this.children.length) this.children[0].destroy()
-
-        this.destroy()
-    }
 }
 
 export default class BackgroundCasino extends Container {
@@ -114,13 +108,9 @@ export default class BackgroundCasino extends Container {
     }
 
     kill() {
-        tickerRemove(this)
-        while(this.imagesContainer.children.length) this.imagesContainer.children[0].kill()
-        while(this.children.length) this.children[0].destroy()
         while(this.imagesPul.length) {
             const image = this.imagesPul.pop()
-            image.kill()
+            image.destroy({children: true})
         }
-        this.destroy()
     }
 }

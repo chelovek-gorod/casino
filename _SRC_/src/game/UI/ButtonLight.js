@@ -99,13 +99,9 @@ export default class ButtonLight extends Container {
     }
 
     kill() {
-        tickerRemove(this)
         removeCursorPointer(this.base)
         this.base.off('pointerdown', this.click, this)
         this.base.off('pointerover', this.onHover, this)
         this.base.off('pointerout', this.onOut, this)
-        while(this.lamps.children.length) this.lamps.children[0].destroy()
-        while(this.children.length) this.children[0].destroy()
-        this.destroy()
     }
 }

@@ -2,10 +2,11 @@ import { Container, Sprite } from "pixi.js";
 import { atlases, images } from "../../../app/assets";
 import { EventHub, events, setHelpText } from "../../../app/events";
 import { setCursorPointer } from "../../../utils/functions";
-import { BET_RATIO, FIELD, GAME_CONTAINERS, HELP_TEXT, MAX_BET_RATIO,
-    NUMBERS, SECTOR, SECTOR_NUMBERS, SECTOR_SPLIT_NUMBERS, SPIEL, UI } from "../../constants";
+import { GAME_CONTAINERS, HELP_TEXT, UI } from "../../UI/constants";
+import { BET_RATIO, FIELD, MAX_BET_RATIO, NUMBERS,
+    SECTOR, SECTOR_NUMBERS, SECTOR_SPLIT_NUMBERS, SPIEL } from "./constants";
 import { addBetData, betCurrent, betNearest, removeBet, getBetDataValue,
-    isOnSpin, isSingleBetsInSectors, setBet } from "../../state";
+    isOnSpin, isSingleBetsInSectors, setBet, isLangRu } from "../../state";
 import Chip from "./Chip";
 
 const FIELD_TYPE = { spiel: 'spiel', field: 'field' }
@@ -77,8 +78,9 @@ export default class Field extends Container {
             this.spiel.addChild(this.sectorsList[key])
         })
 
-        this.spielTop = new Sprite(images.spiel_top)
+        this.spielTop = new Sprite(isLangRu ? images.spiel_top_ru : images.spiel_top)
         this.spiel.addChild(this.spielTop)
+        console.log(this.spielTop.texture)
 
         // FIELD
 
@@ -124,7 +126,7 @@ export default class Field extends Container {
             this.field.addChild(this.slotsList[key])
         })
 
-        this.fieldTop = new Sprite(images.field)
+        this.fieldTop = new Sprite(isLangRu ? images.field_ru : images.field)
         this.fieldTop.position.set(0, fieldOffsetY)
         this.field.addChild(this.fieldTop)
 
@@ -476,11 +478,5 @@ export default class Field extends Container {
         EventHub.off(events.addLog, this.getSpinResult, this)
         EventHub.off(events.clearOneBet, this.clearOneBet, this)
         EventHub.off(events.clearAllBets, this.clearAllBets, this)
-
-        while(this.children.length) {
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
     }
 }

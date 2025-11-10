@@ -25,8 +25,4 @@ export default class BackgroundImage extends Sprite {
         this.anchor.set(0.5)
         screenResize(getAppScreen())
     }
-
-    kill() {
-        this.destroy()
-    }
 }

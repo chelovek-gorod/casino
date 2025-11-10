@@ -1,6 +1,7 @@
 import { Container, Graphics } from "pixi.js"
 import { EventHub, events } from "../../app/events"
-import { BUTTON_TEXT, POPUP, POPUP_TYPE } from "../constants"
+import { BUTTON_TEXT } from "../UI/constants"
+import { POPUP, POPUP_TYPE } from "./constants"
 import { isLangRu } from "../state"
 import Button from "../UI/Button"
 import Bet from "./Bet"
@@ -65,12 +66,5 @@ export default class Popup extends Container {
 
     kill() {
         EventHub.off(events.showPopup, this.show, this)
-
-        while(this.children.length) {
-            tickerRemove(this.children[0])
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
     }
 }

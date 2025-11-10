@@ -1,8 +1,9 @@
-import { Container, Sprite, Graphics } from "pixi.js";
-import { tickerAdd, tickerRemove } from "../../../app/application";
-import { atlases } from "../../../app/assets";
-import { getRandom } from "../../../utils/functions";
-import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT, MESSAGE } from "../../constants";
+import { Container, Sprite, Graphics } from "pixi.js"
+import { tickerAdd, tickerRemove } from "../../../app/application"
+import { atlases } from "../../../app/assets"
+import { getRandom } from "../../../utils/functions"
+import { MESSAGE } from "../../UI/constants"
+import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT } from "./constants"
 
 const STATE = {
     idle: 'idle',
@@ -234,15 +235,5 @@ export default class Line extends Container {
 
         this.imagesContainer.position.y += this.speed * time.deltaMS
         if (this.imagesContainer.position.y > SLOTS_LINES.slotHeight) this.updateImages()
-    }
-
-    kill() {
-        tickerRemove(this)
-
-        while(this.children.length) {
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
     }
 }

@@ -52,7 +52,5 @@ export default class BackgroundGradient extends Sprite {
 
     kill() {
         if (this.texture) this.texture.destroy(true)
-
-        this.destroy()
     }
 }

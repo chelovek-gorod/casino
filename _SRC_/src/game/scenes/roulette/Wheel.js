@@ -3,9 +3,11 @@ import { tickerAdd, tickerRemove } from "../../../app/application";
 import { images, sounds } from "../../../app/assets";
 import { playSound, stopSound } from "../../../app/sound";
 import { getLinesIntersectionPoint, getRandom } from "../../../utils/functions";
-import { BUTTON_TEXT, GAME_CONTAINERS, WHEEL, BALL, NUMBERS, SHOW_RESULT_DELAY } from "../../constants";
+import { BUTTON_TEXT, GAME_CONTAINERS, RESULTS } from "../../UI/constants";
+import { WHEEL, BALL, NUMBERS, SHOW_RESULT_DELAY } from "./constants";
 import { isLangRu, isOnSpin, setSpin, setSpinResult } from "../../state";
 import Button from "../../UI/Button";
+import Results from "./Results";
 
 const HalfPI = Math.PI * 0.5
 const DoublePI = Math.PI * 2
@@ -61,12 +63,19 @@ export default class Wheel extends Container {
 
         this.state = STATE.stop
 
+        this.results = new Results()
+        this.results.position.set(GAME_CONTAINERS.wheel.pointResults.x, GAME_CONTAINERS.wheel.pointResults.y)
+        this.addChild(this.results)
+
         this.runButton = new Button(
             isLangRu ? BUTTON_TEXT.spin.ru : BUTTON_TEXT.spin.en,
             GAME_CONTAINERS.wheel.pointButton.x, GAME_CONTAINERS.wheel.pointButton.y,
             this.run.bind(this)
         )
         this.addChild(this.runButton)
+
+        this.runByKeySpace_bind = this.run.bind(this)
+        document.addEventListener('keyup', this.runByKeySpace_bind )
     }
 
     run() {
@@ -145,14 +154,6 @@ export default class Wheel extends Container {
 
         const step = Math.min(Math.abs(normalAngle), moveDistance)
         this.ballMoveAngle += Math.sign(normalAngle) * step
-
-        /*
-        let remaining = normalizeAngleDiff(targetAngle - this.ballMoveAngle)
-        if (Math.abs(remaining) <= 1e-6) {
-            this.ballMoveAngle = targetAngle;
-            this.ballTargetAngle = null;
-        }
-        */
     }
 
     updateBallPosition() {
@@ -310,12 +311,6 @@ export default class Wheel extends Container {
     }
 
     kill() {
-        tickerRemove(this)
-
-        while(this.children.length) {
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
+        document.removeEventListener('keyup', this.runByKeySpace_bind )
     }
 }

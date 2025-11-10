@@ -26,8 +26,4 @@ export default class BackgroundTiling extends TilingSprite {
         this.anchor.set(0.5)
         screenResize(getAppScreen())
     }
-
-    kill() {
-        this.destroy()
-    }
 }

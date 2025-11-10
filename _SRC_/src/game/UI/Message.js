@@ -2,7 +2,8 @@ import { Container, Graphics, Text } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../app/application";
 import { EventHub, events } from "../../app/events";
 import { styles } from "../../app/styles";
-import { MESSAGE, SECTOR_NUMBERS, SECTOR } from "../constants";
+import { MESSAGE } from "./constants";
+import { SECTOR_NUMBERS, SECTOR } from "../scenes/roulette/constants";
 
 export default class Message extends Container {
     constructor() {
@@ -61,10 +62,5 @@ export default class Message extends Container {
 
     kill() {
         EventHub.off(events.showMessage, this.show, this)
-        tickerRemove(this)
-
-        while(this.children.length) this.children[0].destroy()
-
-        this.destroy()
     }
 }

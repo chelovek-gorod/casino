@@ -170,15 +170,7 @@ export default class LoadScene extends Container {
     }
 
     kill() {
-        tickerRemove(this)
         removeCursorPointer(this)
         this.off('pointerdown', this.getClick, this)
-
-        while(this.children.length) {
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-
-        this.destroy()
     }
 }

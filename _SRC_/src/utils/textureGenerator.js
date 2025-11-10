@@ -6,6 +6,38 @@ function colorToCss(color) {
     if (typeof color === "string") return color
     return "#" + color.toString(16).padStart(6, "0")
 }
+
+/**
+ * Рендерит PIXI.Text (или любой DisplayObject) в RenderTexture.
+ * 
+ * @param {PIXI.Text} textObject - текст, который нужно превратить в текстуру
+ * @returns {PIXI.RenderTexture} - готовая текстура
+ */
+export function textToTexture(textObject) {
+    const renderer = getAppRenderer()
+    const bounds = textObject.getLocalBounds()
+
+    const rt = RenderTexture.create({
+        width: Math.ceil(bounds.width),
+        height: Math.ceil(bounds.height),
+    })
+
+    const container = new Container()
+    container.addChild(textObject)
+
+    const prevX = textObject.x
+    const prevY = textObject.y
+
+    textObject.x = -bounds.x
+    textObject.y = -bounds.y
+
+    renderer.render(container, { renderTexture: rt })
+
+    textObject.x = prevX
+    textObject.y = prevY
+
+    return rt
+}
   
 /**
  * Создает Texture прямоугольника или радиального градиента (PixiJS v8)

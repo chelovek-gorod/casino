@@ -16,6 +16,10 @@ export const path = {
     fonts : './fonts/',
 }
 export const fonts = {
+    Title: 'Unbounded-Bold.ttf',
+    Subtitle1: 'TrainOne-Regular.ttf',
+    Subtitle2: 'ComforterBrush-Regular.ttf',
+    
     Manrope200: 'Manrope-ExtraLight.ttf',
     Manrope300: 'Manrope-Light.ttf',
     Manrope400: 'Manrope-Regular.ttf',
@@ -32,9 +36,14 @@ export const images = {
 
     button: 'button.png',
 
+    game_title_ru: 'game_title_ru.png',
+    game_title_en: 'game_title_en.png',
+
     field: 'field_1204x504px.png',
+    field_ru: 'field_ru_1204x504px.png',
     spiel_bg: 'spiel_bg_1204x312px.png',
     spiel_top: 'spiel_top_1204x312px.png',
+    spiel_top_ru: 'spiel_top_ru_1204x312px.png',
     dolly: 'dolly.png',
 
     ball: 'wheel_ball_24x24px.png',

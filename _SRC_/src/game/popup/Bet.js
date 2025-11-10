@@ -3,9 +3,10 @@ import { atlases } from "../../app/assets";
 import { EventHub, events } from "../../app/events";
 import { styles } from "../../app/styles";
 import { removeCursorPointer, setCursorPointer } from "../../utils/functions";
-import { POPUP_TEXT } from "../constants";
+import { POPUP_TEXT } from "./constants"
 import { SCENE_NAME } from "../scenes/constants";
-import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest, isSingleBetsInSectors, currentScene } from "../state";
+import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest,
+    isSingleBetsInSectors, currentScene } from "../state";
 import ShortButton from "../UI/ShortButton";
 
 const chipButtons = {
@@ -174,12 +175,9 @@ export default class Bet extends Container {
             EventHub.off(events.updateNearestNumber, this.updateNearestNumber, this)
         }
 
-        while(this.children.length) {
-            tickerRemove(this.children[0])
-            if ('isChip' in this.children[0]) removeCursorPointer(this.children[0])
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
+        for(let i = 0; i < this.children.length; i++) {
+            tickerRemove(this.children[i])
+            if ('isChip' in this.children[i]) removeCursorPointer(this.children[i])
         }
-        this.destroy()
     }
 }

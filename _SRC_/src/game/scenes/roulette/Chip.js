@@ -1,7 +1,7 @@
 import { Container, Sprite, Text } from "pixi.js"
 import { atlases } from "../../../app/assets"
 import { styles } from "../../../app/styles"
-import { CHIP_DATA } from "../../constants"
+import { CHIP_DATA } from "./constants"
 
 function getChipTexture(bet) {
     if (bet < 5) return atlases.chip.textures.c1
@@ -37,13 +37,5 @@ export default class Chip extends Container {
         const current = value === 0 ? 0 : +this.text.text + value
         this.image.texture = getChipTexture(current)
         this.text.text = current
-    }
-
-    kill() {
-        while(this.children.length) {
-            this.children[0].destroy()
-        }
-
-        this.destroy()
     }
 }

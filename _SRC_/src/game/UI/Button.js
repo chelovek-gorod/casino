@@ -4,7 +4,7 @@ import { removeCursorPointer, setCursorPointer } from "../../utils/functions"
 import { styles } from "../../app/styles"
 import { playSound } from "../../app/sound"
 import { getRRTextureWithShadow } from "../../utils/textureGenerator"
-import { BUTTON } from "../constants"
+import { BUTTON } from "./constants"
 
 export default class Button extends Container {
     constructor(text, x, y, callback, isActive = true) {
@@ -75,7 +75,5 @@ export default class Button extends Container {
     kill() {
         removeCursorPointer(this.image)
         this.deactivate()
-        while(this.children.length) this.children[0].destroy()
-        this.destroy()
     }
 }

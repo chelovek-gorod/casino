@@ -217,7 +217,7 @@ function tick(time) {
         while (killArr.length > 0) {
             const obj = killArr.pop()
             if (obj.kill) obj.kill()
-            else if (obj.destroy) obj.destroy({ children: true })
+            if (obj.destroy) obj.destroy({ children: true })
         }
     }
 }

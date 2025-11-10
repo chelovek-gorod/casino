@@ -2,7 +2,7 @@ import { Container, Sprite } from "pixi.js"
 import { atlases, sounds } from "../../app/assets"
 import { removeCursorPointer, setCursorPointer } from "../../utils/functions"
 import { playSound } from "../../app/sound"
-import { UI } from "../constants"
+import { UI } from "./constants"
 import { setHelpText } from "../../app/events"
 
 export default class ButtonUI extends Container {
@@ -61,7 +61,5 @@ export default class ButtonUI extends Container {
     kill() {
         removeCursorPointer(this.mainImage)
         this.deactivate()
-        while(this.children.length) this.children[0].destroy()
-        this.destroy()
     }
 }

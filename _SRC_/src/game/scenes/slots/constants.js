@@ -17,14 +17,14 @@ export const SLOTS_LINES = {
     slotHalfWidth: 0,
     slotHalfHeight: 0,
     acceleration: 0.005,
-    minSpeed: 5.5,
-    maxSpeed: 6.5,
+    minSpeed: 4.5,
+    maxSpeed: 5.0,
     stopSpeed: 1,
     minTimeout: 100,
     maxTimeout: 150,
     delay: 0,
     durationMin: 1500,
-    durationMax: 1700
+    durationMax: 1650
 }
 SLOTS_LINES.delay = SLOTS_LINES.maxTimeout + SLOTS_LINES.durationMax - SLOTS_LINES.durationMin
 SLOTS_LINES.slotHalfWidth = SLOTS_LINES.slotWidth * 0.5
@@ -85,12 +85,12 @@ SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - SLOTS_HIGHLIGHT.minS
 
 const FRUITS = 6 // 12 types
 //          x0 x1 x2  x3  x4  x5
-const LOW_WIN_RATE = [0, 0, 0,  3,  5, 10] // частые
-const MID_WIN_RATE = [0, 0, 0,  5, 10, 50] // редкие
-const MAX_WIN_RATE = [0, 0, 0, 10, 50, 500] // супер редкие
+const LOW_WIN_RATE = [0, 0, 0,  5,  10,  25] // частые
+const MID_WIN_RATE = [0, 0, 0, 10,  25, 100] // редкие
+const MAX_WIN_RATE = [0, 0, 0, 25, 100, 500] // супер редкие
 
-const SET = {images: [SLOTS.cards, SLOTS.dices, SLOTS.chips], rate: 5 }
-const JACKPOT = {countsOf7: {[SLOTS.seven]: 1, [SLOTS.jackpot]: 3}, rate7x7: 777 }
+const SET = {images: [SLOTS.cards, SLOTS.dices, SLOTS.chips], rate: 25}
+const JACKPOT = {countsOf7: {[SLOTS.seven]: 1, [SLOTS.jackpot]: 3}, rate7x7: 1000}
 
 export const SLOTS_LINES_DATA = {
     [SLOTS.apple]: {count: FRUITS, rates: LOW_WIN_RATE},
@@ -289,6 +289,8 @@ function calculateSequencesProbabilities(lineSize, unitsInLine) {
 }
 
 ///////////////////////////////////////////////////////////////////
+
+// РАСЧЕТЫ И ЛОГИ ВЕРОЯТНОСТЕЙ
 
 const wilds = SLOTS_LINES_DATA[SLOTS.wild].count
 const double = [

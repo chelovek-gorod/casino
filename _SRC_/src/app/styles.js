@@ -1,6 +1,9 @@
 import { TextStyle, FillGradient } from "pixi.js"
-import { CHIP_DATA, LOGS, MESSAGE } from "../game/constants"
+import { CHIP_DATA } from "../game/scenes/roulette/constants"
+import { LOGS } from "../game/popup/constants"
+import { MESSAGE } from "../game/UI/constants"
 import { fonts } from "./assets"
+import { RESULT_FONT_SIZES } from "../game/scenes/roulette/Results"
 
 const fillButtonGradient = new FillGradient({
     type: 'linear',
@@ -17,11 +20,24 @@ const fillButtonOnGradient = new FillGradient({
     ],
 });
 
+const fillSubtitleGradient = new FillGradient({
+    type: 'linear',
+    colorStops: [
+      { offset: 0, color: '#ffffff' },
+      { offset: 0.5, color: '#87fff7' },
+      { offset: 0.5, color: '#40ffcf' },
+      { offset: 0.5, color: '#87fff7' },
+      { offset: 1, color: '#ffffff' },
+    ],
+});
+
 export let styles = {
     isReady: false, /* if true -> fonts is already loaded */
 
     /* Font keys (init all fonts in function bellow) */
     loading: null,
+    gameTitle: null,
+    gameSubtitle: null,
     button: null,
     buttonHover: null,
     shortButton: null,
@@ -70,6 +86,20 @@ export function initFontStyles() {
         dropShadowBlur: 4,
         dropShadowAngle: 0,
         dropShadowDistance: 0,
+    })
+
+    styles.gameTitle = new TextStyle({
+        fontFamily: fonts.Title,
+        fontSize: 128,
+        fill: '#ffffff',
+
+        stroke: '#33ffff',
+        strokeThickness: 16,
+    })
+    styles.gameSubtitle = new TextStyle({
+        fontFamily: fonts.Subtitle2,
+        fontSize: 72,
+        fill: fillSubtitleGradient,
     })
 
     styles.numbersList = new TextStyle({
@@ -202,6 +232,52 @@ export function initFontStyles() {
         fill: '#ffffff',
     })
 
+    styles.resultLastRed = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[0],
+        fill: '#ff0000',
+    })
+    styles.resultLastBlack = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[0],
+        fill: '#000000',
+    })
+    styles.resultLastWhite = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[0],
+        fill: '#007700',
+    })
+    styles.resultPreviousRed = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[1],
+        fill: '#ff0000',
+    })
+    styles.resultPreviousBlack = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[1],
+        fill: '#000000',
+    })
+    styles.resultPreviousWhite = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[1],
+        fill: '#007700',
+    })
+    styles.resultRestsRed = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[2],
+        fill: '#ff0000',
+    })
+    styles.resultRestsBlack = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[2],
+        fill: '#000000',
+    })
+    styles.resultRestsWhite = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: RESULT_FONT_SIZES[2],
+        fill: '#007700',
+    })
+
     styles.messageText = new TextStyle({
         fontFamily: fonts.Manrope600,
         fontSize: MESSAGE.fontSizeForText,
@@ -272,7 +348,7 @@ export function initFontStyles() {
     gradientText: new TextStyle({
         fontFamily: fonts.RobotoBlack,
         fontSize: 32,
-        fill: ['#000000', '#ff0064', '#000000'],
+        fill: '#000000',
 
         dropShadow: true,
         dropShadowColor: '#ffffff',
@@ -289,7 +365,7 @@ export function initFontStyles() {
         fontSize: 18,
         fontStyle: 'normal',
         fontWeight: 'normal',
-        fill: ['#ff0000', '#ffff00'],
+        fill: '#ffff00',
         
         stroke: '#ffffff',
         strokeThickness: 2,

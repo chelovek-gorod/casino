@@ -2,7 +2,7 @@ import { Container, TilingSprite } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music } from '../../../app/assets'
 import { setMusic } from '../../../app/sound'
-import { GAME_CONTAINERS, GAME_OFFSET, UI } from '../../constants'
+import { GAME_CONTAINERS, GAME_OFFSET, UI } from '../../UI/constants'
 import Field from './Field'
 import Wheel from './Wheel'
 import LeftMenu from '../../UI/LeftMenu'
@@ -63,44 +63,62 @@ export default class Roulette extends Container {
         this.message.screenResize(screenData)
 
         // get sizes without UI
-        const gameWidth = screenData.isLandscape
-            ? GAME_CONTAINERS.game.landscape.width : GAME_CONTAINERS.game.portrait.width
-        const gameHeight = screenData.isLandscape
-            ? GAME_CONTAINERS.game.landscape.height : GAME_CONTAINERS.game.portrait.height
-
         const availableHeight = screenData.height - UI.size - UI.bets.height
-
-        const scale = Math.min(1, screenData.width / gameWidth, availableHeight / gameHeight)
-        this.gameContainer.scale.set(scale)
 
         const gameContainerY = availableHeight * 0.5 + UI.size - screenData.centerY
         this.gameContainer.position.set(0, gameContainerY)
 
         if (screenData.isLandscape) {
-            const wheelX = (GAME_CONTAINERS.wheel.width - gameWidth) * 0.5 + GAME_OFFSET
-            const fieldX = (gameWidth - GAME_CONTAINERS.field.width) * 0.5 - GAME_OFFSET
+            // fieldScaledHeight === wheelScaledHeight
+            const scaledHeight = Math.min( 1, availableHeight / GAME_CONTAINERS.field.scaledHeight )
+            const scaledWidth = Math.min(
+                1,
+                screenData.width / (GAME_CONTAINERS.field.scaledWidth + GAME_CONTAINERS.wheel.scaledWidth)
+            )
+            const scale = Math.min(scaledHeight, scaledWidth)
+
+            const wheelScale = GAME_CONTAINERS.wheel.scale * scale
+            const fieldScale = GAME_CONTAINERS.field.scale * scale
+
+            this.wheel.scale.set(wheelScale)
+            this.field.scale.set(fieldScale)
+
+            const scaledWheelWidth = GAME_CONTAINERS.wheel.width * wheelScale
+            const scaledFieldWidth = GAME_CONTAINERS.field.width * fieldScale
+            const scaledGameWidth = scaledWheelWidth + scaledFieldWidth
+
+            const wheelX = (-scaledGameWidth + scaledWheelWidth) * 0.5
+            const fieldX = (scaledGameWidth - scaledFieldWidth) * 0.5
             this.wheel.position.set( wheelX, 0 )
             this.field.position.set( fieldX, 0 )
         } else {
-            const wheelY = (GAME_CONTAINERS.wheel.height - gameHeight) * 0.5 + GAME_OFFSET
-            const fieldY = (gameHeight - GAME_CONTAINERS.field.height) * 0.5 - GAME_OFFSET
+            const scaledHeight = Math.min(
+                1,
+                availableHeight / (GAME_CONTAINERS.field.scaledHeight + GAME_CONTAINERS.wheel.scaledHeight)
+            )
+            // fieldScaledWidth === wheelScaledWidth
+            const scaledWidth = Math.min( 1, screenData.width / GAME_CONTAINERS.field.scaledWidth )
+            const scale = Math.min(scaledHeight, scaledWidth)
+
+            const wheelScale = GAME_CONTAINERS.wheel.scale * scale
+            const fieldScale = GAME_CONTAINERS.field.scale * scale
+
+            this.wheel.scale.set(wheelScale)
+            this.field.scale.set(fieldScale)
+
+            const scaledWheelHeight = GAME_CONTAINERS.wheel.height * wheelScale
+            const scaledFieldHeight = GAME_CONTAINERS.field.height * fieldScale
+            const scaledGameHeight = scaledWheelHeight + scaledFieldHeight
+
+            const wheelY = (-scaledGameHeight + scaledWheelHeight) * 0.5
+            const fieldY = (scaledGameHeight - scaledFieldHeight) * 0.5
             this.wheel.position.set( 0, wheelY )
-            this.field.position.set( 0, fieldY)
+            this.field.position.set( 0, fieldY )
         }
 
         this.leftUI.position.set(-screenData.centerX, screenData.centerY)
         this.rightUI.position.set(screenData.centerX, screenData.centerY)
 
         this.topUI.screenResize(screenData)
-    }
-
-    kill() {
-        tickerRemove(this)
-        while(this.children.length) {
-            tickerRemove(this.children[0])
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
     }
 }

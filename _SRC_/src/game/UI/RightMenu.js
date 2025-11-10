@@ -1,5 +1,6 @@
 import { Container, Sprite, Text } from "pixi.js";
-import { HELP_TEXT, POPUP_TYPE, UI } from "../constants";
+import { HELP_TEXT, UI } from "./constants";
+import { POPUP_TYPE } from "../popup/constants";
 import { SCENE_NAME } from "../scenes/constants";
 import ButtonUI from "./ButtonUI";
 import { betCurrent, betsTotal, checkBet, isLangRu, clearAllBetsData, currentScene } from "../state";
@@ -106,12 +107,5 @@ export default class RightMenu extends Container {
         this.betsCurrentText.eventMode = 'none'
         this.betsCurrentText.off('pointerover', () => setHelpText(HELP_TEXT.currentBet))
         this.betsCurrentText.off('pointerout', () => setHelpText(''))
-
-        while(this.children.length) {
-            tickerRemove(this.children[0])
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
     }
 }

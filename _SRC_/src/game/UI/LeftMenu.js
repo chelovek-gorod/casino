@@ -1,5 +1,6 @@
 import { Container, Sprite } from "pixi.js";
-import { HELP_TEXT, POPUP_TYPE, UI } from "../constants";
+import { HELP_TEXT, UI } from "./constants";
+import { POPUP_TYPE } from "../popup/constants";
 import { SCENE_NAME } from "../scenes/constants";
 import ButtonUI from "./ButtonUI";
 import { getRRTextureWithShadow } from "../../utils/textureGenerator";
@@ -19,22 +20,13 @@ export default class LeftMenu extends Container {
         this.bg.anchor.set(0, 1)
         this.bg.position.set(-UI.borderRadius - padding, UI.borderRadius + padding)
 
-        this.log = new ButtonUI('logs', this.showBetPopup.bind(this), true, HELP_TEXT.logButton)
+        this.log = new ButtonUI('logs', this.showRulesPopup.bind(this), true, HELP_TEXT.rulesButton)
         this.log.position.set(UI.offset, -UI.offset)
         
         this.addChild(this.bg, this.log)
     }
 
-    showBetPopup() {
-        if (currentScene === SCENE_NAME.Roulette) showPopup(POPUP_TYPE.logs)
-    }
-
-    kill() {
-        while(this.children.length) {
-            tickerRemove(this.children[0])
-            if ('kill' in this.children[0]) this.children[0].kill()
-            else this.children[0].destroy()
-        }
-        this.destroy()
+    showRulesPopup() {
+        showPopup()
     }
 }
