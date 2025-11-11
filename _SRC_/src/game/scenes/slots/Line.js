@@ -3,7 +3,7 @@ import { tickerAdd, tickerRemove } from "../../../app/application"
 import { atlases } from "../../../app/assets"
 import { getRandom, shuffleArray } from "../../../utils/functions"
 import { MESSAGE } from "../../UI/constants"
-import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT } from "./constants"
+import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT, SLOTS } from "./constants"
 
 const STATE = {
     idle: 'idle',
@@ -17,7 +17,7 @@ const STATE = {
     highlightOut: 'highlightOut',
 }
 
-function moveDuplicates(arr) {
+function moveDuplicates(arr, wildSymbol = SLOTS.wild) {
     const result = [...arr]
     
     for (let i = 1; i < result.length; i++) {
@@ -27,6 +27,41 @@ function moveDuplicates(arr) {
                     [result[i], result[j]] = [result[j], result[i]]
                     break
                 }
+            }
+        }
+    }
+
+    if (!wildSymbol) return result
+
+    const wildPositions = []
+    for (let i = 0; i < result.length; i++) {
+        if (result[i] === wildSymbol) wildPositions.push(i)
+    }
+
+    // --- Вспомогательная функция: зажат ли wild между двумя одинаковыми НЕ-wild?
+    const getPrev = (index) => result[ (index - 1 + result.length) % result.length ]
+    const getNext = (index) => result[ (index + 1) % result.length ]
+    const isBetweenSameOrWild = (left, right) => left === right || left === wildSymbol || right === wildSymbol
+
+    while(wildPositions.length) {
+        let movePathLength = 0
+        const startIndex = wildPositions.pop()
+        const left = getPrev(startIndex)
+        const right = getNext(startIndex)
+        let isNeedToReplace = isBetweenSameOrWild(left, right)
+
+        while (isNeedToReplace && movePathLength < result.length) {
+            movePathLength += movePathLength === 0 ? 2 : 1
+            const tempIndex = (startIndex + movePathLength) % result.length
+            const targetValue = result[tempIndex]
+            const isInvalidPlace = isBetweenSameOrWild(getPrev(tempIndex), getNext(tempIndex))
+            isNeedToReplace = isInvalidPlace
+                || targetValue === wildSymbol
+                || targetValue === left
+                || targetValue === right
+            if (!isNeedToReplace) {
+                result[startIndex] = targetValue
+                result[tempIndex] = wildSymbol
             }
         }
     }
@@ -73,6 +108,7 @@ export default class Line extends Container {
 
         this.imagesList = shuffleArray(this.imagesList)
         this.imagesList = moveDuplicates(this.imagesList)
+        // console.log(this.imagesList)
 
         this.nextImageIndex = 3
         this.visibleImages = [

@@ -2,7 +2,7 @@ import { Container, Graphics, Sprite, Text } from "pixi.js";
 import { atlases } from "../../app/assets";
 import { EventHub, events } from "../../app/events";
 import { styles } from "../../app/styles";
-import { removeCursorPointer, setCursorPointer } from "../../utils/functions";
+import { removeCursorPointer, setCursorPointer, formatNumber } from "../../utils/functions";
 import { POPUP_TEXT } from "./constants"
 import { SCENE_NAME } from "../scenes/constants";
 import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest,
@@ -102,7 +102,7 @@ export default class Bet extends Container {
         this.betSup.scale.set(0.5)
         this.addChild(this.betSup)
 
-        this.betValue = new Text({text: betCurrent, style: styles.popupTitle})
+        this.betValue = new Text({text: formatNumber(betCurrent), style: styles.popupTitle})
         this.betValue.anchor.set(0.5)
         this.betValue.scale.set(1.5)
         this.betValue.position.set(0, betY)
@@ -136,7 +136,7 @@ export default class Bet extends Container {
     }
 
     updateBet( bet ) {
-        this.betValue.text = bet
+        this.betValue.text = formatNumber(bet)
     }
     updateNearestNumber( number ) {
         this.nearestValue.text = `${number} + 1 + ${number}`

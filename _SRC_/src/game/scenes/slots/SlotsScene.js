@@ -70,7 +70,7 @@ export default class Slots extends Container {
         this.bankIcon.scale.set(0.75)
         this.bankIcon.position.set(260, SLOTS_BORDER.height + BUTTON.height * 0.75)
 
-        this.bankText = new Text({text: slotCoins, style: styles.slotsCoins})
+        this.bankText = new Text({text: formatNumber(slotCoins), style: styles.slotsCoins})
         this.bankText.anchor.set(0, 0.5)
         this.bankText.position.set(320, SLOTS_BORDER.height + BUTTON.height * 0.75)
 
@@ -113,6 +113,9 @@ export default class Slots extends Container {
 
         // done
         setMusic([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
+
+        // test
+        // this.test()
     }
 
     screenResize(screenData) {
@@ -482,9 +485,9 @@ export default class Slots extends Container {
                 if (this.isAutoSpinOn) this.run()
             }, 300)
 
-            // console.clear()
+            console.clear()
             testWinData.spins++
-            // console.log(testWinData)
+            console.log(testWinData)
 
             return
         }
@@ -584,7 +587,7 @@ export default class Slots extends Container {
                     if (this.isSceneDestroyed) return
                     showMessage(messageText)
                 }, this.highlightMessageTimeout)
-                this.bankText.text = slotCoins
+                this.bankText.text = formatNumber(slotCoins)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     playSound(sounds.se_coin_to_bank)
@@ -610,7 +613,7 @@ export default class Slots extends Container {
                     showMessage(messageText)
                     this.coinEffects.start(0.07 * highlightData.winRate)
                 }, this.highlightMessageTimeout)
-                this.bankText.text = slotCoins
+                this.bankText.text = formatNumber(slotCoins)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     playSound(sounds.se_gold), SLOTS_HIGHLIGHT.inOut
@@ -649,5 +652,216 @@ export default class Slots extends Container {
 
         clearTimeout(this.autoSpinTimeout)
         this.isAutoSpinOn = false
+    }
+
+    test() {
+        const spins = 1000000
+        const test_bet = 10
+
+        let test_money = spins * test_bet
+        let test_bank = 0
+
+        let test_results = {
+            jackpots: 0,
+            sets: 0,
+            lines_3: 0,
+            lines_4: 0,
+            lines_5: 0,
+            crystals: 0,
+            presents: 0,
+            clovers: 0,
+            bonuses: 0,
+        }
+
+        const b_size = this.lines[0].imagesList.length
+        const b1images = this.lines[0].imagesList
+        const b2images = this.lines[1].imagesList
+        const b3images = this.lines[2].imagesList
+        const b4images = this.lines[3].imagesList
+        const b5images = this.lines[4].imagesList
+
+        let b1 = [ b1images[0], b1images[1], b1images[2]]
+        let b2 = [ b2images[0], b2images[1], b2images[2]]
+        let b3 = [ b3images[0], b3images[1], b3images[2]]
+        let b4 = [ b4images[0], b4images[1], b4images[2]]
+        let b5 = [ b5images[0], b5images[1], b5images[2]]
+
+        let bbbbb = [b1, b2, b3, b4, b5]
+
+        let b1_index = 0
+        let b2_index = 0
+        let b3_index = 0
+        let b4_index = 0
+        let b5_index = 0
+
+        const spin = () => {
+            test_money -= test_bet
+
+            b1_index = (b1_index + 1 + Math.floor( Math.random() * 3 )) % b_size
+            b2_index = (b2_index + 3 + Math.floor( Math.random() * 3 )) % b_size
+            b3_index = (b3_index + 5 + Math.floor( Math.random() * 3 )) % b_size
+            b4_index = (b4_index + 7 + Math.floor( Math.random() * 3 )) % b_size
+            b5_index = (b5_index + 9 + Math.floor( Math.random() * 3 )) % b_size
+
+            b1 = [ b1images[b1_index], b1images[ (b1_index + 1) % b_size ], b1images[ (b1_index + 2) % b_size ]]
+            b2 = [ b2images[b2_index], b2images[ (b2_index + 1) % b_size ], b2images[ (b2_index + 2) % b_size ]]
+            b3 = [ b3images[b3_index], b3images[ (b3_index + 1) % b_size ], b3images[ (b3_index + 2) % b_size ]]
+            b4 = [ b4images[b4_index], b4images[ (b4_index + 1) % b_size ], b4images[ (b4_index + 2) % b_size ]]
+            b5 = [ b5images[b5_index], b5images[ (b5_index + 1) % b_size ], b5images[ (b5_index + 2) % b_size ]]
+
+            bbbbb = [b1, b2, b3, b4, b5]
+        }
+
+        const checkResults = () => {
+            let bonusRate = 1
+            let golds = 0
+            let coins = 0
+            let presents = 0
+            let clovers = 0
+            let sevens = 0
+            const sets = {
+                [SLOTS.cards]: 0,
+                [SLOTS.dices]: 0,
+                [SLOTS.chips]: 0
+            }
+        
+            const top = []
+            const mid = []
+            const bot = []
+
+            const countConsecutive = (line) => {
+                const sames = {}
+                let key = line[0] // key of a same
+                let count = 1 // count of nearest
+                let indexes = [0]
+                for (let i = 1; i < line.length; i++) {
+                    if (key === line[i] || line[i] === SLOTS.wild || key === SLOTS.wild) {
+                        count ++
+                        indexes.push(i)
+                        if (key === SLOTS.wild) key = line[i]
+                    } else {
+                        sames[key] = {count: count, indexes: indexes}
+                        key = line[i]
+                        count = 1
+                        let previousIndex = i - 1
+                        indexes = [i]
+                        while(previousIndex > 0 && line[previousIndex] === SLOTS.wild) {
+                            indexes.push(previousIndex)
+                            previousIndex--
+                            count++
+                        }
+                    }
+                }
+                if (!(key in sames) || sames[key].count < count) sames[key] = {count: count, indexes: indexes}
+                
+                return sames
+            }
+        
+            bbbbb.forEach( line => {
+                line.forEach( (value, index) => {
+                    if (value === SLOTS.bonus) bonusRate++
+                    if (value === SLOTS.gold) golds++
+                    if (value === SLOTS.coin) coins++
+                    if (value === SLOTS.present) presents++
+                    if (value === SLOTS.clover) clovers++
+                    if (value === SLOTS.seven) sevens++
+                    if (value === SLOTS.jackpot) sevens += 3
+                    if (value === SLOTS.cards || value === SLOTS.dices || value === SLOTS.chips) sets[value]++
+
+                    if (index === 0) top.push(value)
+                    else if (index === 1) mid.push(value)
+                    else bot.push(value)
+                })
+            })
+        
+            const linesFive =  [
+                countConsecutive(top),
+                countConsecutive(mid),
+                countConsecutive(bot)
+            ]
+        
+            const linesTree = [
+                countConsecutive([top[0], mid[1], bot[2]]),
+                countConsecutive([top[1], mid[2], bot[3]]),
+                countConsecutive([top[2], mid[3], bot[4]]),
+                countConsecutive([top[2], mid[1], bot[0]]),
+                countConsecutive([top[3], mid[2], bot[1]]),
+                countConsecutive([top[4], mid[3], bot[2]])
+            ]
+        
+            let totalRate = 0 //sum of rates for 3 or 4 or 5 same in lines or diagonals
+        
+            linesTree.forEach( data => {
+                for(let key in data) {
+                    if (data[key].count > 2) {
+                        totalRate += SLOTS_LINES_DATA[key].rates[ data[key].count ]
+                        test_results.lines_3++
+                        if (key === SLOTS.crystal) test_results.crystals++
+                    }
+                }
+            })
+            linesFive.forEach( data => {
+                for(let key in data) {
+                    if (data[key].count > 2) {
+                        totalRate += SLOTS_LINES_DATA[key].rates[ data[key].count ]
+                        test_results['lines_' + data[key].count]++
+                        if (key === SLOTS.crystal) test_results.crystals++
+                    }
+                }
+            })
+
+            if (sevens > 6) {
+                test_money += test_bet * SLOTS_LINES_DATA[SLOTS.jackpot].extra
+                test_results.jackpots++
+            }
+
+            test_bank += Math.ceil(test_bet * 0.1 * coins)
+
+            if (golds) {
+                const sum = Math.min( test_bank, Math.ceil(golds * 0.1 * test_bank) )
+                test_money += sum
+                test_bank -= sum
+            }
+
+            if (presents) {
+                test_money += presents * test_bet
+                test_results.presents++
+            }
+
+            const setsCount = Math.min(sets[SLOTS.cards], sets[SLOTS.dices], sets[SLOTS.chips])
+            test_money += setsCount * SLOTS_LINES_DATA[SLOTS.cards].extra * test_bet
+            test_results.sets += setsCount
+
+            test_money += totalRate * test_bet * bonusRate
+            if (totalRate && bonusRate > 1) test_results.bonuses++
+
+            if (clovers && !coins && sevens < 7 && !golds && !presents && !setsCount && !totalRate) {
+                test_money += test_bet
+                test_results.clovers++
+            }
+        }
+
+        for(let i = 0; i < spins; i++) {
+            spin()
+            checkResults()
+        }
+
+        console.log('TEST',
+            '\nspins:', formatNumber(spins),
+            '\nbet:', test_bet,
+            '\nstart_money:', formatNumber(spins * test_bet),
+            '\nfinal_money:', formatNumber(test_money),
+            '\nRTP:', ((test_money / (spins * test_bet)) * 100).toFixed(2), '%',
+            '\nbank:', test_bank,
+            '\nlines_3:', formatNumber(test_results.lines_3),
+            '\nlines_4:', formatNumber(test_results.lines_4),
+            '\nlines_5:', formatNumber(test_results.lines_5),
+            '\nbonuses:', formatNumber(test_results.bonuses),
+            '\npresents:', formatNumber(test_results.presents),
+            '\nclovers:', formatNumber(test_results.clovers),
+            '\nsets:', formatNumber(test_results.sets),
+            '\ncrystals:', formatNumber(test_results.crystals),
+            '\njackpots:', formatNumber(test_results.jackpots)
+        )
     }
 }

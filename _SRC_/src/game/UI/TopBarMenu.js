@@ -76,7 +76,7 @@ export default class TopBarMenu extends Container {
     }
 
     clickAddMoney() {
-        addMoney(1000)
+        addMoney(250)
     }
 
     showPopup() {

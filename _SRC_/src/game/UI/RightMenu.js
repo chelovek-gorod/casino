@@ -40,7 +40,7 @@ export default class RightMenu extends Container {
         this.betsTotalText.anchor.set(0, 0.5)
         this.betsTotalText.position.set(this.betsTotal.position.x + UI.bets.iconSize * 0.75, betsOffsetY)
 
-        this.betsCurrentText = new Text({ text: betCurrent, style: styles.betsCurrent })
+        this.betsCurrentText = new Text({ text: formatNumber(betCurrent), style: styles.betsCurrent })
         this.betsCurrentText.anchor.set(1, 0.5)
         this.betsCurrentText.position.set(-UI.size - UI.offset, betsOffsetY)
         this.betsCurrentText.eventMode = 'static'
@@ -76,7 +76,7 @@ export default class RightMenu extends Container {
     }
 
     updateBet(bet) {
-        this.betsCurrentText.text = bet
+        this.betsCurrentText.text = formatNumber(bet)
     }
     updateBetTotal(total) {
         this.betsTotalText.text = `${isLangRu ? 'Сумма' : 'Total'}: ${formatNumber(total)}`

@@ -26,7 +26,6 @@ export default class Menu extends Container {
         this.title = new GameTitle(isLangRu ? 'КАЗИНО' : 'CASINO', isLangRu ? 'Рулетка и Слоты' : 'Roulette & Slots')
         this.titleStartWidth = this.title.width
         this.titleStartHeight = this.title.height
-        console.log(this.titleStartWidth, this.titleStartHeight)
         this.addChild(this.title)
 
         this.rouletteButton = new ButtonLight(
@@ -65,6 +64,5 @@ export default class Menu extends Container {
             this.rouletteButton.position.set(-160, pointY)
             this.slotsButton.position.set(160, pointY)
         }
-        
     }
 }
