@@ -11,7 +11,8 @@ import TopBarMenu from '../../UI/TopBarMenu'
 import Message from '../../UI/Message'
 import Popup from '../../popup/Popup'
 import BackgroundTiling from '../../BG/BackgroundTiling'
-import { resetState } from '../../state'
+import { resetState, setMaxBet } from '../../state'
+import { MAX_BET } from './constants'
 
 export default class Roulette extends Container {
     constructor() {
@@ -19,6 +20,7 @@ export default class Roulette extends Container {
         this.alpha = 0
 
         resetState()
+        setMaxBet(MAX_BET)
 
         // BG
         this.bg = new BackgroundTiling(images.bg_green)

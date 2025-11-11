@@ -1,7 +1,7 @@
 import { Container, Sprite, Graphics } from "pixi.js"
 import { tickerAdd, tickerRemove } from "../../../app/application"
 import { atlases } from "../../../app/assets"
-import { getRandom } from "../../../utils/functions"
+import { getRandom, shuffleArray } from "../../../utils/functions"
 import { MESSAGE } from "../../UI/constants"
 import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT } from "./constants"
 
@@ -15,6 +15,23 @@ const STATE = {
     highlightIn: 'highlightIn',
     highlight: 'highlight',
     highlightOut: 'highlightOut',
+}
+
+function moveDuplicates(arr) {
+    const result = [...arr]
+    
+    for (let i = 1; i < result.length; i++) {
+        if (result[i] === result[i - 1]) {
+            for (let j = i + 1; j < result.length; j++) {
+                if (result[j] !== result[i]) {
+                    [result[i], result[j]] = [result[j], result[i]]
+                    break
+                }
+            }
+        }
+    }
+    
+    return result
 }
 
 export default class Line extends Container {
@@ -41,12 +58,21 @@ export default class Line extends Container {
         this.imagesMaskContainer.addChild(this.imagesContainer)
 
         this.imagesList = []
-        Object.keys(SLOTS_LINES_DATA).forEach( key => {
-            for(let i = 0; i < SLOTS_LINES_DATA[key].count; i++) {
-                this.imagesList.push(key)
-            }
+        let maxCount = 0
+
+        Object.keys(SLOTS_LINES_DATA).forEach(key => {
+            const count = SLOTS_LINES_DATA[key].count
+            maxCount = Math.max(maxCount, count)
+            this.imagesList.push(...Array(count).fill(key))
         })
-        this.imagesList.sort(() => Math.random() - 0.5)
+
+        // Проверка
+        if (maxCount > this.imagesList.length / 2) {
+            throw new Error(`Upss: Элемент повторяется ${maxCount} раз из ${this.imagesList.length}`)
+        }
+
+        this.imagesList = shuffleArray(this.imagesList)
+        this.imagesList = moveDuplicates(this.imagesList)
 
         this.nextImageIndex = 3
         this.visibleImages = [

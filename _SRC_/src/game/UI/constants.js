@@ -33,7 +33,7 @@ export const HELP_TEXT = {
 }
 
 export const MESSAGE_TEXT = {
-    lowMoney: {ru: 'Сумма ставки\nпревышает баланс', en: 'Bet amount\nexceeds balance'},
+    lowMoney: {ru: 'Недостаточно\nсредств', en: 'not enough\nmoney'},
     winMoney: {ru: 'Вы выиграли\n', en: 'You win\n'},
     betLimit: {
         ru: 'Лимит ставки\nпревышен!',

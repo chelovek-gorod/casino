@@ -3,10 +3,10 @@ import { tickerRemove } from '../../../app/application'
 import { images, music, sounds } from '../../../app/assets'
 import { playSound, setMusic, stopMusic } from '../../../app/sound'
 import { BUTTON, BUTTON_TEXT, GAME_OFFSET, MESSAGE_TEXT, UI } from '../../UI/constants'
-import { SLOTS_BORDER, SLOTS_LINES, SLOTS, SLOTS_LINES_DATA, SLOTS_HIGHLIGHT } from './constants'
+import { SLOTS_BORDER, SLOTS_LINES, SLOTS, SLOTS_LINES_DATA, SLOTS_HIGHLIGHT, MAX_BET } from './constants'
 import Line from './Line'
 import Button from '../../UI/Button'
-import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet, betsTotal, slotCoins, addSlotCoins, getSlotCoins } from '../../state'
+import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet, betsTotal, slotCoins, addSlotCoins, getSlotCoins, setMaxBet } from '../../state'
 import LeftMenu from '../../UI/LeftMenu'
 import RightMenu from '../../UI/RightMenu'
 import TopBarMenu from '../../UI/TopBarMenu'
@@ -37,6 +37,7 @@ export default class Slots extends Container {
         this.alpha = 0
 
         resetState()
+        setMaxBet(MAX_BET)
 
         // BG
         this.bg = new BackgroundTiling(images.bg_red)

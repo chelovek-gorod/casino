@@ -4,7 +4,7 @@ import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNeares
 import { playSound } from "../app/sound"
 import { formatNumber } from "../utils/functions"
 import { MAX_BET_RATIO, BET_RATIO } from "./scenes/roulette/constants"
-import { MESSAGE_TEXT } from "./UI/constants"
+import { MESSAGE, MESSAGE_TEXT } from "./UI/constants"
 import { SCENE_NAME } from "../game/scenes/constants"
 
 export let isLangRu = true
