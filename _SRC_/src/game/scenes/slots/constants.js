@@ -85,13 +85,13 @@ export const SLOTS_HIGHLIGHT = {
 SLOTS_HIGHLIGHT.stepAlphaInMS = (1 - SLOTS_HIGHLIGHT.minAlpha) / SLOTS_HIGHLIGHT.inOut
 SLOTS_HIGHLIGHT.stepScaleInMS = (SLOTS_HIGHLIGHT.maxScale - SLOTS_HIGHLIGHT.minScale) / SLOTS_HIGHLIGHT.inOut
 
-const FRUITS = 16 // 12 types
+const FRUITS = 12 // 12 types
 //                    x0 x1 x2  x3  x4  x5
 const LOW_WIN_RATE = [0, 0, 0,  5, 10,  20] // частые
 const MID_WIN_RATE = [0, 0, 0, 10, 20,  50] // редкие
 const MAX_WIN_RATE = [0, 0, 0, 20, 50, 100] // супер редкие
 
-const SET = {images: [SLOTS.cards, SLOTS.dices, SLOTS.chips], rate: 20}
+const SET = {images: [SLOTS.cards, SLOTS.dices, SLOTS.chips], rate: 10}
 const JACKPOT = {countsOf7: {[SLOTS.seven]: 1, [SLOTS.jackpot]: 3}, rate7x7: 100}
 
 export const SLOTS_LINES_DATA = {
@@ -117,14 +117,14 @@ export const SLOTS_LINES_DATA = {
     [SLOTS.seven]: {count: 3, rates: MID_WIN_RATE, extra: JACKPOT.rate7x7},
     [SLOTS.jackpot]: {count: 1, rates: MAX_WIN_RATE, extra: JACKPOT.rate7x7},
 
-    [SLOTS.gold]: {count: 4, rates: MID_WIN_RATE},
-    [SLOTS.coin]: {count: 12, rates: LOW_WIN_RATE},
+    [SLOTS.gold]: {count: 3, rates: LOW_WIN_RATE},
+    [SLOTS.coin]: {count: 9, rates: LOW_WIN_RATE},
 
     [SLOTS.clover]: {count: 1, rates: LOW_WIN_RATE},
-    [SLOTS.present]: {count: 1, rates: MID_WIN_RATE},
+    [SLOTS.present]: {count: 1, rates: LOW_WIN_RATE},
 
     [SLOTS.wild]: {count: 2, rates: LOW_WIN_RATE},
-    [SLOTS.bonus]: {count: 4, rates: MID_WIN_RATE}, // выигрыш X
+    [SLOTS.bonus]: {count: 2, rates: LOW_WIN_RATE}, // выигрыш X
 }
 
 let imagesInLine = 0

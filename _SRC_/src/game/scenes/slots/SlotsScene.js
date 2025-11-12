@@ -115,7 +115,7 @@ export default class Slots extends Container {
         setMusic([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
 
         // test
-        // this.test()
+        //this.test()
     }
 
     screenResize(screenData) {
@@ -655,7 +655,9 @@ export default class Slots extends Container {
     }
 
     test() {
-        const spins = 1000000
+        const startTime = Date.now()
+
+        const spins = 100_000_000
         const test_bet = 10
 
         let test_money = spins * test_bet
@@ -674,11 +676,7 @@ export default class Slots extends Container {
         }
 
         const b_size = this.lines[0].imagesList.length
-        const b1images = this.lines[0].imagesList
-        const b2images = this.lines[1].imagesList
-        const b3images = this.lines[2].imagesList
-        const b4images = this.lines[3].imagesList
-        const b5images = this.lines[4].imagesList
+        const [b1images, b2images, b3images, b4images, b5images] = this.lines.map(line => line.imagesList)
 
         let b1 = [ b1images[0], b1images[1], b1images[2]]
         let b2 = [ b2images[0], b2images[1], b2images[2]]
@@ -688,11 +686,7 @@ export default class Slots extends Container {
 
         let bbbbb = [b1, b2, b3, b4, b5]
 
-        let b1_index = 0
-        let b2_index = 0
-        let b3_index = 0
-        let b4_index = 0
-        let b5_index = 0
+        let [b1_index, b2_index, b3_index, b4_index, b5_index] = [0, 0, 0, 0, 0]
 
         const spin = () => {
             test_money -= test_bet
@@ -712,6 +706,34 @@ export default class Slots extends Container {
             bbbbb = [b1, b2, b3, b4, b5]
         }
 
+        const countConsecutive = (line) => {
+            const sames = {}
+            let key = line[0] // key of a same
+            let count = 1 // count of nearest
+            let indexes = [0]
+            for (let i = 1; i < line.length; i++) {
+                if (key === line[i] || line[i] === SLOTS.wild || key === SLOTS.wild) {
+                    count ++
+                    indexes.push(i)
+                    if (key === SLOTS.wild) key = line[i]
+                } else {
+                    sames[key] = {count: count, indexes: indexes}
+                    key = line[i]
+                    count = 1
+                    let previousIndex = i - 1
+                    indexes = [i]
+                    while(previousIndex > 0 && line[previousIndex] === SLOTS.wild) {
+                        indexes.push(previousIndex)
+                        previousIndex--
+                        count++
+                    }
+                }
+            }
+            if (!(key in sames) || sames[key].count < count) sames[key] = {count: count, indexes: indexes}
+            
+            return sames
+        }
+
         const checkResults = () => {
             let bonusRate = 1
             let golds = 0
@@ -729,34 +751,6 @@ export default class Slots extends Container {
             const mid = []
             const bot = []
 
-            const countConsecutive = (line) => {
-                const sames = {}
-                let key = line[0] // key of a same
-                let count = 1 // count of nearest
-                let indexes = [0]
-                for (let i = 1; i < line.length; i++) {
-                    if (key === line[i] || line[i] === SLOTS.wild || key === SLOTS.wild) {
-                        count ++
-                        indexes.push(i)
-                        if (key === SLOTS.wild) key = line[i]
-                    } else {
-                        sames[key] = {count: count, indexes: indexes}
-                        key = line[i]
-                        count = 1
-                        let previousIndex = i - 1
-                        indexes = [i]
-                        while(previousIndex > 0 && line[previousIndex] === SLOTS.wild) {
-                            indexes.push(previousIndex)
-                            previousIndex--
-                            count++
-                        }
-                    }
-                }
-                if (!(key in sames) || sames[key].count < count) sames[key] = {count: count, indexes: indexes}
-                
-                return sames
-            }
-        
             bbbbb.forEach( line => {
                 line.forEach( (value, index) => {
                     if (value === SLOTS.bonus) bonusRate++
@@ -846,22 +840,22 @@ export default class Slots extends Container {
             checkResults()
         }
 
-        console.log('TEST',
+        console.log('TEST', ((Date.now() - startTime) / 1000).toFixed(2), 'sec.',
             '\nspins:', formatNumber(spins),
             '\nbet:', test_bet,
             '\nstart_money:', formatNumber(spins * test_bet),
             '\nfinal_money:', formatNumber(test_money),
             '\nRTP:', ((test_money / (spins * test_bet)) * 100).toFixed(2), '%',
             '\nbank:', test_bank,
-            '\nlines_3:', formatNumber(test_results.lines_3),
-            '\nlines_4:', formatNumber(test_results.lines_4),
-            '\nlines_5:', formatNumber(test_results.lines_5),
-            '\nbonuses:', formatNumber(test_results.bonuses),
-            '\npresents:', formatNumber(test_results.presents),
-            '\nclovers:', formatNumber(test_results.clovers),
-            '\nsets:', formatNumber(test_results.sets),
-            '\ncrystals:', formatNumber(test_results.crystals),
-            '\njackpots:', formatNumber(test_results.jackpots)
+            '\nlines_3:', formatNumber(test_results.lines_3), '(', (test_results.lines_3 / spins * 100).toFixed(2) , '%)',
+            '\nlines_4:', formatNumber(test_results.lines_4), '(', (test_results.lines_4 / spins * 100).toFixed(2) , '%)',
+            '\nlines_5:', formatNumber(test_results.lines_5), '(', (test_results.lines_5 / spins * 100).toFixed(2) , '%)',
+            '\nbonuses:', formatNumber(test_results.bonuses), '(', (test_results.bonuses / spins * 100).toFixed(2) , '%)',
+            '\npresents:', formatNumber(test_results.presents), '(', (test_results.presents / spins * 100).toFixed(2) , '%)',
+            '\nclovers:', formatNumber(test_results.clovers), '(', (test_results.clovers / spins * 100).toFixed(2) , '%)',
+            '\nsets:', formatNumber(test_results.sets), '(', (test_results.sets / spins * 100).toFixed(2) , '%)',
+            '\ncrystals:', formatNumber(test_results.crystals), '(', (test_results.crystals / spins * 100).toFixed(2) , '%)',
+            '\njackpots:', formatNumber(test_results.jackpots), '(', (test_results.jackpots / spins * 100).toFixed(2) , '%)'
         )
     }
 }
