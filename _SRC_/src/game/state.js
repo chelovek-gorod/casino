@@ -1,13 +1,15 @@
 import { sounds } from "../app/assets"
 import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber,
     showMessage, clearOneBet, clearAllBets, EventHub, events} from "../app/events"
-import { playSound } from "../app/sound"
+import { soundPlay } from "../app/sound"
 import { formatNumber } from "../utils/functions"
 import { MAX_BET_RATIO, BET_RATIO } from "./scenes/roulette/constants"
 import { MESSAGE, MESSAGE_TEXT } from "./UI/constants"
 import { SCENE_NAME } from "../game/scenes/constants"
+import { getLanguage } from "./localization"
 
-export let isLangRu = true
+let currentLanguage = getLanguage()
+EventHub.on( events.updateLanguage, (lang) => currentLanguage = lang )
 
 export let currentScene = SCENE_NAME.Menu
 EventHub.on( events.startScene, (scene) => currentScene = scene )
@@ -37,6 +39,10 @@ export let editedBetInfo = {
     value: 0
 }
 
+export function setStoredMoney(value) {
+    money = value
+}
+
 export function resetState() {
     betsTotal = 0
     isOnSpin = false
@@ -44,10 +50,8 @@ export function resetState() {
 
 export function checkRunSlots() {
     if (money < betCurrent) {
-        showMessage(
-            isLangRu ? MESSAGE_TEXT.lowMoney.ru : MESSAGE_TEXT.lowMoney.en
-        )
-        playSound(sounds.se_low_money)
+        showMessage( MESSAGE_TEXT.lowMoney[ currentLanguage ] )
+        soundPlay(sounds.se_low_money)
         return  false
     }
 
@@ -84,8 +88,8 @@ export function setBet(numbers, numbersList = []) {
 
     const totalBet = betCurrent * numbers.length + betCurrent * numbersList.length
     if (money < totalBet) {
-        showMessage( isLangRu ? MESSAGE_TEXT.lowMoney.ru : MESSAGE_TEXT.lowMoney.en )
-        playSound(sounds.se_low_money)
+        showMessage( MESSAGE_TEXT.lowMoney[ currentLanguage ] )
+        soundPlay(sounds.se_low_money)
         return false
     }
 
@@ -94,7 +98,7 @@ export function setBet(numbers, numbersList = []) {
         if (isValidBet) isValidBet = (betCurrent + getBetDataValue([n])) <= MAX_BET_RATIO[1]
     }) 
     if (!isValidBet) {
-        showMessage( isLangRu ? MESSAGE_TEXT.betLimit.ru : MESSAGE_TEXT.betLimit.en )
+        showMessage( MESSAGE_TEXT.betLimit[ currentLanguage ] )
         return false
     }
     const counter = {}
@@ -110,7 +114,7 @@ export function setBet(numbers, numbersList = []) {
         }
     })
     if (!isValidBet) {
-        showMessage( isLangRu ? MESSAGE_TEXT.betLimit.ru : MESSAGE_TEXT.betLimit.en )
+        showMessage( MESSAGE_TEXT.betLimit[ currentLanguage ] )
         return false
     }
 
@@ -191,7 +195,7 @@ export function setSpinResult( number ) {
     })
 
     if (winMoney) {
-        const message = isLangRu ? MESSAGE_TEXT.winMoney.ru : MESSAGE_TEXT.winMoney.en
+        const message = MESSAGE_TEXT.winMoney[ currentLanguage ]
         const delay = MESSAGE.inOutDuration * 3 + MESSAGE.showDuration
         setTimeout( showMessage, delay ,`${message} ${formatNumber(winMoney)} !` )
         addMoney( winMoney )

@@ -27,6 +27,9 @@ export default class LeftMenu extends Container {
     }
 
     showRulesPopup() {
-        showPopup()
+        switch(currentScene) {
+            case SCENE_NAME.Roulette : showPopup(POPUP_TYPE.rulesR); break;
+            case SCENE_NAME.Slots : showPopup(POPUP_TYPE.rulesS); break;
+        }
     }
 }

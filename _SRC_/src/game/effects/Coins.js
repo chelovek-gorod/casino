@@ -1,7 +1,7 @@
 import { AnimatedSprite, Container } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../app/application";
 import { atlases, sounds } from "../../app/assets";
-import { playSound } from "../../app/sound";
+import { soundPlay } from "../../app/sound";
 import { getRandom } from "../../utils/functions";
 
 const settings = {
@@ -87,7 +87,7 @@ export default class Coins extends Container {
         this.counter = Math.ceil(this.maxCoins * rate)
         this.addCoin()
         tickerAdd(this)
-        playSound(sounds.se_coins)
+        soundPlay(sounds.se_coins)
     }
 
     addCoin() {

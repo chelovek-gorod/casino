@@ -97,7 +97,7 @@ export function initFontStyles() {
         strokeThickness: 16,
     })
     styles.gameSubtitle = new TextStyle({
-        fontFamily: fonts.Subtitle2,
+        fontFamily: fonts.Subtitle,
         fontSize: 72,
         fill: fillSubtitleGradient,
     })

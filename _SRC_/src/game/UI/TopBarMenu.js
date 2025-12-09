@@ -2,12 +2,14 @@ import { Container, Texture, Sprite, Text } from "pixi.js"
 import { HELP_TEXT, UI } from "./constants"
 import { SCENE_NAME } from "../scenes/constants"
 import ButtonUI from "./ButtonUI"
-import { addMoney, isLangRu, money } from "../state"
+import { addMoney, money } from "../state"
 import { styles } from "../../app/styles"
 import { formatNumber } from "../../utils/functions"
 import { getRRTexture, getRRTextureWithShadow } from "../../utils/textureGenerator"
 import { EventHub, events, setHelpText, showPopup, startScene } from "../../app/events"
 import { kill, tickerRemove } from "../../app/application"
+import { POPUP_TYPE } from "../popup/constants"
+import { getLanguage } from "../localization"
 
 export default class TopBarMenu extends Container {
     constructor() {
@@ -71,16 +73,17 @@ export default class TopBarMenu extends Container {
     }
 
     setHelpText( textData ) {
-        if (textData) this.helpText.text = isLangRu ? textData.ru : textData.en
+        if (textData) this.helpText.text = textData[getLanguage()]
         else this.helpText.text = ''
     }
 
     clickAddMoney() {
         addMoney(250)
+        showPopup(POPUP_TYPE.addMoney)
     }
 
     showPopup() {
-        showPopup()
+        showPopup(POPUP_TYPE.settings)
     }
 
     kill() {

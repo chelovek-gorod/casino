@@ -1,8 +1,7 @@
-import { Container, TilingSprite } from 'pixi.js'
-import { tickerRemove } from '../../../app/application'
+import { Container } from 'pixi.js'
 import { images, music } from '../../../app/assets'
-import { setMusic } from '../../../app/sound'
-import { GAME_CONTAINERS, GAME_OFFSET, UI } from '../../UI/constants'
+import { setMusicList } from '../../../app/sound'
+import { GAME_CONTAINERS, UI } from '../../UI/constants'
 import Field from './Field'
 import Wheel from './Wheel'
 import LeftMenu from '../../UI/LeftMenu'
@@ -48,7 +47,7 @@ export default class Roulette extends Container {
         this.addChild(this.leftUI, this.rightUI, this.topUI, this.popup, this.message)
 
         // done
-        setMusic([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
+        setMusicList([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
     }
 
     screenResize(screenData) {

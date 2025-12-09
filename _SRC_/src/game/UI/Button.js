@@ -2,17 +2,18 @@ import { Container, Text, Sprite } from "pixi.js"
 import { images, sounds } from "../../app/assets"
 import { removeCursorPointer, setCursorPointer } from "../../utils/functions"
 import { styles } from "../../app/styles"
-import { playSound } from "../../app/sound"
+import { soundPlay } from "../../app/sound"
 import { getRRTextureWithShadow } from "../../utils/textureGenerator"
 import { BUTTON } from "./constants"
+import { setHelpText } from "../../app/events"
 
 export default class Button extends Container {
-    constructor(text, x, y, callback, isActive = true) {
+    constructor(text, x, y, callback, isActive = true, helpText = '') {
         super()
         this.position.set(x, y)
 
         this.callback = callback
-
+        this.helpText = helpText
         
         this.shadow = new Sprite()
         const [texture, padding] = getRRTextureWithShadow(
@@ -38,6 +39,10 @@ export default class Button extends Container {
         this.setActive(this.isActive)
     }
 
+    setLabel(text) {
+        this.label.text = text
+    }
+
     setActive(isActive = true) {
         this.isActive = isActive
         if (this.isActive) {
@@ -51,17 +56,19 @@ export default class Button extends Container {
     click() {
         if (!this.isActive) return
 
-        playSound(sounds.se_click)
+        soundPlay(sounds.se_click)
         this.callback()
     }
 
     onHover() {
+        if (this.helpText) setHelpText(this.helpText)
         if (!this.isActive) return
 
         this.label.style = styles.buttonHover
-        playSound(sounds.se_swipe)
+        soundPlay(sounds.se_swipe)
     }
     onOut() {
+        if (this.helpText) setHelpText('')
         this.label.style = styles.button
     }
 

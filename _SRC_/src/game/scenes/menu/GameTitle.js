@@ -2,6 +2,7 @@ import { Container, Sprite, Text, Texture } from "pixi.js";
 import { tickerAdd } from "../../../app/application";
 import { styles } from "../../../app/styles";
 import { textToTexture } from "../../../utils/textureGenerator";
+import { getLanguage } from "../../localization";
 
 // Создаем золотую текстуру
 function createGoldTexture(width, height) {
@@ -24,8 +25,13 @@ function createGoldTexture(width, height) {
 }
 
 export default class GameTitle extends Container {
-    constructor(title, subtitle) {
+    constructor() {
         super()
+
+        this.currentLanguage = getLanguage()
+        const isLangRu = this.currentLanguage === 'ru'
+        const title = isLangRu ? 'КАЗИНО' : 'CASINO'
+        const subtitle = isLangRu ? 'Рулетка и Слоты' : 'Roulette & Slots'
 
         this.maskText = new Sprite(textToTexture( new Text({ text: title, style: styles.gameTitle }) ))
         this.maskText.anchor.set(0.5)

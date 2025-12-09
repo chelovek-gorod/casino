@@ -12,44 +12,397 @@ export const RESULTS = {
 }
 
 export const HELP_TEXT = {
-    home: {ru: 'В главное меню', en: 'To main menu'},
-    money: {ru: 'Ваш текущий счет', en: 'Your current money'},
-    addMoney: {ru: 'Пополнить счет', en: 'Get extra money'},
-    config: {ru: 'Настройки игры', en: 'Game settings'},
+    home: {
+        ru: 'В главное меню',
+        en: 'To main menu',
+        tr: 'Ana menüye dön',
+        es: 'Al menú principal',
+        de: 'Zum Hauptmenü',
+        pt: 'Para o menu principal',
+        fr: 'Vers le menu principal',
+        pl: 'Do menu głównego',
+        id: 'Ke menu utama',
+        ms: 'Ke menu utama'
+    },
+    money: {
+        ru: 'Ваш текущий счет',
+        en: 'Your current money',
+        tr: 'Mevcut bakiyeniz',
+        es: 'Su dinero actual',
+        de: 'Ihr aktuelles Guthaben',
+        pt: 'Seu saldo atual',
+        fr: 'Votre argent actuel',
+        pl: 'Twoje aktualne środki',
+        id: 'Uang Anda saat ini',
+        ms: 'Wang semasa anda'
+    },
+    addMoney: {
+        ru: 'Пополнить счет',
+        en: 'Get extra money',
+        tr: 'Ekstra para al',
+        es: 'Obtener dinero extra',
+        de: 'Extra Geld bekommen',
+        pt: 'Obter dinheiro extra',
+        fr: 'Obtenir de l’argent supplémentaire',
+        pl: 'Zdobądź dodatkowe środki',
+        id: 'Dapatkan uang tambahan',
+        ms: 'Dapatkan wang tambahan'
+    },
+    config: {
+        ru: 'Настройки игры',
+        en: 'Game settings',
+        tr: 'Oyun ayarları',
+        es: 'Configuración del juego',
+        de: 'Spiel-Einstellungen',
+        pt: 'Configurações do jogo',
+        fr: 'Paramètres du jeu',
+        pl: 'Ustawienia gry',
+        id: 'Pengaturan game',
+        ms: 'Tetapan permainan'
+    },
+    logButton: {
+        ru: 'История выпавших значений',
+        en: 'List of last results',
+        tr: 'Sonuç geçmişi',
+        es: 'Historial de resultados',
+        de: 'Liste der letzten Ergebnisse',
+        pt: 'Histórico de resultados',
+        fr: 'Historique des résultats',
+        pl: 'Historia wyników',
+        id: 'Riwayat hasil',
+        ms: 'Sejarah keputusan'
+    },
+    rulesButton: {
+        ru: 'Правила игры',
+        en: 'Gameplay rules',
+        tr: 'Oyun kuralları',
+        es: 'Reglas del juego',
+        de: 'Spielregeln',
+        pt: 'Regras do jogo',
+        fr: 'Règles du jeu',
+        pl: 'Zasady gry',
+        id: 'Aturan permainan',
+        ms: 'Peraturan permainan'
+    },
+    bets: {
+        ru: 'Сумма ставок / текущая ставка',
+        en: 'Total of bets / current bet',
+        tr: 'Bahis toplamı / mevcut bahis',
+        es: 'Total de apuestas / apuesta actual',
+        de: 'Summe der Einsätze / aktueller Einsatz',
+        pt: 'Total de apostas / aposta atual',
+        fr: 'Total des paris / pari actuel',
+        pl: 'Suma zakładów / aktualny zakład',
+        id: 'Total taruhan / taruhan saat ini',
+        ms: 'Jumlah pertaruhan / pertaruhan semasa'
+    },
+    currentBet: {
+        ru: 'Ткущая ставка',
+        en: 'Current bet',
+        tr: 'Mevcut bahis',
+        es: 'Apuesta actual',
+        de: 'Aktueller Einsatz',
+        pt: 'Aposta atual',
+        fr: 'Pari actuel',
+        pl: 'Aktualny zakład',
+        id: 'Taruhan saat ini',
+        ms: 'Pertaruhan semasa'
+    },
+    setBet: {
+        ru: 'Изменить ставку',
+        en: 'Set bet',
+        tr: 'Bahsi ayarla',
+        es: 'Establecer apuesta',
+        de: 'Einsatz festlegen',
+        pt: 'Definir aposta',
+        fr: 'Définir le pari',
+        pl: 'Ustaw zakład',
+        id: 'Tetapkan taruhan',
+        ms: 'Tetapkan pertaruhan'
+    },
+    repeatBets: {
+        ru: 'Повторить последние ставки',
+        en: 'Repeat all recent bets',
+        tr: 'Son bahisleri tekrarla',
+        es: 'Repetir todas las apuestas recientes',
+        de: 'Alle letzten Einsätze wiederholen',
+        pt: 'Repetir todas as apostas recentes',
+        fr: 'Répéter tous les derniers paris',
+        pl: 'Powtórz ostatnie zakłady',
+        id: 'Ulangi semua taruhan terakhir',
+        ms: 'Ulang semua pertaruhan terkini'
+    },
+    clearBets: {
+        ru: 'Очистить все ставки',
+        en: 'Clear all bets',
+        tr: 'Tüm bahisleri temizle',
+        es: 'Borrar todas las apuestas',
+        de: 'Alle Einsätze löschen',
+        pt: 'Limpar todas as apostas',
+        fr: 'Effacer tous les paris',
+        pl: 'Wyczyść wszystkie zakłady',
+        id: 'Bersihkan semua taruhan',
+        ms: 'Kosongkan semua pertaruhan'
+    },
+    betOnHoverBet: {
+        ru: 'Ставка',
+        en: 'Bet',
+        tr: 'Bahis',
+        es: 'Apuesta',
+        de: 'Einsatz',
+        pt: 'Aposta',
+        fr: 'Pari',
+        pl: 'Zakład',
+        id: 'Taruhan',
+        ms: 'Pertaruhan'
+    },
+    betOnHoverRate: {
+        ru: 'Выплата',
+        en: 'Payout',
+        tr: 'Kazanç',
+        es: 'Pago',
+        de: 'Auszahlung',
+        pt: 'Pagamento',
+        fr: 'Gain',
+        pl: 'Wypłata',
+        id: 'Pembayaran',
+        ms: 'Bayaran'
+    },
+    betOnHoverMax: {
+        ru: 'Макс. ставка',
+        en: 'Max bet',
+        tr: 'Maks bahis',
+        es: 'Apuesta máxima',
+        de: 'Max. Einsatz',
+        pt: 'Aposta máxima',
+        fr: 'Pari max',
+        pl: 'Maks. zakład',
+        id: 'Taruhan maks',
+        ms: 'Pertaruhan maks'
+    },
+    btnSpinR: {
+        ru: 'Запуск',
+        en: 'Spin',
+        tr: 'Dön',
+        es: 'Girar',
+        de: 'Drehen',
+        pt: 'Girar',
+        fr: 'Lancer',
+        pl: 'Zakręć',
+        id: 'Putar',
+        ms: 'Putar'
+    },
+    btnSpinS: {
+        ru: 'Запуск',
+        en: 'Spin',
+        tr: 'Dön',
+        es: 'Girar',
+        de: 'Drehen',
+        pt: 'Girar',
+        fr: 'Lancer',
+        pl: 'Zakręć',
+        id: 'Putar',
+        ms: 'Putar'
+    },
+    btnAutoSpinS: {
+        ru: 'Авто запуск',
+        en: 'Auto spin',
+        tr: 'Otomatik dön',
+        es: 'Giro automático',
+        de: 'Automatisch drehen',
+        pt: 'Giro automático',
+        fr: 'Rotation auto',
+        pl: 'Auto spin',
+        id: 'Putar otomatis',
+        ms: 'Putar automatik'
+    },
+    slotsBank: {
+        ru: 'Резерв банка',
+        en: 'Bank reserve',
+        tr: 'Banka rezervi',
+        es: 'Reserva del banco',
+        de: 'Bankreserve',
+        pt: 'Reserva do banco',
+        fr: 'Réserve de la banque',
+        pl: 'Rezerwa banku',
+        id: 'Cadangan bank',
+        ms: 'Simpanan bank'
+    },
+}
 
-    logButton: {ru: 'История выпавших значений', en: 'List of last results'},
-
-    rulesButton: {ru: 'Правила игры', en: 'Gameplay rules'},
-
-    bets: {ru: 'Сумма ставок и текущая ставка', en: 'Total of bets and current bet'},
-    currentBet: {ru: 'Ткущая ставка', en: 'Current bet'},
-    setBet: {ru: 'Изменить ставку', en: 'Set bet'},
-    repeatBets: {ru: 'Повторить последние ставки', en: 'Repeat all recent bets'},
-    clearBets: {ru: 'Очистить все ставки', en: 'Clear all bets'},
-
-    betOnHoverBet: {ru: 'Ставка', en: 'Bet'},
-    betOnHoverRate: {ru: 'Выплата', en: 'Payout'},
-    betOnHoverMax: {ru: 'Макс. ставка', en: 'Max bet'},
+export const UI_TEXT = {
+    totalBet: {
+        ru: 'Сумма',
+        en: 'Total',
+        tr: 'Toplam',
+        es: 'Total',
+        de: 'Summe',
+        pt: 'Total',
+        fr: 'Total',
+        pl: 'Suma',
+        id: 'Jumlah',
+        ms: 'Jumlah'
+    }
 }
 
 export const MESSAGE_TEXT = {
-    lowMoney: {ru: 'Недостаточно\nсредств', en: 'not enough\nmoney'},
-    winMoney: {ru: 'Вы выиграли\n', en: 'You win\n'},
+    lowMoney: {
+        ru: 'Недостаточно\nсредств',
+        en: 'not enough\nmoney',
+        tr: 'Yetersiz\nbakiye',
+        es: 'No hay\nsuficiente dinero',
+        de: 'Nicht genug\nGeld',
+        pt: 'Dinheiro\ninsuficiente',
+        fr: 'Pas assez\nd’argent',
+        pl: 'Niewystarczająco\nśrodków',
+        id: 'Uang\ntidak cukup',
+        ms: 'Wang\ntidak cukup'
+    },
+    winMoney: {
+        ru: 'Вы выиграли\n',
+        en: 'You win\n',
+        tr: 'Kazandınız\n',
+        es: 'Has ganado\n',
+        de: 'Sie gewinnen\n',
+        pt: 'Você ganhou\n',
+        fr: 'Vous gagnez\n',
+        pl: 'Wygrałeś\n',
+        id: 'Anda menang\n',
+        ms:'Anda menang\n'
+    },
     betLimit: {
         ru: 'Лимит ставки\nпревышен!',
-        en: 'This bet\n is too high!'
+        en: 'This bet\n is too high!',
+        tr: 'Bahis limiti\naşıldı!',
+        es: '¡Límite de apuesta\nsuperado!',
+        de: 'Einsatzlimit\nüberschritten!',
+        pt: 'Limite de aposta\nexcedido!',
+        fr: 'Limite de pari\ndépassé!',
+        pl: 'Limit zakładu\nprzekroczony!',
+        id: 'Batas taruhan\nterlampaui!',
+        ms: 'Had pertaruhan\nterlebih!'
     },
 
-    'LINE': {ru: ' в ряд\n', en: ' in line\n'},
-    'BONUS': {ru: 'БОНУС\n', en: 'BONUS\n'},
-    'BONUS2': {ru: ' за ряды', en: ' for lines'},
-    '7x7': {ru: 'Джекпот 7x7 !!!\n', en: 'Jackpot 7x7 !!!\n'},
-    'SET': {ru: 'За коллекцию\n', en: 'Set bonus\n'},
-    'PRESENT': {ru: 'Находка!\n', en: 'Lucky Find!\n'},
-    'CLOVER': {ru: 'Возврат ставки\n', en: 'Return bet\n'},
-    'COIN': {ru: 'В банк\n', en: 'Add to bank\n'},
-    'GOLD': {ru: 'Прибыль ', en: 'Income '},
-    'GOLD2': {ru: ' банка', en: ' from bank'},
+    'LINE': {
+        ru: ' в ряд\n',
+        en: ' in line\n',
+        tr: ' sıraya\n',
+        es: ' en línea\n',
+        de: ' in Reihe\n',
+        pt: ' na linha\n',
+        fr: ' en ligne\n',
+        pl: ' w rzędzie\n',
+        id: ' dalam baris\n',
+        ms: ' dalam barisan\n'
+    },
+    'BONUS': {
+        ru: 'БОНУС\n',
+        en: 'BONUS\n',
+        tr: 'BONUS\n',
+        es: 'BONO\n',
+        de: 'BONUS\n',
+        pt: 'BÔNUS\n',
+        fr: 'BONUS\n',
+        pl: 'BONUS\n',
+        id: 'BONUS\n',
+        ms: 'BONUS\n'
+    },
+    'BONUS2': {
+        ru: ' за ряды',
+        en: ' for lines',
+        tr: ' satır için',
+        es: ' por líneas',
+        de: ' für Reihen',
+        pt: ' por linhas',
+        fr: ' pour les lignes',
+        pl: ' za linie',
+        id: ' untuk baris',
+        ms: ' untuk barisan'
+    },
+    '7x7': {
+        ru: 'Джекпот 7x7 !!!\n',
+        en: 'Jackpot 7x7 !!!\n',
+        tr: '7x7 Jackpot !!!\n',
+        es: '¡Jackpot 7x7 !!!\n',
+        de: 'Jackpot 7x7 !!!\n',
+        pt: 'Jackpot 7x7 !!!\n',
+        fr: 'Jackpot 7x7 !!!\n',
+        pl: 'Jackpot 7x7 !!!\n',
+        id: 'Jackpot 7x7 !!!\n',
+        ms: 'Jackpot 7x7 !!!\n'
+    },
+    'SET': {
+        ru: 'За коллекцию\n',
+        en: 'Set bonus\n',
+        tr: 'Koleksiyon için\n',
+        es: 'Por colección\n',
+        de: 'Für Satz\n',
+        pt: 'Por coleção\n',
+        fr: 'Pour la collection\n',
+        pl: 'Za zestaw\n',
+        id: 'Untuk koleksi\n',
+        ms: 'Untuk koleksi\n'
+    },
+    'PRESENT': {
+        ru: 'Находка!\n',
+        en: 'Lucky Find!\n',
+        tr: 'Şanslı Buluntu!\n',
+        es:'¡Hallazgo afortunado!\n',
+        de: 'Glücklicher Fund!\n',
+        pt: 'Achado de sorte!\n',
+        fr: 'Trouvaille chanceuse!\n',
+        pl: 'Szczęśliwe znalezisko!\n',
+        id: 'Temuan beruntung!\n',
+        ms: 'Penemuan bertuah!\n'
+    },
+    'CLOVER': {
+        ru: 'Возврат ставки\n',
+        en: 'Return bet\n',
+        tr: 'Bahsi iade et\n',
+        es: 'Devolver apuesta\n',
+        de: 'Einsatz zurück\n',
+        pt: 'Retornar aposta\n',
+        fr: 'Retour du pari\n',
+        pl: 'Zwrot zakładu\n',
+        id: 'Kembalikan taruhan\n',
+        ms: 'Pulangkan pertaruhan\n'
+    },
+    'COIN': {
+        ru: 'В банк\n',
+        en: 'Add to bank\n',
+        tr: 'Banka ekle\n',
+        es: 'Añadir al banco\n',
+        de: 'Zur Bank\n',
+        pt: 'Adicionar ao banco\n',
+        fr: 'Ajouter à la banque\n',
+        pl: 'Do banku\n',
+        id: 'Masukkan ke bank\n',
+        ms: 'Masukkan ke bank\n'
+    },
+    'GOLD': {
+        ru: 'Прибыль ',
+        en: 'Income ',
+        tr: 'Kazanç ',
+        es: 'Ganancia ',
+        de: 'Gewinn ',
+        pt: 'Lucro ',
+        fr: 'Revenu ',
+        pl: 'Zysk ',
+        id: 'Pendapatan ',
+        ms: 'Pendapatan '
+    },
+    'GOLD2': {
+        ru: ' из банка',
+        en: ' from bank',
+        tr: ' banka karı',
+        es: ' del banco',
+        de: ' aus der Bank',
+        pt: ' do banco',
+        fr: ' de la banque',
+        pl: ' z banku',
+        id: ' dari bank',
+        ms: ' dari bank'
+    },
 }
 
 /*
@@ -69,8 +422,30 @@ console.log(MESSAGE_TEXT.lowMoney.en())     // → "Bet amount\nexceeds balance"
 */
 
 export const BUTTON_TEXT = {
-    done: {ru: 'Готово', en: 'Done'},
-    spin: {ru: 'КРУТИМ', en: 'SPIN'},
+    done: {
+        ru: 'Готово',
+        en: 'Done',
+        tr: 'Tamam',
+        es: 'Hecho',
+        de: 'Fertig',
+        pt: 'Concluído',
+        fr: 'Fait',
+        pl: 'Gotowe',
+        id: 'Selesai',
+        ms: 'Selesai'
+    },
+    spin: {
+        ru: 'КРУТИМ',
+        en: 'SPIN',
+        tr: 'ÇEVİR',
+        es: 'GIRAR',
+        de: 'DREHEN',
+        pt: 'GIRAR',
+        fr: 'TOURNER',
+        pl: 'KRĘĆ',
+        id: 'PUTAR',
+        ms: 'PUTAR'
+    },
 }
 
 export const BUTTON = {

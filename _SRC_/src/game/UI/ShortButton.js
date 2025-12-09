@@ -1,16 +1,18 @@
 import { Container, Sprite } from "pixi.js"
 import { atlases, sounds } from "../../app/assets"
 import { removeCursorPointer, setCursorPointer } from "../../utils/functions"
-import { playSound } from "../../app/sound"
+import { soundPlay } from "../../app/sound"
 import { getRRTextureWithShadow } from "../../utils/textureGenerator"
 import { BUTTON } from "./constants"
+import { setHelpText } from "../../app/events"
 
 export default class ShortButton extends Container {
-    constructor(textureName, x, y, callback, isActive = true) {
+    constructor(textureName, x, y, callback, isActive = true, helpText = '') {
         super()
         this.position.set(x, y)
 
         this.callback = callback
+        this.helpText = helpText
         
         this.shadow = new Sprite()
         const [texture, padding] = getRRTextureWithShadow(
@@ -25,6 +27,7 @@ export default class ShortButton extends Container {
         setCursorPointer(this.image)
         this.image.on('pointerdown', this.click, this)
         this.image.on('pointerover', this.onHover, this)
+        this.image.on('pointerout', this.onOut, this)
         this.addChild(this.image)
 
         this.isActive = isActive
@@ -47,14 +50,19 @@ export default class ShortButton extends Container {
     click() {
         if (!this.isActive) return
 
-        playSound(sounds.se_click)
+        soundPlay(sounds.se_click)
         this.callback()
     }
 
     onHover() {
+        if (this.helpText) setHelpText(this.helpText)
         if (!this.isActive) return
 
-        playSound(sounds.se_swipe)
+        soundPlay(sounds.se_swipe)
+    }
+
+    onOut() {
+        if (this.helpText) setHelpText('')
     }
 
     deactivate() {

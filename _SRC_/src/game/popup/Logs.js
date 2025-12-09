@@ -3,7 +3,8 @@ import { EventHub, events } from "../../app/events";
 import { styles } from "../../app/styles";
 import { SECTOR, SECTOR_NUMBERS } from "../scenes/roulette/constants";
 import { POPUP_TEXT, LOGS } from "./constants";
-import { isLangRu, results } from "../state";
+import { results } from "../state";
+import { getLanguage } from "../localization";
 
 const SIZE_TYPE = {
     last : 'last',
@@ -44,8 +45,11 @@ export default class Logs extends Container {
     constructor() {
         super()
 
+        this.currentLanguage = getLanguage()
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
+
         // title
-        this.title = new Text({text: isLangRu ? POPUP_TEXT.logs.ru : POPUP_TEXT.logs.en, style: styles.popupTitle})
+        this.title = new Text({text: POPUP_TEXT.logs[ this.currentLanguage ], style: styles.popupTitle})
         this.title.anchor.set(0.5)
         this.title.position.set(0, titleY)
         this.addChild(this.title)
@@ -87,6 +91,11 @@ export default class Logs extends Container {
 
     }
 
+    updateLanguage(lang) {
+        this.currentLanguage = lang
+        this.title.text = POPUP_TEXT.logs[ this.currentLanguage ]
+    }
+
     addLog(number) {
         let i = this.logs.children.length - 1
         while(i > 0) {
@@ -99,6 +108,7 @@ export default class Logs extends Container {
     }
 
     kill() {
+        EventHub.off( events.updateLanguage, updateLanguage, this )
         EventHub.off(events.addLog, this.addLog, this)
     }
 }

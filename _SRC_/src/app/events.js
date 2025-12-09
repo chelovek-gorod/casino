@@ -10,6 +10,8 @@ export const events = {
 
     setHelpText: 'setHelpText',
 
+    updateLanguage: 'updateLanguage',
+
     updateMoney: 'updateMoney',
     updateBet: 'updateBet',
     updateBetTotal: 'updateBetTotal',
@@ -38,6 +40,10 @@ export function startScene( sceneName ) {
 
 export function setHelpText( text ) {
     EventHub.emit( events.setHelpText, text )
+}
+
+export function updateLanguage( currentLanguage ) {
+    EventHub.emit( events.updateLanguage, currentLanguage )
 }
 
 export function updateMoney( money ) {

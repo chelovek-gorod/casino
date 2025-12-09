@@ -18,6 +18,14 @@ export const PROGRESS_BAR = {
 }
 
 export const DONE_TEXT = {
-    ru: 'Нажмите что бы продолжить',
-    en: 'Click to continue'
+    ru: 'Нажмите чтобы продолжить',
+    en: 'Click to continue',
+    tr: 'Devam etmek için tıklayın',
+    es: 'Haga clic para continuar',
+    de: 'Klicken Sie, um fortzufahren',
+    pt: 'Clique para continuar',
+    fr: 'Cliquez pour continuer',
+    pl: 'Kliknij, aby kontynuować',
+    id: 'Klik untuk melanjutkan',
+    ms: 'Klik untuk teruskan',
 }

@@ -6,8 +6,9 @@ import { GAME_CONTAINERS, HELP_TEXT, UI } from "../../UI/constants";
 import { BET_RATIO, FIELD, MAX_BET_RATIO, NUMBERS,
     SECTOR, SECTOR_NUMBERS, SECTOR_SPLIT_NUMBERS, SPIEL } from "./constants";
 import { addBetData, betCurrent, betNearest, removeBet, getBetDataValue,
-    isOnSpin, isSingleBetsInSectors, setBet, isLangRu } from "../../state";
+    isOnSpin, isSingleBetsInSectors, setBet } from "../../state";
 import Chip from "./Chip";
+import { getLanguage } from "../../localization";
 
 const FIELD_TYPE = { spiel: 'spiel', field: 'field' }
 
@@ -26,6 +27,9 @@ function getNearest(number) {
 export default class Field extends Container {
     constructor() {
         super()
+
+        const isLangRu = getLanguage() === 'ru'
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
 
         // chips
         this.spielChips = new Container()
@@ -80,7 +84,7 @@ export default class Field extends Container {
 
         this.spielTop = new Sprite(isLangRu ? images.spiel_top_ru : images.spiel_top)
         this.spiel.addChild(this.spielTop)
-        console.log(this.spielTop.texture)
+        // console.log(this.spielTop.texture)
 
         // FIELD
 
@@ -321,6 +325,9 @@ export default class Field extends Container {
         this.field.removeChild(this.dolly)
         this.clickIsActive = false
         this.clickDuration = 0
+
+        Object.keys(this.sectorsList).forEach( key => this.highlightOff(this.sectorsList[key]) )
+        Object.keys(this.slotsList).forEach( key => this.highlightOff(this.slotsList[key]) )
     }
 
     getSpinResult(number) {
@@ -473,7 +480,14 @@ export default class Field extends Container {
         this.fieldChips.removeChildren()
     }
 
+    updateLanguage(lang) {
+        const isLangRu = lang === 'ru'
+        this.spielTop.texture = isLangRu ? images.spiel_top_ru : images.spiel_top
+        this.fieldTop.texture = isLangRu ? images.field_ru : images.field
+    }
+
     kill() {
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
         EventHub.off(events.startSpin, this.startSpin, this)
         EventHub.off(events.addLog, this.getSpinResult, this)
         EventHub.off(events.clearOneBet, this.clearOneBet, this)

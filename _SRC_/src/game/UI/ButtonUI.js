@@ -1,7 +1,7 @@
 import { Container, Sprite } from "pixi.js"
 import { atlases, sounds } from "../../app/assets"
 import { removeCursorPointer, setCursorPointer } from "../../utils/functions"
-import { playSound } from "../../app/sound"
+import { soundPlay } from "../../app/sound"
 import { UI } from "./constants"
 import { setHelpText } from "../../app/events"
 
@@ -36,19 +36,19 @@ export default class ButtonUI extends Container {
     click() {
         if (!this.isActive) return
 
-        playSound(sounds.se_click)
+        soundPlay(sounds.se_click)
         this.callback()
     }
 
     onHover() {
-        setHelpText(this.helpText)
+        if (this.helpText) setHelpText(this.helpText)
         if (!this.isActive) return
 
         this.mainImage.alpha = 0.5
-        playSound(sounds.se_swipe)
+        soundPlay(sounds.se_swipe)
     }
     onOut() {
-        setHelpText('')
+        if (this.helpText) setHelpText('')
         this.mainImage.alpha = 1
     }
 

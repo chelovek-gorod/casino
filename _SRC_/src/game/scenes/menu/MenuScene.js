@@ -1,19 +1,24 @@
 import { Container, Sprite } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music } from '../../../app/assets'
-import { startScene } from '../../../app/events'
-import { setMusic } from '../../../app/sound'
+import { EventHub, events, startScene } from '../../../app/events'
+import { setMusicList } from '../../../app/sound'
 import { MENU_TEXT } from './constants'
 import { SCENE_NAME } from '../../scenes/constants'
-import { isLangRu } from '../../state'
 import BackgroundCasino from '../../BG/BackgroundCasino'
 import ButtonLight from '../../UI/ButtonLight'
 import GameTitle from './GameTitle'
+import { getLanguage } from '../../localization'
 
 export default class Menu extends Container {
     constructor() {
         super()
         this.alpha = 0
+
+        this.currentLanguage = getLanguage()
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
+
+        this.isGameOnStart = false
 
         this.bg = new BackgroundCasino()
         this.addChild(this.bg)
@@ -23,24 +28,35 @@ export default class Menu extends Container {
         this.logo.anchor.set(1)
         this.addChild(this.logo)
 
-        this.title = new GameTitle(isLangRu ? 'КАЗИНО' : 'CASINO', isLangRu ? 'Рулетка и Слоты' : 'Roulette & Slots')
+        
+        this.title = new GameTitle()
         this.titleStartWidth = this.title.width
         this.titleStartHeight = this.title.height
         this.addChild(this.title)
 
         this.rouletteButton = new ButtonLight(
-            isLangRu ? MENU_TEXT.rouletteButton.ru : MENU_TEXT.rouletteButton.en,
-            () => startScene(SCENE_NAME.Roulette)
+            MENU_TEXT.rouletteButton[this.currentLanguage],
+            () => {
+                if (this.isGameOnStart) return
+
+                this.isGameOnStart = true
+                startScene(SCENE_NAME.Roulette)
+            }
         )
         this.addChild(this.rouletteButton)
 
         this.slotsButton = new ButtonLight(
-            isLangRu ? MENU_TEXT.slotsButton.ru : MENU_TEXT.slotsButton.en,
-            () => startScene(SCENE_NAME.Slots)
+            MENU_TEXT.slotsButton[this.currentLanguage],
+            () => {
+                if (this.isGameOnStart) return
+
+                this.isGameOnStart = true
+                startScene(SCENE_NAME.Slots)
+            }
         )
         this.addChild(this.slotsButton)
 
-        setMusic([music.bgm_0])
+        setMusicList([music.bgm_0])
     }
 
     screenResize(screenData) {
@@ -64,5 +80,15 @@ export default class Menu extends Container {
             this.rouletteButton.position.set(-160, pointY)
             this.slotsButton.position.set(160, pointY)
         }
+    }
+
+    updateLanguage(lang) {
+        this.currentLanguage = lang
+        this.rouletteButton.setLabel( MENU_TEXT.rouletteButton[this.currentLanguage] )
+        this.slotsButton.setLabel( MENU_TEXT.slotsButton[this.currentLanguage] )
+    }
+
+    kill() {
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
     }
 }

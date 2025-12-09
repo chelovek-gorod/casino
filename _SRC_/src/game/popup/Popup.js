@@ -2,14 +2,21 @@ import { Container, Graphics } from "pixi.js"
 import { EventHub, events } from "../../app/events"
 import { BUTTON_TEXT } from "../UI/constants"
 import { POPUP, POPUP_TYPE } from "./constants"
-import { isLangRu } from "../state"
 import Button from "../UI/Button"
 import Bet from "./Bet"
 import Logs from "./Logs"
+import GameSettings from "./GameSettings"
+import MoneyAdd from "./MoneyAdd"
+import RulesR from "./RulesR"
+import RulesS from "./RulesS"
+import { getLanguage } from "../localization"
 
 export default class Popup extends Container {
     constructor() {
         super()
+
+        this.currentLanguage = getLanguage()
+        EventHub.on(events.updateLanguage, this.updateLanguage, this)
 
         this.shell = new Graphics()
         this.shell.eventMode = 'static'
@@ -22,7 +29,7 @@ export default class Popup extends Container {
         this.bg.stroke({width: POPUP.borderWidth, color: POPUP.borderColor})
         
         this.closeButton = new Button(
-            isLangRu ? BUTTON_TEXT.done.ru : BUTTON_TEXT.done.en,
+            BUTTON_TEXT.done[ this.currentLanguage ],
             POPUP.closeButton.x, POPUP.closeButton.y, this.close.bind(this)
         )
         this.closeButton.scale.set(POPUP.closeButton.scale)
@@ -32,6 +39,10 @@ export default class Popup extends Container {
         this.type = POPUP_TYPE.EMPTY
         this[POPUP_TYPE.bet] = new Bet()
         this[POPUP_TYPE.logs] = new Logs()
+        this[POPUP_TYPE.settings] = new GameSettings()
+        this[POPUP_TYPE.addMoney] = new MoneyAdd()
+        this[POPUP_TYPE.rulesR] = new RulesR()
+        this[POPUP_TYPE.rulesS] = new RulesS()
 
         EventHub.on(events.showPopup, this.show, this)
     }
@@ -64,7 +75,13 @@ export default class Popup extends Container {
         this.removeChildren()
     }
 
+    updateLanguage(lang) {
+        this.currentLanguage = lang
+        this.closeButton.setLabel( BUTTON_TEXT.done[ this.currentLanguage ] )
+    }
+
     kill() {
+        EventHub.off(events.updateLanguage, this.updateLanguage, this)
         EventHub.off(events.showPopup, this.show, this)
     }
 }

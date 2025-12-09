@@ -6,16 +6,19 @@ import { ALPHA_STEP, PROGRESS_TEXT, PROGRESS_BAR, DONE_TEXT } from './constants'
 import { loadAssets, preloadAsset, preloadFonts } from './Loader'
 import BackgroundCasino from '../../BG/BackgroundCasino'
 import { removeCursorPointer, setCursorPointer } from '../../../utils/functions'
-import { startScene } from '../../../app/events'
+import { EventHub, startScene, events } from '../../../app/events'
 import { SCENE_NAME } from '../constants'
-import { isLangRu } from '../../state'
-import { getFirstUserAction, playSound } from '../../../app/sound'
+import { getFirstUserAction, soundPlay } from '../../../app/sound'
+import { getLanguage } from '../../localization'
 
 let isFirstLoading = true
 
 export default class LoadScene extends Container {
     constructor() {
         super()
+
+        this.currentLanguage = getLanguage()
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
 
         this.bg = null
         this.logo = null
@@ -81,8 +84,7 @@ export default class LoadScene extends Container {
         const loadingData = {
             [assetType.images]: Object.keys(assets.images),
             [assetType.atlases]: Object.keys(assets.atlases),
-            [assetType.sounds]: Object.keys(assets.sounds),
-            [assetType.voices]: Object.keys(assets.voices)
+            [assetType.sounds]: Object.keys(assets.sounds)
         }
         
         loadAssets(loadingData, this.loadingDone.bind(this), this.update.bind(this))
@@ -90,7 +92,7 @@ export default class LoadScene extends Container {
 
     loadingDone() {
         this.doneText = new Text({
-            text: isLangRu ? DONE_TEXT.ru : DONE_TEXT.en,
+            text: DONE_TEXT[ this.currentLanguage ],
             style: styles.loading
         })
         this.doneText.alpha = 0
@@ -103,6 +105,13 @@ export default class LoadScene extends Container {
 
         setCursorPointer(this)
         this.on('pointerdown', this.getClick, this)
+    }
+
+    updateLanguage(lang) {
+        this.currentLanguage = lang
+        if (this.doneText) this.doneText.text = DONE_TEXT[ this.currentLanguage ]
+        const screenData = getAppScreen()
+        this.resizeDoneText( screenData.width )
     }
 
     resizeDoneText(screenWidth) {
@@ -151,7 +160,7 @@ export default class LoadScene extends Container {
         if (!this.isLoadingDone) return
 
         getFirstUserAction()
-        playSound(sounds.se_click)
+        soundPlay(sounds.se_click)
 
         startScene(SCENE_NAME.Menu)
     }
@@ -172,5 +181,6 @@ export default class LoadScene extends Container {
     kill() {
         removeCursorPointer(this)
         this.off('pointerdown', this.getClick, this)
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
     }
 }

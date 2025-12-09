@@ -1,24 +1,27 @@
 import { Container, Sprite, Text } from 'pixi.js'
 import { tickerRemove } from '../../../app/application'
 import { images, music, sounds } from '../../../app/assets'
-import { playSound, setMusic, stopMusic } from '../../../app/sound'
-import { BUTTON, BUTTON_TEXT, GAME_OFFSET, MESSAGE_TEXT, UI } from '../../UI/constants'
+import { soundPlay, setMusicList } from '../../../app/sound'
+import { BUTTON, BUTTON_TEXT, GAME_OFFSET, HELP_TEXT, MESSAGE_TEXT, UI } from '../../UI/constants'
 import { SLOTS_BORDER, SLOTS_LINES, SLOTS, SLOTS_LINES_DATA, SLOTS_HIGHLIGHT, MAX_BET } from './constants'
 import Line from './Line'
 import Button from '../../UI/Button'
-import { isLangRu, checkRunSlots, resultSlots, resetState, returnBet, betsTotal, slotCoins, addSlotCoins, getSlotCoins, setMaxBet } from '../../state'
+import { checkRunSlots, resultSlots, resetState, returnBet, betsTotal, slotCoins, addSlotCoins, getSlotCoins, setMaxBet } from '../../state'
 import LeftMenu from '../../UI/LeftMenu'
 import RightMenu from '../../UI/RightMenu'
 import TopBarMenu from '../../UI/TopBarMenu'
 import Message from '../../UI/Message'
 import Popup from '../../popup/Popup'
 import BackgroundTiling from '../../BG/BackgroundTiling'
-import { showMessage } from '../../../app/events'
+import { EventHub, events, setHelpText, showMessage } from '../../../app/events'
 import { styles } from '../../../app/styles'
 import ShortButton from '../../UI/ShortButton'
-import { formatNumber } from '../../../utils/functions'
+import { formatNumber, removeCursorPointer, setCursorPointer } from '../../../utils/functions'
 import Coins from '../../effects/Coins'
+import { getRecTexture } from '../../../utils/textureGenerator'
+import { getLanguage } from '../../localization'
 
+/*
 const testWinData = {
     spins: 0,
     lines_3: {count: 0, money: 0},
@@ -30,6 +33,7 @@ const testWinData = {
     bank: {count: 0, money: 0},
     presents: {count: 0, money: 0},
 }
+*/
 
 export default class Slots extends Container {
     constructor() {
@@ -38,6 +42,9 @@ export default class Slots extends Container {
 
         resetState()
         setMaxBet(MAX_BET)
+
+        this.currentLanguage = getLanguage()
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
 
         // BG
         this.bg = new BackgroundTiling(images.bg_red)
@@ -74,12 +81,21 @@ export default class Slots extends Container {
         this.bankText.anchor.set(0, 0.5)
         this.bankText.position.set(320, SLOTS_BORDER.height + BUTTON.height * 0.75)
 
-        this.gameContainer.addChild(this.bankIcon, this.bankText)
+        this.bankHoverArea = new Sprite( getRecTexture(340, 80, 0x00ff00) )
+        this.bankHoverArea.position.set(204, SLOTS_BORDER.height + 24)
+        this.bankHoverArea.alpha = 0.01
+        this.bankHoverArea.on('pointerover', this.bankOnHover, this)
+        this.bankHoverArea.on('pointerout', this.bankOnOut, this)
+        setCursorPointer(this.bankHoverArea)
+
+        this.gameContainer.addChild(this.bankIcon, this.bankText, this.bankHoverArea)
 
         this.runButton = new Button(
-            isLangRu ? BUTTON_TEXT.spin.ru : BUTTON_TEXT.spin.en,
+            BUTTON_TEXT.spin[ this.currentLanguage ],
             SLOTS_BORDER.width * 0.5, SLOTS_BORDER.height + BUTTON.height * 0.75,
-            this.run.bind(this)
+            this.run.bind(this),
+            true,
+            HELP_TEXT.btnSpinS
         )
         this.gameContainer.addChild(this.runButton)
 
@@ -88,7 +104,7 @@ export default class Slots extends Container {
         this.isSceneDestroyed = false
         this.autoButton = new ShortButton( 'play',
             SLOTS_BORDER.width - 260, SLOTS_BORDER.height + BUTTON.height * 0.75,
-            this.setAutoSpin.bind(this), true
+            this.setAutoSpin.bind(this), true, HELP_TEXT.btnAutoSpinS
         )
         this.gameContainer.addChild(this.autoButton)
 
@@ -108,11 +124,11 @@ export default class Slots extends Container {
         this.highlightMessageTimeout = SLOTS_HIGHLIGHT.duration + SLOTS_HIGHLIGHT.inOut * 2
         this.highlightTimeout = 300
 
-        this.autoSpinByKeySpace_bind = this.setAutoSpinByKeySpace.bind(this)
+        this.autoSpinByKeySpace_bind = this.run.bind(this)
         document.addEventListener('keyup', this.autoSpinByKeySpace_bind)
 
         // done
-        setMusic([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
+        setMusicList([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
 
         // test
         //this.test()
@@ -150,6 +166,13 @@ export default class Slots extends Container {
         this.gameContainer.position.set(gameContainerX, gameContainerY)
     }
 
+    bankOnHover() {
+        setHelpText(HELP_TEXT.slotsBank)
+    }
+    bankOnOut() {
+        setHelpText('')
+    }
+
     setAutoSpin() {
         // stop auto spin
         if (this.isAutoSpinOn) {
@@ -162,9 +185,6 @@ export default class Slots extends Container {
             if (this.linsRunningCount === 0) this.run()
         }
     }
-    setAutoSpinByKeySpace(event) {
-        if (event.code === "Space") this.run()
-    }
 
     run() {
         if (this.linsRunningCount > 0 || !checkRunSlots()) {
@@ -176,7 +196,7 @@ export default class Slots extends Container {
         this.runButton.setActive(false)
         this.linsRunningCount = 5
         this.lines.forEach((line, i) => line.run(i))
-        playSound(sounds.se_slots_spin)
+        soundPlay(sounds.se_slots_spin)
     }
     lineStopped() {
         this.linsRunningCount -= 1
@@ -485,9 +505,11 @@ export default class Slots extends Container {
                 if (this.isAutoSpinOn) this.run()
             }, 300)
 
+            /*
             console.clear()
             testWinData.spins++
             console.log(testWinData)
+            */
 
             return
         }
@@ -501,7 +523,7 @@ export default class Slots extends Container {
             case 'LINE' :
                 resultSlots(highlightData.winRate * this.bonusRate)
                 messageText = highlightData.count
-                messageText += isLangRu ? MESSAGE_TEXT['LINE'].ru : MESSAGE_TEXT['LINE'].en
+                messageText += MESSAGE_TEXT['LINE'][ this.currentLanguage ]
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}${bonusText}`
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -510,28 +532,28 @@ export default class Slots extends Container {
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
-                    playSound(sounds.se_line)
+                    soundPlay(sounds.se_line)
                 }, SLOTS_HIGHLIGHT.inOut)
 
-                testWinData[`lines_${highlightData.count}`].count++
-                testWinData[`lines_${highlightData.count}`].money += highlightData.winRate * betsTotal *this.bonusRate 
+                //testWinData[`lines_${highlightData.count}`].count++
+                //testWinData[`lines_${highlightData.count}`].money += highlightData.winRate * betsTotal *this.bonusRate 
             break;
             case 'BONUS' :
-                messageText = isLangRu ? MESSAGE_TEXT['BONUS'].ru : MESSAGE_TEXT['BONUS'].en
+                messageText = MESSAGE_TEXT['BONUS'][ this.currentLanguage ]
                 messageText += bonusText
-                messageText += isLangRu ? MESSAGE_TEXT['BONUS2'].ru : MESSAGE_TEXT['BONUS2'].en
+                messageText += MESSAGE_TEXT['BONUS2'][ this.currentLanguage ]
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     showMessage(messageText)
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
-                    playSound(sounds.se_bonus)
+                    soundPlay(sounds.se_bonus)
                 }, SLOTS_HIGHLIGHT.inOut)
             break;
             case '7x7' :
                 resultSlots(highlightData.winRate)
-                messageText = isLangRu ? MESSAGE_TEXT['7x7'].ru : MESSAGE_TEXT['7x7'].en
+                messageText = MESSAGE_TEXT['7x7'][this.currentLanguage]
                 messageText +=`+${formatNumber(highlightData.winRate * betsTotal)}`
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -540,15 +562,15 @@ export default class Slots extends Container {
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
-                    playSound(sounds.se_jackpot)
+                    soundPlay(sounds.se_jackpot)
                 }, SLOTS_HIGHLIGHT.inOut)
 
-                testWinData.jackpot.count++
-                testWinData.jackpot.money += highlightData.winRate * betsTotal
+                //testWinData.jackpot.count++
+                //testWinData.jackpot.money += highlightData.winRate * betsTotal
             break; 
             case 'SET' :
                 resultSlots(highlightData.winRate)
-                messageText = isLangRu ? MESSAGE_TEXT['SET'].ru : MESSAGE_TEXT['SET'].en
+                messageText = MESSAGE_TEXT['SET'][this.currentLanguage]
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}`
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -557,15 +579,15 @@ export default class Slots extends Container {
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
-                    playSound(sounds.se_set)
+                    soundPlay(sounds.se_set)
                 }, SLOTS_HIGHLIGHT.inOut)
 
-                testWinData.sets.count++
-                testWinData.sets.money += highlightData.winRate * betsTotal
+                //testWinData.sets.count++
+                //testWinData.sets.money += highlightData.winRate * betsTotal
             break;
             case 'PRESENT' :
                 resultSlots(highlightData.winRate)
-                messageText = isLangRu ? MESSAGE_TEXT['PRESENT'].ru : MESSAGE_TEXT['PRESENT'].en
+                messageText = MESSAGE_TEXT['PRESENT'][this.currentLanguage]
                 messageText += `+${formatNumber(highlightData.winRate * betsTotal)}`
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -574,14 +596,14 @@ export default class Slots extends Container {
                 }, this.highlightMessageTimeout)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
-                    playSound(sounds.se_fortuna)
+                    soundPlay(sounds.se_fortuna)
                 }, SLOTS_HIGHLIGHT.inOut)
 
-                testWinData.presents.count++
-                testWinData.presents.money += highlightData.winRate * betsTotal
+                //testWinData.presents.count++
+                //testWinData.presents.money += highlightData.winRate * betsTotal
             break;
             case 'COIN' :
-                messageText = isLangRu ? MESSAGE_TEXT['COIN'].ru : MESSAGE_TEXT['COIN'].en
+                messageText = MESSAGE_TEXT['COIN'][this.currentLanguage]
                 messageText += addSlotCoins(formatNumber(highlightData.winRate))
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -590,7 +612,7 @@ export default class Slots extends Container {
                 this.bankText.text = formatNumber(slotCoins)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
-                    playSound(sounds.se_coin_to_bank)
+                    soundPlay(sounds.se_coin_to_bank)
                 }, SLOTS_HIGHLIGHT.inOut)
             break;
             case 'GOLD' :
@@ -604,10 +626,10 @@ export default class Slots extends Container {
                 }
 
                 const getBank = getSlotCoins(highlightData.winRate)
-                messageText = isLangRu ? MESSAGE_TEXT['GOLD'].ru : MESSAGE_TEXT['GOLD'].en
+                messageText = MESSAGE_TEXT['GOLD'][this.currentLanguage]
                 messageText += `${Math.min(100, highlightData.winRate * 10)} %\n`
                 messageText += `+${formatNumber(getBank)}`
-                messageText += isLangRu ? MESSAGE_TEXT['GOLD2'].ru : MESSAGE_TEXT['GOLD2'].en
+                messageText += MESSAGE_TEXT['GOLD2'][this.currentLanguage]
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
                     showMessage(messageText)
@@ -616,14 +638,14 @@ export default class Slots extends Container {
                 this.bankText.text = formatNumber(slotCoins)
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
-                    playSound(sounds.se_gold), SLOTS_HIGHLIGHT.inOut
+                    soundPlay(sounds.se_gold), SLOTS_HIGHLIGHT.inOut
                 })
 
-                testWinData.bank.count++
-                testWinData.bank.money += getBank
+                //testWinData.bank.count++
+                //testWinData.bank.money += getBank
             break;
             case 'CLOVER' :
-                messageText = isLangRu ? MESSAGE_TEXT['CLOVER'].ru : MESSAGE_TEXT['CLOVER'].en
+                messageText = MESSAGE_TEXT['CLOVER'][this.currentLanguage]
                 messageText += `${formatNumber(betsTotal)}`
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
@@ -632,7 +654,7 @@ export default class Slots extends Container {
                 returnBet()
                 setTimeout( () => {
                     if (this.isSceneDestroyed) return
-                    playSound(sounds.se_clover)
+                    soundPlay(sounds.se_clover)
                 }, SLOTS_HIGHLIGHT.inOut)
             break; 
             default : 
@@ -646,7 +668,18 @@ export default class Slots extends Container {
         })
     }
 
+    updateLanguage(lang) {
+        this.currentLanguage = lang
+        this.runButton.setLabel( BUTTON_TEXT.spin[ this.currentLanguage ] )
+    }
+
     kill() {
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
+
+        removeCursorPointer(this.bankHoverArea)
+        this.bankHoverArea.off('pointerover', this.bankOnHover, this)
+        this.bankHoverArea.off('pointerout', this.bankOnOut, this)
+
         this.isSceneDestroyed = true
         document.removeEventListener('keyup', this.autoSpinByKeySpace_bind )
 

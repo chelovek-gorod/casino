@@ -1,13 +1,15 @@
 import { Container, Sprite } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../../app/application";
 import { images, sounds } from "../../../app/assets";
-import { playSound, stopSound } from "../../../app/sound";
+import { soundPlay, soundStop } from "../../../app/sound";
 import { getLinesIntersectionPoint, getRandom } from "../../../utils/functions";
-import { BUTTON_TEXT, GAME_CONTAINERS, RESULTS } from "../../UI/constants";
+import { BUTTON_TEXT, GAME_CONTAINERS, HELP_TEXT, RESULTS } from "../../UI/constants";
 import { WHEEL, BALL, NUMBERS, SHOW_RESULT_DELAY } from "./constants";
-import { isLangRu, isOnSpin, setSpin, setSpinResult } from "../../state";
+import { isOnSpin, setSpin, setSpinResult } from "../../state";
 import Button from "../../UI/Button";
 import Results from "./Results";
+import { getLanguage } from "../../localization";
+import { EventHub, events } from "../../../app/events";
 
 const HalfPI = Math.PI * 0.5
 const DoublePI = Math.PI * 2
@@ -68,14 +70,18 @@ export default class Wheel extends Container {
         this.addChild(this.results)
 
         this.runButton = new Button(
-            isLangRu ? BUTTON_TEXT.spin.ru : BUTTON_TEXT.spin.en,
+            BUTTON_TEXT.spin[ getLanguage() ],
             GAME_CONTAINERS.wheel.pointButton.x, GAME_CONTAINERS.wheel.pointButton.y,
-            this.run.bind(this)
+            this.run.bind(this),
+            true,
+            HELP_TEXT.btnSpinR
         )
         this.addChild(this.runButton)
 
         this.runByKeySpace_bind = this.run.bind(this)
         document.addEventListener('keyup', this.runByKeySpace_bind )
+
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
     }
 
     run() {
@@ -241,7 +247,7 @@ export default class Wheel extends Container {
                 if (this.ballDelay <= 0) {
                     this.wheel.addChild(this.ball)
                     this.state = STATE.ball_on_border
-                    playSound(sounds.se_ball_roll)
+                    soundPlay(sounds.se_ball_roll)
                 }
             break
 
@@ -263,8 +269,8 @@ export default class Wheel extends Container {
                 if (this.ballRotationRadius < BALL.rotationRadiusStop) {
                     this.getWinningSector()
                     this.state = STATE.ball_move_to_target
-                    stopSound(sounds.se_ball_roll)
-                    playSound(sounds.se_ball_stop)
+                    soundStop(sounds.se_ball_roll)
+                    soundPlay(sounds.se_ball_stop)
                 }
             break
 
@@ -310,7 +316,12 @@ export default class Wheel extends Container {
         }
     }
 
+    updateLanguage(lang) {
+        this.runButton.setLabel( BUTTON_TEXT.spin[ lang ] )
+    }
+
     kill() {
         document.removeEventListener('keyup', this.runByKeySpace_bind )
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
     }
 }

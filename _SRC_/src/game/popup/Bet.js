@@ -5,9 +5,10 @@ import { styles } from "../../app/styles";
 import { removeCursorPointer, setCursorPointer, formatNumber } from "../../utils/functions";
 import { POPUP_TEXT } from "./constants"
 import { SCENE_NAME } from "../scenes/constants";
-import { betCurrent, betNearest, editBet, isLangRu, changeSpielSplits, setNearest,
+import { betCurrent, betNearest, editBet, changeSpielSplits, setNearest,
     isSingleBetsInSectors, currentScene } from "../state";
 import ShortButton from "../UI/ShortButton";
+import { getLanguage } from "../localization";
 
 const chipButtons = {
     xs: [0, 80, 160],
@@ -26,8 +27,11 @@ export default class Bet extends Container {
     constructor() {
         super()
 
+        this.currentLanguage = getLanguage()
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
+
         // title
-        this.title = new Text({text: isLangRu ? POPUP_TEXT.bet.ru : POPUP_TEXT.bet.en, style: styles.popupTitle})
+        this.title = new Text({text: POPUP_TEXT.bet[ this.currentLanguage ], style: styles.popupTitle})
         this.title.anchor.set(0.5)
         this.title.position.set(0, titleY)
         this.addChild(this.title)
@@ -41,7 +45,7 @@ export default class Bet extends Container {
         if (currentScene === SCENE_NAME.Roulette) {
             // spiel splits
             this.spielSplitsSubtitle = new Text({
-                text: isLangRu ? POPUP_TEXT.spielSplits.ru : POPUP_TEXT.spielSplits.en,
+                text: POPUP_TEXT.spielSplits[ this.currentLanguage ],
                 style: styles.popupSubTitle
             })
             this.spielSplitsSubtitle.anchor.set(0, 0.5)
@@ -53,8 +57,8 @@ export default class Bet extends Container {
             this.addChild(this.spielSplitsSup)
 
             const spielSplitsValue = isSingleBetsInSectors
-                ? isLangRu ? POPUP_TEXT.spielSplitsValues[0].ru : POPUP_TEXT.spielSplitsValues[0].en
-                : isLangRu ? POPUP_TEXT.spielSplitsValues[1].ru : POPUP_TEXT.spielSplitsValues[1].en
+                ? POPUP_TEXT.spielSplitsValues[0][ this.currentLanguage ]
+                : POPUP_TEXT.spielSplitsValues[1][ this.currentLanguage ]
             this.spielSplitsValue = new Text({text: spielSplitsValue, style: styles.popupSubTitle})
             this.spielSplitsValue.anchor.set(0.5)
             this.spielSplitsValue.position.set(94, spielSplitsY)
@@ -65,7 +69,10 @@ export default class Bet extends Container {
             this.addChild(this.spielSplitsAdd)
 
             // nearest
-            this.nearestSubtitle = new Text({text: isLangRu ? POPUP_TEXT.nearest.ru : POPUP_TEXT.nearest.en, style: styles.popupSubTitle})
+            this.nearestSubtitle = new Text({
+                text: POPUP_TEXT.nearest[ this.currentLanguage ],
+                style: styles.popupSubTitle
+            })
             this.nearestSubtitle.anchor.set(0, 0.5)
             this.nearestSubtitle.position.set(-146, nearestY)
             this.addChild(this.nearestSubtitle)
@@ -118,6 +125,23 @@ export default class Bet extends Container {
         }
     }
 
+    updateLanguage( lang ) {
+        this.currentLanguage = lang
+        this.title.text = POPUP_TEXT.bet[ this.currentLanguage ]
+        if ('spielSplitsSubtitle' in this) {
+            this.spielSplitsSubtitle.text = POPUP_TEXT.spielSplits[ this.currentLanguage ]
+        }
+        if ('spielSplitsValue' in this) {
+            this.spielSplitsValue.text = isSingleBetsInSectors
+                ? POPUP_TEXT.spielSplitsValues[0][ this.currentLanguage ]
+                : POPUP_TEXT.spielSplitsValues[1][ this.currentLanguage ]
+        }
+        if ('nearestSubtitle' in this) {
+            this.nearestSubtitle.text = POPUP_TEXT.nearest[ this.currentLanguage ]
+        }
+        
+    }
+
     addChip(value, x, y) {
         this[`c${value}`] = new Sprite(atlases.chip.textures[`c${value}`])
         this[`c${value}`].anchor.set(0.5)
@@ -144,8 +168,8 @@ export default class Bet extends Container {
 
     clickSpielSplits() {
         this.spielSplitsValue.text = changeSpielSplits()
-            ? isLangRu ? POPUP_TEXT.spielSplitsValues[0].ru : POPUP_TEXT.spielSplitsValues[0].en
-            : isLangRu ? POPUP_TEXT.spielSplitsValues[1].ru : POPUP_TEXT.spielSplitsValues[1].en
+            ? POPUP_TEXT.spielSplitsValues[0][ this.currentLanguage ]
+            : POPUP_TEXT.spielSplitsValues[1][ this.currentLanguage ]
     }
 
     clickNearestSup() {
@@ -170,6 +194,7 @@ export default class Bet extends Container {
     }
 
     kill() {
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
         EventHub.off(events.updateBet, this.updateBet, this)
         if (currentScene === SCENE_NAME.Roulette) {
             EventHub.off(events.updateNearestNumber, this.updateNearestNumber, this)

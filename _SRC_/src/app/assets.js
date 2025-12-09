@@ -3,7 +3,6 @@ export const assetType = {
     atlases: 'atlases',
     sounds : 'sounds',
     music : 'music',
-    voices : 'voices',
     fonts : 'fonts',
 }
 
@@ -12,18 +11,14 @@ export const path = {
     atlases: './atlases/',
     sounds : './sounds/',
     music : './music/',
-    voices : './voices/',
     fonts : './fonts/',
 }
 export const fonts = {
     Title: 'Unbounded-Bold.ttf',
-    Subtitle1: 'TrainOne-Regular.ttf',
-    Subtitle2: 'ComforterBrush-Regular.ttf',
+    Subtitle: 'ComforterBrush-Regular.ttf',
     
-    Manrope200: 'Manrope-ExtraLight.ttf',
     Manrope300: 'Manrope-Light.ttf',
     Manrope400: 'Manrope-Regular.ttf',
-    Manrope500: 'Manrope-Medium.ttf',
     Manrope600: 'Manrope-SemiBold.ttf',
     Manrope700: 'Manrope-Bold.ttf',
     Manrope800: 'Manrope-ExtraBold.ttf',
@@ -32,12 +27,8 @@ export const fonts = {
 export const images = {
     bg_green: 'ground_green.png',
     bg_red: 'ground_red.png',
-    bg_blue: 'ground_blue.png',
 
     button: 'button.png',
-
-    game_title_ru: 'game_title_ru.png',
-    game_title_en: 'game_title_en.png',
 
     field: 'field_1204x504px.png',
     field_ru: 'field_ru_1204x504px.png',
@@ -53,16 +44,6 @@ export const images = {
 
     slot_border: 'slots_border.png',
     slots_bank: 'slots_bank_icon.png',
-    
-    dpf_1: 'dpf_1.png',
-    dpf_2: 'dpf_2.png',
-    dpf_3: 'dpf_3.png',
-    dpf_4: 'dpf_4.png',
-    dpf_5: 'dpf_5.png',
-    dpf_6: 'dpf_6.png',
-    dpf_7: 'dpf_7.png',
-
-    smoke: 'smoke.png',
 
     img_finger: 'finger.png',
     img_logo: 'logo.png',
@@ -77,6 +58,7 @@ export const atlases = {
    coin: 'coin.json',
    button_lamps: 'button_lamps.json',
    for_bg: 'for_bg.json',
+   options: 'options.json',
 }
 export const sounds = {
     se_swipe: 'se_swipe.mp3',
@@ -95,10 +77,6 @@ export const sounds = {
     se_gold: 'se_gold.mp3',
     se_slots_spin: 'se_slots_spin.mp3',
 }
-export const voices = {
-    // voice_start_1: 'voice_ru_start_first.mp3',
-    // voice_start_2: 'voice_ru_start_second.mp3',
-}
 export const music = {
     bgm_0: 'bgm_0.mp3',
     bgm_1: 'bgm_1.mp3',
@@ -108,7 +86,7 @@ export const music = {
     bgm_5: 'bgm_5.mp3',
 }
 
-export const assets = {fonts, images, atlases, sounds, voices, music}
+export const assets = {fonts, images, atlases, sounds, music}
 for (let assetType in assets) {
     for (let key in assets[assetType]) {
         assets[assetType][key] = path[assetType] + assets[assetType][key]

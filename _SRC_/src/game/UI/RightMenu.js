@@ -1,19 +1,23 @@
 import { Container, Sprite, Text } from "pixi.js";
-import { HELP_TEXT, UI } from "./constants";
+import { HELP_TEXT, UI, UI_TEXT } from "./constants";
 import { POPUP_TYPE } from "../popup/constants";
 import { SCENE_NAME } from "../scenes/constants";
 import ButtonUI from "./ButtonUI";
-import { betCurrent, betsTotal, checkBet, isLangRu, clearAllBetsData, currentScene } from "../state";
+import { betCurrent, betsTotal, checkBet, clearAllBetsData, currentScene } from "../state";
 import { styles } from "../../app/styles";
 import { atlases } from "../../app/assets";
 import { getRRTexture, getRRTextureWithShadow } from "../../utils/textureGenerator";
 import { EventHub, events, setHelpText, showPopup } from "../../app/events";
 import { formatNumber } from "../../utils/functions";
 import { tickerRemove } from "../../app/application";
+import { getLanguage } from "../localization";
 
 export default class RightMenu extends Container {
     constructor() {
         super()
+
+        this.currentLanguage = getLanguage()
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
 
         this.betsBg = new Sprite()
         this.betsBg.texture = getRRTexture(
@@ -33,7 +37,7 @@ export default class RightMenu extends Container {
         this.betsTotal.position.set(-UI.bets.width + UI.bets.iconSize * 0.75, betsOffsetY)
         this.betsTotalText = new Text({
             text: currentScene === SCENE_NAME.Roulette
-            ? `${isLangRu ? 'Сумма' : 'Total'}: ${formatNumber(betsTotal)}`
+            ? `${UI_TEXT[this.currentLanguage]}: ${formatNumber(betsTotal)}`
             : '',
             style: styles.betsTotal
         })
@@ -79,7 +83,7 @@ export default class RightMenu extends Container {
         this.betsCurrentText.text = formatNumber(bet)
     }
     updateBetTotal(total) {
-        this.betsTotalText.text = `${isLangRu ? 'Сумма' : 'Total'}: ${formatNumber(total)}`
+        this.betsTotalText.text = `${UI_TEXT[this.currentLanguage]}: ${formatNumber(total)}`
     }
 
     showBetPopup() {
@@ -94,7 +98,16 @@ export default class RightMenu extends Container {
         this.cancelBeat.setActive(false)
     }
 
+    updateLanguage(lang) {
+        this.currentLanguage = lang
+        if (currentScene === SCENE_NAME.Roulette) {
+            this.betsTotalText.text = `${UI_TEXT[this.currentLanguage]}: ${formatNumber(betsTotal)}`
+        }
+    }
+
     kill() {
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
+
         EventHub.off(events.updateBet, this.updateBet, this)
         EventHub.off(events.updateBetTotal, this.updateBetTotal, this)
         EventHub.off(events.startSpin, this.setDisableCancelButton, this)

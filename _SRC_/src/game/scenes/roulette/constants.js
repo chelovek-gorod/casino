@@ -7,6 +7,7 @@ export const SECTOR = {
     top2to1: 'top2to1', mid2to1: 'mid2to1', bot2to1: 'bot2to1',
 }
 
+/*
 export const SECTOR_NAMES = {
     zero: {ru: 'Зеро', en: 'Zero'},
     vois: {ru: 'Соседи Зеро', en: 'Voisins du Zero'},
@@ -25,13 +26,14 @@ export const SECTOR_NAMES = {
     mid2to1: {ru: 'Зеро', en: 'Zero'},
     bot2to1: {ru: 'Зеро', en: 'Zero'},
 }
+
 export const POINTS_NAMES = {
     2: {ru: 'Разделённая ставка', en: 'Split'},
     3: {ru: 'Ряд из трёх', en: 'Street'},
     4: {ru: 'Квадрат', en: 'Corner'},
     6: {ru: 'Линия из шести', en: 'Line'},
 }
-
+*/
 export const SECTOR_SPLIT_NUMBERS = {
     [SECTOR.zero]: [ [0, 3], [12, 15], [32, 35], [26] ],
     [SECTOR.vois]: [ [0, 2, 3], [4, 7], [12, 15], [32, 35], [25, 26], [28, 29], [19, 22], [18, 21] ],

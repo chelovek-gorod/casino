@@ -2,7 +2,7 @@ import { Container, Sprite, Text } from "pixi.js"
 import { tickerAdd, tickerRemove } from "../../app/application"
 import { removeCursorPointer, setCursorPointer } from "../../utils/functions"
 import { atlases, sounds } from "../../app/assets"
-import { playSound } from "../../app/sound"
+import { soundPlay } from "../../app/sound"
 import { styles } from "../../app/styles"
 
 const alphaStep = 0.001
@@ -51,6 +51,10 @@ export default class ButtonLight extends Container {
         tickerAdd(this)
     }
 
+    setLabel(text) {
+        this.label.text = text
+    }
+
     setActive(isActive = true) {
         this.isActive = isActive
         if (this.isActive) {
@@ -66,14 +70,14 @@ export default class ButtonLight extends Container {
     click() {
         if (!this.isActive) return
 
-        playSound(sounds.se_click)
+        soundPlay(sounds.se_click)
         this.callback()
     }
 
     onHover() {
         if (!this.isActive) return
 
-        playSound(sounds.se_swipe)
+        soundPlay(sounds.se_swipe)
         this.baseOn.alpha = 1
         this.label.style = styles.buttonLightOn
     }

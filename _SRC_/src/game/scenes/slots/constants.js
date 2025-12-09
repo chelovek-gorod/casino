@@ -126,9 +126,10 @@ export const SLOTS_LINES_DATA = {
     [SLOTS.wild]: {count: 2, rates: LOW_WIN_RATE},
     [SLOTS.bonus]: {count: 2, rates: LOW_WIN_RATE}, // выигрыш X
 }
-
+/*
 let imagesInLine = 0
 for (let key in SLOTS_LINES_DATA) {
     imagesInLine += SLOTS_LINES_DATA[key].count
 }
 console.log('imagesInLine:', imagesInLine)
+*/
