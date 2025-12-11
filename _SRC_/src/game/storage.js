@@ -3,7 +3,7 @@ import { setStoredSoundData } from '../app/sound'
 import LocalMockSDK from '../sdk/LocalMock'
 import { decode, encode } from '../utils/decoder'
 import { setLanguage } from './localization'
-import { money, setStoredMoney } from './state'
+import { money, slotCoins, setStoredMoney, setStoredSlotCoins } from './state'
 
 export const STORED_KEYS = {
     language: 'language',
@@ -17,14 +17,20 @@ EventHub.on( events.updateMoney, () => updateStoredData(STORED_KEYS.game) )
 
 export function setStoredGameData( gameData ) {
     if ('money' in gameData && typeof gameData.money === 'number'
-    && gameData.money > 0 && gameData.money < Infinity ) {
+    && gameData.money >= 0 && gameData.money < Infinity ) {
         setStoredMoney(gameData.money)
+    }
+
+    if ('slotCoins' in gameData && typeof gameData.slotCoins === 'number'
+    && gameData.slotCoins >= 0 && gameData.slotCoins < Infinity ) {
+        setStoredSlotCoins(gameData.slotCoins)
     }
 }
 
 export function getStoredGameData() {
     const storedString = JSON.stringify({
-        money: money
+        money: money,
+        slotCoins: slotCoins,
     })
     const encodedString = encode( storedString )
     return encodedString

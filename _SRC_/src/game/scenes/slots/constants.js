@@ -1,4 +1,4 @@
-export const MAX_BET = 10000
+export const MAX_BET = 5000
 
 export const SLOTS_BORDER = {
     width: 0,

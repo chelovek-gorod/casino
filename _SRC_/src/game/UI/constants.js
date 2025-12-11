@@ -84,6 +84,18 @@ export const HELP_TEXT = {
         id: 'Aturan permainan',
         ms: 'Peraturan permainan'
     },
+    bet: {
+        ru: 'Текущая ставка',
+        en: 'Current bet',
+        tr: 'Mevcut bahis',
+        es: 'Apuesta actual',
+        de: 'Aktueller Einsatz',
+        pt: 'Aposta atual',
+        fr: 'Pari actuel',
+        pl: 'Aktualny zakład',
+        id: 'Taruhan saat ini',
+        ms: 'Pertaruhan semasa'
+    },
     bets: {
         ru: 'Сумма ставок / текущая ставка',
         en: 'Total of bets / current bet',
@@ -143,6 +155,30 @@ export const HELP_TEXT = {
         pl: 'Wyczyść wszystkie zakłady',
         id: 'Bersihkan semua taruhan',
         ms: 'Kosongkan semua pertaruhan'
+    },
+    betOnHoverMaxBet: {
+        ru: (values) => `Ставка ${values[0]}. Макс. ставка ${values[1]}`,
+        en: (values) => `Bet ${values[0]}. Max bet ${values[1]}`,
+        tr: (values) => `Bahis ${values[0]}. Maks bahis ${values[1]}`,
+        es: (values) => `Apuesta ${values[0]}. Apuesta máxima ${values[1]}`,
+        de: (values) => `Einsatz ${values[0]}. Max. Einsatz ${values[1]}`,
+        pt: (values) => `Aposta ${values[0]}. Aposta máxima ${values[1]}`,
+        fr: (values) => `Pari ${values[0]}. Pari max ${values[1]}`,
+        pl: (values) => `Zakład ${values[0]}. Maks. zakład ${values[1]}`,
+        id: (values) => `Taruhan ${values[0]}. Taruhan maks ${values[1]}`,
+        ms: (values) => `Pertaruhan ${values[0]}. Pertaruhan maks ${values[1]}`
+    },
+    betOnHoverRateBet: {
+        ru: (values) => `Выплата ${values[0]}:1. Макс. ставка ${values[1]}`,
+        en: (values) => `Payout ${values[0]}:1. Max bet ${values[1]}`,
+        tr: (values) => `Kazanç ${values[0]}:1. Maks bahis ${values[1]}`,
+        es: (values) => `Pago ${values[0]}:1. Apuesta máxima ${values[1]}`,
+        de: (values) => `Auszahlung ${values[0]}:1. Max. Einsatz ${values[1]}`,
+        pt: (values) => `Pagamento ${values[0]}:1. Aposta máxima ${values[1]}`,
+        fr: (values) => `Gain ${values[0]}:1. Pari max ${values[1]}`,
+        pl: (values) => `Wypłata ${values[0]}:1. Maks. zakład ${values[1]}`,
+        id: (values) => `Pembayaran ${values[0]}:1. Taruhan maks ${values[1]}`,
+        ms: (values) => `Bayaran ${values[0]}:1. Pertaruhan maks ${values[1]}`
     },
     betOnHoverBet: {
         ru: 'Ставка',

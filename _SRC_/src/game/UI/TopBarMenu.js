@@ -2,18 +2,20 @@ import { Container, Texture, Sprite, Text } from "pixi.js"
 import { HELP_TEXT, UI } from "./constants"
 import { SCENE_NAME } from "../scenes/constants"
 import ButtonUI from "./ButtonUI"
-import { addMoney, money } from "../state"
+import { money } from "../state"
 import { styles } from "../../app/styles"
 import { formatNumber } from "../../utils/functions"
 import { getRRTexture, getRRTextureWithShadow } from "../../utils/textureGenerator"
 import { EventHub, events, setHelpText, showPopup, startScene } from "../../app/events"
-import { kill, tickerRemove } from "../../app/application"
 import { POPUP_TYPE } from "../popup/constants"
 import { getLanguage } from "../localization"
 
 export default class TopBarMenu extends Container {
     constructor() {
         super()
+
+        this.currentLanguage = getLanguage()
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
         
         this.bg = new Sprite()
 
@@ -37,6 +39,7 @@ export default class TopBarMenu extends Container {
 
         EventHub.on( events.updateMoney, this.updateMoney, this )
         EventHub.on( events.setHelpText, this.setHelpText, this )
+        EventHub.on( events.setHelpTextValues, this.setHelpTextValues, this )
     }
 
     screenResize(screenData) {
@@ -73,12 +76,15 @@ export default class TopBarMenu extends Container {
     }
 
     setHelpText( textData ) {
-        if (textData) this.helpText.text = textData[getLanguage()]
+        if (textData) this.helpText.text = textData[this.currentLanguage]
         else this.helpText.text = ''
     }
 
+    setHelpTextValues( textData ) {
+        this.helpText.text = textData.key[this.currentLanguage](textData.values)
+    }
+
     clickAddMoney() {
-        addMoney(250)
         showPopup(POPUP_TYPE.addMoney)
     }
 
@@ -86,7 +92,13 @@ export default class TopBarMenu extends Container {
         showPopup(POPUP_TYPE.settings)
     }
 
+    updateLanguage(lang) {
+        this.currentLanguage = lang
+    }
+
     kill() {
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
+
         this.money.eventMode = 'none'
         this.money.off('pointerover', () => setHelpText(HELP_TEXT.money))
         this.money.off('pointerout', () => setHelpText(''))

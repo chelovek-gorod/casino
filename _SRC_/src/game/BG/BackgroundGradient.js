@@ -17,8 +17,9 @@ export default class BackgroundGradient extends Sprite {
         }
 
         this.fill = this.getFillFromColors(screenData.width, screenData.height, this.colors)
-        const newTex = getRecTexture(Math.ceil(screenData.width), Math.ceil(screenData.height), this.fill)
-        this.texture = newTex
+        this.texture = getRecTexture(
+            Math.ceil(screenData.width), Math.ceil(screenData.height), this.fill
+        )
         // позиционирование/размер, т.к. мы центральный спрайт:
         this.width = screenData.width
         this.height = screenData.height
@@ -30,12 +31,12 @@ export default class BackgroundGradient extends Sprite {
         this.screenResize(getAppScreen())
     }
 
-  getFillFromColors(width, height, colors) {
-    const centerX = width / 2
-    const centerY = height / 2
-    const maxRadius = Math.max(width, height) / 2
+    getFillFromColors(width, height, colors) {
+        const centerX = width / 2
+        const centerY = height / 2
+        const maxRadius = Math.max(width, height) / 2
 
-    return {
+        return {
             type: 'radial-gradient',
             stops: colors.map((color, index) => ({
                 offset: index / (colors.length - 1),

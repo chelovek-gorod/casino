@@ -51,6 +51,7 @@ export const images = {
 export const atlases = {
    icon: 'icon.json',
    chip: 'chip.json',
+   shop: 'shop.json',
    short_btn: 'short_btn.json',
    field_light: 'field_light.json',
    spiel_light: 'spiel_light.json',

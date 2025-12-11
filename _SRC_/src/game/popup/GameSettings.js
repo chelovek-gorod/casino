@@ -191,6 +191,6 @@ export default class GameSettings extends Container {
     }
 
     kill() {
-        EventHub.off( events.updateLanguage, updateLanguage, this )
+        EventHub.off( events.updateLanguage, this.updateLanguage, this )
     }
 }

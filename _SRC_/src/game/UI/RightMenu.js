@@ -26,7 +26,9 @@ export default class RightMenu extends Container {
         this.betsBg.anchor.set(1)
         this.betsBg.position.set(0, UI.borderRadius)
         this.betsBg.eventMode = 'static'
-        this.betsBg.on('pointerover', () => setHelpText(HELP_TEXT.bets))
+        this.betsBg.on('pointerover', () => {
+            setHelpText(currentScene === SCENE_NAME.Roulette ? HELP_TEXT.bets : HELP_TEXT.bet)
+        })
         this.betsBg.on('pointerout', () => setHelpText(''))
 
         let betsOffsetY = -UI.bets.height * 0.5
@@ -37,7 +39,7 @@ export default class RightMenu extends Container {
         this.betsTotal.position.set(-UI.bets.width + UI.bets.iconSize * 0.75, betsOffsetY)
         this.betsTotalText = new Text({
             text: currentScene === SCENE_NAME.Roulette
-            ? `${UI_TEXT[this.currentLanguage]}: ${formatNumber(betsTotal)}`
+            ? `${UI_TEXT.totalBet[this.currentLanguage]}: ${formatNumber(betsTotal)}`
             : '',
             style: styles.betsTotal
         })
@@ -83,7 +85,7 @@ export default class RightMenu extends Container {
         this.betsCurrentText.text = formatNumber(bet)
     }
     updateBetTotal(total) {
-        this.betsTotalText.text = `${UI_TEXT[this.currentLanguage]}: ${formatNumber(total)}`
+        this.betsTotalText.text = `${UI_TEXT.totalBet[this.currentLanguage]}: ${formatNumber(total)}`
     }
 
     showBetPopup() {
@@ -101,7 +103,7 @@ export default class RightMenu extends Container {
     updateLanguage(lang) {
         this.currentLanguage = lang
         if (currentScene === SCENE_NAME.Roulette) {
-            this.betsTotalText.text = `${UI_TEXT[this.currentLanguage]}: ${formatNumber(betsTotal)}`
+            this.betsTotalText.text = `${UI_TEXT.totalBet[this.currentLanguage]}: ${formatNumber(betsTotal)}`
         }
     }
 
@@ -114,7 +116,9 @@ export default class RightMenu extends Container {
         EventHub.off(events.addLog, this.setEnableCancelButton, this)
 
         this.betsBg.eventMode = 'none'
-        this.betsBg.off('pointerover', () => setHelpText(HELP_TEXT.bets))
+        this.betsBg.off('pointerover', () => {
+            setHelpText(currentScene === SCENE_NAME.Roulette ? HELP_TEXT.bets : HELP_TEXT.bet)
+        })
         this.betsBg.off('pointerout', () => setHelpText(''))
 
         this.betsCurrentText.eventMode = 'none'

@@ -1,7 +1,8 @@
-import { Container, Sprite, Graphics } from "pixi.js"
+import { Container, Sprite } from "pixi.js"
 import { tickerAdd, tickerRemove } from "../../../app/application"
 import { atlases } from "../../../app/assets"
 import { getRandom, shuffleArray } from "../../../utils/functions"
+import { getRecTexture } from "../../../utils/textureGenerator"
 import { MESSAGE } from "../../UI/constants"
 import { SLOTS_LINES_DATA, SLOTS_LINES, SLOTS_HIGHLIGHT, SLOTS } from "./constants"
 
@@ -75,18 +76,31 @@ export default class Line extends Container {
 
         this.stopCallback = stopCallback
 
-        const mask = new Graphics()
-        mask.rect(0, 0, SLOTS_LINES.slotWidth, SLOTS_LINES.slotHeight * 3)
-        mask.fill(0xffffff)
-        this.addChild(mask)
+        const lineHeight = SLOTS_LINES.slotHeight * 3
+        this.maskTexture = getRecTexture(SLOTS_LINES.slotWidth, lineHeight, 0xffffff)
+        const lineGradient = {
+            type: "linear-gradient",
+            x0: 0,    // X начальной точки (левая граница)
+            y0: 0,    // Y начальной точки (ВЕРХ) - здесь будет offset: 0
+            x1: 0,    // X конечной точки (тоже левая граница - градиент вертикальный)
+            y1: lineHeight,  // Y конечной точки (НИЗ) - здесь будет offset: 1
+            stops: [
+                { offset: 0,    color: 0x999999 },   // Серый вверху
+                { offset: 0.25,  color: 0xFFFFFF },   // Белый в середине
+                { offset: 0.75,  color: 0xFFFFFF },   // Белый в середине
+                { offset: 1,    color: 0x999999 }    // Серый внизу
+            ]
+        }
+        this.lineTexture = getRecTexture(SLOTS_LINES.slotWidth, lineHeight, lineGradient)
 
-        this.bg = new Graphics()
-        this.bg.rect(0, 0, SLOTS_LINES.slotWidth, SLOTS_LINES.slotHeight * 3)
-        this.bg.fill(0xffffff)
+        this.lineMask = new Sprite(this.maskTexture)
+        this.addChild(this.lineMask)
+
+        this.bg = new Sprite(this.lineTexture)
         this.addChild(this.bg)
 
         this.imagesMaskContainer = new Container()
-        this.imagesMaskContainer.mask = mask
+        this.imagesMaskContainer.mask = this.lineMask
         this.addChild(this.imagesMaskContainer)
 
         this.imagesContainer = new Container()

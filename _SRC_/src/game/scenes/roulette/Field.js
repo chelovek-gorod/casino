@@ -1,6 +1,6 @@
 import { Container, Sprite } from "pixi.js";
 import { atlases, images } from "../../../app/assets";
-import { EventHub, events, setHelpText } from "../../../app/events";
+import { EventHub, events, setHelpText, setHelpTextValues } from "../../../app/events";
 import { setCursorPointer } from "../../../utils/functions";
 import { GAME_CONTAINERS, HELP_TEXT, UI } from "../../UI/constants";
 import { BET_RATIO, FIELD, MAX_BET_RATIO, NUMBERS,
@@ -306,10 +306,7 @@ export default class Field extends Container {
         const betValue = getBetDataValue(this.clickTarget.numbers)
         if (betValue > 0) {
             const maxBet = MAX_BET_RATIO[this.clickTarget.numbers.length]
-            setHelpText({
-                ru: `${HELP_TEXT.betOnHoverBet.ru} ${betValue}. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
-                en: `${HELP_TEXT.betOnHoverBet.en} ${betValue}. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
-            })
+            setHelpTextValues( {key: HELP_TEXT.betOnHoverMaxBet, values: [betValue, maxBet]} )
         }
     }
     setBetInField(betData) {
@@ -424,19 +421,12 @@ export default class Field extends Container {
         if (isOnSpin) return
 
         const betValue = getBetDataValue(event.target.numbers)
+        const maxBet = MAX_BET_RATIO[event.target.numbers.length]
         if (betValue > 0) {
-            const maxBet = MAX_BET_RATIO[event.target.numbers.length]
-            setHelpText({
-                ru: `${HELP_TEXT.betOnHoverBet.ru} ${betValue}. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
-                en: `${HELP_TEXT.betOnHoverBet.en} ${betValue}. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
-            })
+            setHelpTextValues( {key: HELP_TEXT.betOnHoverMaxBet, values: [betValue, maxBet]} )
         } else if (event.target.field === FIELD_TYPE.field || event.target.isPoint) {
             const rateSize = BET_RATIO[event.target.numbers.length] - 1
-            const maxBet = MAX_BET_RATIO[event.target.numbers.length]
-            setHelpText({
-                ru: `${HELP_TEXT.betOnHoverRate.ru} ${rateSize}:1. ${HELP_TEXT.betOnHoverMax.ru} ${maxBet}.`,
-                en: `${HELP_TEXT.betOnHoverRate.ru} ${rateSize}:1. ${HELP_TEXT.betOnHoverMax.en} ${maxBet}.`
-            })
+            setHelpTextValues( {key: HELP_TEXT.betOnHoverRateBet, values: [rateSize, maxBet]} )
         }
         
         if(this.clickIsActive) {

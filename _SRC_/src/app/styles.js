@@ -23,11 +23,11 @@ const fillButtonOnGradient = new FillGradient({
 const fillSubtitleGradient = new FillGradient({
     type: 'linear',
     colorStops: [
-      { offset: 0, color: '#ffffff' },
-      { offset: 0.5, color: '#87fff7' },
-      { offset: 0.5, color: '#40ffcf' },
-      { offset: 0.5, color: '#87fff7' },
-      { offset: 1, color: '#ffffff' },
+      { offset: 0,    color: '#ffffff' },
+      { offset: 0.25, color: '#87fff7' },
+      { offset: 0.5,  color: '#40ffcf' },
+      { offset: 0.75, color: '#87fff7' },
+      { offset: 1,    color: '#ffffff' },
     ],
 });
 
@@ -44,7 +44,6 @@ export let styles = {
     shortButtonHover: null,
     buttonLight: null,
     buttonLightOn: null,
-    numbersList: null,
     money: null,
 
     helpText: null,
@@ -73,6 +72,9 @@ export let styles = {
     chip: null,
 
     slotsCoins: null,
+
+    shopLabel: null,
+    shopPrice: null,
 }
 
 export function initFontStyles() {
@@ -93,29 +95,15 @@ export function initFontStyles() {
         fontSize: 128,
         fill: '#ffffff',
 
-        stroke: '#33ffff',
-        strokeThickness: 16,
+        stroke: {
+            color: '#33ffff',
+            width: 16
+        }
     })
     styles.gameSubtitle = new TextStyle({
         fontFamily: fonts.Subtitle,
         fontSize: 72,
         fill: fillSubtitleGradient,
-    })
-
-    styles.numbersList = new TextStyle({
-        fontFamily: fonts.Manrope400,
-        fontSize: 24,
-        fill: '#ffffff',
-
-        wordWrap: true,
-        wordWrapWidth: 1200,
-        breakWords: true,
-    
-        dropShadow: true,
-        dropShadowColor: '#000000',
-        dropShadowBlur: 20,
-        dropShadowAngle: 0,
-        dropShadowDistance: 0,
     })
 
     styles.buttonLight = new TextStyle({
@@ -341,6 +329,27 @@ export function initFontStyles() {
         dropShadowDistance: 0,
     })
 
+    styles.shopLabel = new TextStyle({
+        fontFamily: fonts.Manrope800,
+        fontSize: 16,
+        fill: 0x330033,
+        align: 'center',
+        wordWrap: true,
+        wordWrapWidth: 106,
+        //breakWords: true,
+
+        dropShadow: true,
+        dropShadowColor: '#ffffff',
+        dropShadowBlur: 3,
+        dropShadowDistance: 4,
+    })
+
+    styles.shopPrice = new TextStyle({
+        fontFamily: fonts.Manrope600,
+        fontSize: 16,
+        fill: 0x000000,
+    })
+
     styles.isReady = true
 
     // EXAMPLES
@@ -367,8 +376,10 @@ export function initFontStyles() {
         fontWeight: 'normal',
         fill: '#ffff00',
         
-        stroke: '#ffffff',
-        strokeThickness: 2,
+        stroke: {
+            color: 0x000000,
+            width: 2
+        }
 
         dropShadow: true,
         dropShadowColor: '#ff00ff',

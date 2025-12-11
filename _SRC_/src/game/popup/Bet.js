@@ -23,6 +23,21 @@ const spielSplitsY = -144
 const nearestY = -100
 const betY = 130
 
+const textOffset = 0
+function getWordPositionsList(sizesList) {
+    let fullWidth = -textOffset
+    for(let i = 0; i < sizesList.length; i++) {
+        fullWidth += textOffset + sizesList[i]
+    }
+    const positionsX = []
+    let x = -fullWidth * 0.5
+    for(let i = 0; i < sizesList.length; i++) {
+        positionsX.push(x + sizesList[i] * 0.5)
+        x += sizesList[i] + textOffset
+    }
+    return positionsX
+}
+
 export default class Bet extends Container {
     constructor() {
         super()
@@ -43,52 +58,69 @@ export default class Bet extends Container {
         this.addChild(this.hr)
 
         if (currentScene === SCENE_NAME.Roulette) {
+
             // spiel splits
             this.spielSplitsSubtitle = new Text({
                 text: POPUP_TEXT.spielSplits[ this.currentLanguage ],
                 style: styles.popupSubTitle
             })
-            this.spielSplitsSubtitle.anchor.set(0, 0.5)
-            this.spielSplitsSubtitle.position.set(-176, spielSplitsY)
-            this.addChild(this.spielSplitsSubtitle)
+            this.spielSplitsSubtitle.anchor.set(0.5)
 
-            this.spielSplitsSup = new ShortButton('prv', 28, spielSplitsY, this.clickSpielSplits.bind(this))
+            this.spielSplitsSup = new ShortButton('prv', 0, spielSplitsY, this.clickSpielSplits.bind(this))
             this.spielSplitsSup.scale.set(0.3)
-            this.addChild(this.spielSplitsSup)
 
             const spielSplitsValue = isSingleBetsInSectors
                 ? POPUP_TEXT.spielSplitsValues[0][ this.currentLanguage ]
                 : POPUP_TEXT.spielSplitsValues[1][ this.currentLanguage ]
             this.spielSplitsValue = new Text({text: spielSplitsValue, style: styles.popupSubTitle})
             this.spielSplitsValue.anchor.set(0.5)
-            this.spielSplitsValue.position.set(94, spielSplitsY)
-            this.addChild(this.spielSplitsValue)
 
-            this.spielSplitsAdd = new ShortButton('nxt', 160, spielSplitsY, this.clickSpielSplits.bind(this))
+            this.spielSplitsAdd = new ShortButton('nxt', 0, spielSplitsY, this.clickSpielSplits.bind(this))
             this.spielSplitsAdd.scale.set(0.3)
-            this.addChild(this.spielSplitsAdd)
+
+            let points = getWordPositionsList([
+                this.spielSplitsSubtitle.width,
+                this.spielSplitsSup.width,
+                this.spielSplitsValue.width,
+                this.spielSplitsAdd.width,
+            ])
+            this.spielSplitsSubtitle.position.set( points[0], spielSplitsY )
+            this.spielSplitsSup.position.set( points[1], spielSplitsY )
+            this.spielSplitsValue.position.set( points[2], spielSplitsY )
+            this.spielSplitsAdd.position.set( points[3], spielSplitsY )
+            this.addChild(
+                this.spielSplitsSubtitle, this.spielSplitsSup, this.spielSplitsValue, this.spielSplitsAdd
+            )
 
             // nearest
             this.nearestSubtitle = new Text({
                 text: POPUP_TEXT.nearest[ this.currentLanguage ],
                 style: styles.popupSubTitle
             })
-            this.nearestSubtitle.anchor.set(0, 0.5)
-            this.nearestSubtitle.position.set(-146, nearestY)
-            this.addChild(this.nearestSubtitle)
+            this.nearestSubtitle.anchor.set(0.5)
 
-            this.nearestSup = new ShortButton('sub', 18, nearestY, this.clickNearestSup.bind(this))
+            this.nearestSup = new ShortButton('sub', 0, nearestY, this.clickNearestSup.bind(this))
             this.nearestSup.scale.set(0.3)
-            this.addChild(this.nearestSup)
 
             this.nearestValue = new Text({text: `${betNearest} + 1 + ${betNearest}`, style: styles.popupSubTitle})
             this.nearestValue.anchor.set(0.5)
-            this.nearestValue.position.set(74, nearestY)
-            this.addChild(this.nearestValue)
 
-            this.nearestAdd = new ShortButton('add', 130, nearestY, this.clickNearestAdd.bind(this))
+            this.nearestAdd = new ShortButton('add', 0, nearestY, this.clickNearestAdd.bind(this))
             this.nearestAdd.scale.set(0.3)
-            this.addChild(this.nearestAdd)
+
+            points = getWordPositionsList([
+                this.nearestSubtitle.width,
+                this.nearestSup.width,
+                this.nearestValue.width,
+                this.nearestAdd.width,
+            ])
+            this.nearestSubtitle.position.set( points[0], nearestY )
+            this.nearestSup.position.set( points[1], nearestY )
+            this.nearestValue.position.set( points[2], nearestY )
+            this.nearestAdd.position.set( points[3], nearestY )
+            this.addChild(
+                this.nearestSubtitle, this.nearestSup, this.nearestValue, this.nearestAdd
+            )
         }
 
         // chips
@@ -128,18 +160,42 @@ export default class Bet extends Container {
     updateLanguage( lang ) {
         this.currentLanguage = lang
         this.title.text = POPUP_TEXT.bet[ this.currentLanguage ]
-        if ('spielSplitsSubtitle' in this) {
+
+        if (this.spielSplitsSubtitle) {
             this.spielSplitsSubtitle.text = POPUP_TEXT.spielSplits[ this.currentLanguage ]
-        }
-        if ('spielSplitsValue' in this) {
             this.spielSplitsValue.text = isSingleBetsInSectors
                 ? POPUP_TEXT.spielSplitsValues[0][ this.currentLanguage ]
                 : POPUP_TEXT.spielSplitsValues[1][ this.currentLanguage ]
-        }
-        if ('nearestSubtitle' in this) {
             this.nearestSubtitle.text = POPUP_TEXT.nearest[ this.currentLanguage ]
+
+            let points = getWordPositionsList([
+                this.spielSplitsSubtitle.width,
+                this.spielSplitsSup.width,
+                this.spielSplitsValue.width,
+                this.spielSplitsAdd.width,
+            ])
+            this.spielSplitsSubtitle.position.set( points[0], spielSplitsY )
+            this.spielSplitsSup.position.set( points[1], spielSplitsY )
+            this.spielSplitsValue.position.set( points[2], spielSplitsY )
+            this.spielSplitsAdd.position.set( points[3], spielSplitsY )
+            this.addChild(
+                this.spielSplitsSubtitle, this.spielSplitsSup, this.spielSplitsValue, this.spielSplitsAdd
+            )
+
+            points = getWordPositionsList([
+                this.nearestSubtitle.width,
+                this.nearestSup.width,
+                this.nearestValue.width,
+                this.nearestAdd.width,
+            ])
+            this.nearestSubtitle.position.set( points[0], nearestY )
+            this.nearestSup.position.set( points[1], nearestY )
+            this.nearestValue.position.set( points[2], nearestY )
+            this.nearestAdd.position.set( points[3], nearestY )
+            this.addChild(
+                this.nearestSubtitle, this.nearestSup, this.nearestValue, this.nearestAdd
+            )
         }
-        
     }
 
     addChip(value, x, y) {

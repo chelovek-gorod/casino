@@ -7,6 +7,7 @@ import { MAX_BET_RATIO, BET_RATIO } from "./scenes/roulette/constants"
 import { MESSAGE, MESSAGE_TEXT } from "./UI/constants"
 import { SCENE_NAME } from "../game/scenes/constants"
 import { getLanguage } from "./localization"
+import { STORED_KEYS, updateStoredData } from "./storage"
 
 let currentLanguage = getLanguage()
 EventHub.on( events.updateLanguage, (lang) => currentLanguage = lang )
@@ -68,9 +69,13 @@ export function returnBet() {
     betsTotal = 0
 }
 
+export function setStoredSlotCoins(value) {
+    slotCoins = value
+}
 export function addSlotCoins(count) {
     const addCoins = Math.ceil(count * betsTotal * 0.1)
     slotCoins += addCoins
+    setTimeout( () => updateStoredData(STORED_KEYS.game), 0 )
     return addCoins
 }
 export function getSlotCoins(rate) {

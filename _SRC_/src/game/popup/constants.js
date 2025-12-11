@@ -1,3 +1,4 @@
+import { getPriceYAN, PURCHASES, PURCHASE_TEXTS } from "../../sdk/products"
 import { UI, BUTTON } from "../UI/constants"
 
 export const POPUP_TEXT = {
@@ -17,25 +18,25 @@ export const POPUP_TEXT = {
         ru: 'Число соседей:',
         en: 'Nearest count:',
         tr: 'En yakın sayı:',
-        es: '     Cercanía:',
-        de: ' Nächste Zahl:',
-        pt: '     Próximos:',
-        fr: '      Proches:',
-        pl: '     Sąsiedzi:',
-        id: '       Terdkt:',
-        ms: '     Terdekat:'
+        es: 'Número más cercano:',
+        de: 'Nächste Zahl:',
+        pt: 'Número mais próximo:',
+        fr: 'Nombre le plus proche:',
+        pl: 'Liczba sąsiadów:',
+        id: 'Jumlah terdekat:',
+        ms: 'Jumlah terdekat:'
     },
     spielSplits: {
-        ru: 'Ставки по секторам:',
-        en: '       Sector Bets:',
-        tr: '  Sektör Bahisleri:',
-        es: ' Apuestas x sector:',
-        de: '      Sektorwetten:',
-        pt: ' Apostas por setor:',
-        fr: ' Paris par secteur:',
-        pl: ' Zakłady sektorowe:',
-        id: '    Taruhan Sektor:',
-        ms: ' Pertaruhan Sektor:'
+        ru: 'Ставки на секторах:',
+        en: 'Sector-based bets:',
+        tr: 'Sektöre dayalı bahisler:',
+        es: 'Apuestas por sectores:',
+        de: 'Sektorwetten:',
+        pt: 'Apostas por setor:',
+        fr: 'Paris par secteur:',
+        pl: 'Zakłady sektorowe:',
+        id: 'Taruhan berbasis sektor:',
+        ms: 'Pertaruhan berdasarkan sektor:'
     },
     spielSplitsValues: [
         {
@@ -221,3 +222,126 @@ LOGS.max = LOGS.lines * LOGS.piecesInRow
 LOGS.stepX = Math.ceil(POPUP.width / (LOGS.piecesInRow + 2))
 LOGS.stepY = LOGS.stepX + 4
 LOGS.x += Math.ceil(-POPUP.width * 0.5 + LOGS.stepX)
+
+// shop buttons
+
+export const SHOP_BTN_TYPE = {
+    showAd: 'showAd',
+    noAds: 'noAds',
+    add2k: 'add2k',
+    add7k: 'add7k',
+    add25k: 'add25k',
+    add80k: 'add80k',
+    add250k: 'add250k',
+    add750k: 'add750k'
+}
+
+export const SHOP_BTN_LABEL = {
+    [SHOP_BTN_TYPE.showAd]: {
+        en: '\n+ 125 Chips for watching an ad',
+        ru: '\n+ 125 фишек за просмотр рекламы',
+        tr: '\n+ 125 Çip reklam izleyerek',
+        es: '\n+ 125 Fichas por ver un anuncio',
+        de: '\n+125 Chips für Werbung ansehen',
+        pt: '\n+ 125 Fichas por assistir a um anúncio',
+        fr: '\n+ 125 Jetons pour regarder une pub',
+        pl: '\n+ 125 Żetonów za obejrzenie reklamy',
+        id: '\n+ 125 Keping untuk menonton iklan',
+        ms: '\n+ 125 Cip untuk menonton iklan'
+    },
+    [SHOP_BTN_TYPE.noAds]: {
+        ru: 'Отключение рекламы',
+        en: 'Disable Ads',
+        tr: 'Reklamları Kaldır',
+        es: 'Desactivar Anuncios',
+        de: 'Werbung Deaktivieren',
+        pt: 'Desativar Anúncios',
+        fr: 'Désactiver les Publicités',
+        pl: 'Wyłącz Reklamy',
+        id: 'Nonaktifkan Iklan',
+        ms: 'Lumpuhkan Iklan'
+    },
+    [SHOP_BTN_TYPE.add2k]: {
+        en: '+ 2 000\nChips',
+        ru: '+ 2 000\nфишек',
+        tr: '+ 2 000\nÇip',
+        es: '+ 2 000\nFichas',
+        de: '+ 2 000\nChips',
+        pt: '+ 2 000\nFichas',
+        fr: '+ 2 000\nJetons',
+        pl: '+ 2 000\nŻetonów',
+        id: '+ 2.000\nKeping',
+        ms: '+ 2,000\nCip'
+    },
+    [SHOP_BTN_TYPE.add7k]: {
+        en: '+ 7 000\nChips',
+        ru: '+ 7 000\nфишек',
+        tr: '+ 7 000\nÇip',
+        es: '+ 7 000\nFichas',
+        de: '+ 7 000\nChips',
+        pt: '+ 7 000\nFichas',
+        fr: '+ 7 000\nJetons',
+        pl: '+ 7 000\nŻetonów',
+        id: '+ 7.000\nKeping',
+        ms: '+ 7,000\nCip'
+    },
+    [SHOP_BTN_TYPE.add25k]: {
+        en: '+ 25 000\nChips',
+        ru: '+ 25 000\nфишек',
+        tr: '+ 25 000\nÇip',
+        es: '+ 25 000\nFichas',
+        de: '+ 25 000\nChips',
+        pt: '+ 25 000\nFichas',
+        fr: '+ 25 000\nJetons',
+        pl: '+ 25 000\nŻetonów',
+        id: '+ 25.000\nKeping',
+        ms: '+ 25,000\nCip'
+    },
+    [SHOP_BTN_TYPE.add80k]: {
+        en: '+ 80 000\nChips',
+        ru: '+ 80 000\nфишек',
+        tr: '+ 80 000\nÇip',
+        es: '+ 80 000\nFichas',
+        de: '+ 80 000\nChips',
+        pt: '+ 80 000\nFichas',
+        fr: '+ 80 000\nJetons',
+        pl: '+ 80 000\nŻetonów',
+        id: '+ 80.000\nKeping',
+        ms: '+ 80,000\nCip'
+    },
+    [SHOP_BTN_TYPE.add250k]: {
+        en: '+ 250 000\nChips',
+        ru: '+ 250 000\nфишек',
+        tr: '+ 250 000\nÇip',
+        es: '+ 250 000\nFichas',
+        de: '+ 250 000\nChips',
+        pt: '+ 250 000\nFichas',
+        fr: '+ 250 000\nJetons',
+        pl: '+ 250 000\nŻetonów',
+        id: '+ 250.000\nKeping',
+        ms: '+ 250,000\nCip'
+    },
+    [SHOP_BTN_TYPE.add750k]: {
+        en: '+ 750 000\nChips',
+        ru: '+ 750 000\nфишек',
+        tr: '+ 750 000\nÇip',
+        es: '+ 750 000\nFichas',
+        de: '+ 750 000\nChips',
+        pt: '+ 750 000\nFichas',
+        fr: '+ 750 000\nJetons',
+        pl: '+ 750 000\nŻetonów',
+        id: '+ 750.000\nKeping',
+        ms: '+ 750,000\nCip'
+    },
+}
+
+export const SHOP_BTN_PRICE = {
+    [SHOP_BTN_TYPE.showAd]: 0,
+    [SHOP_BTN_TYPE.noAds]: getPriceYAN(PURCHASES.noAds),
+    [SHOP_BTN_TYPE.add2k]: getPriceYAN(PURCHASES.add2k),
+    [SHOP_BTN_TYPE.add7k]: getPriceYAN(PURCHASES.add7k),
+    [SHOP_BTN_TYPE.add25k]: getPriceYAN(PURCHASES.add25k),
+    [SHOP_BTN_TYPE.add80k]: getPriceYAN(PURCHASES.add80k),
+    [SHOP_BTN_TYPE.add250k]: getPriceYAN(PURCHASES.add250k),
+    [SHOP_BTN_TYPE.add750k]: getPriceYAN(PURCHASES.add750k)
+}

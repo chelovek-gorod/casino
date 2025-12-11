@@ -9,6 +9,7 @@ export const events = {
     startScene: 'startScene',
 
     setHelpText: 'setHelpText',
+    setHelpTextValues: 'setHelpTextValues',
 
     updateLanguage: 'updateLanguage',
 
@@ -40,6 +41,9 @@ export function startScene( sceneName ) {
 
 export function setHelpText( text ) {
     EventHub.emit( events.setHelpText, text )
+}
+export function setHelpTextValues( textData ) {
+    EventHub.emit( events.setHelpTextValues, textData )
 }
 
 export function updateLanguage( currentLanguage ) {

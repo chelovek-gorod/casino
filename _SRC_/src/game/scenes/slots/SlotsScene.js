@@ -1,5 +1,4 @@
 import { Container, Sprite, Text } from 'pixi.js'
-import { tickerRemove } from '../../../app/application'
 import { images, music, sounds } from '../../../app/assets'
 import { soundPlay, setMusicList } from '../../../app/sound'
 import { BUTTON, BUTTON_TEXT, GAME_OFFSET, HELP_TEXT, MESSAGE_TEXT, UI } from '../../UI/constants'
@@ -53,6 +52,27 @@ export default class Slots extends Container {
         // SCALED MAIN GAME CONTAINER
         this.gameContainer = new Container()
         this.addChild(this.gameContainer)
+
+        // under lines bg
+        const slotsBgWidth = SLOTS_BORDER.offsetLine * 4 + SLOTS_LINES.slotWidth * 5
+        const slotsBgHeight = SLOTS_LINES.slotHeight * 3
+        const slotsBgFill = {
+            type: "linear-gradient",
+            x0: 0,    // X начальной точки (левая граница)
+            y0: 0,    // Y начальной точки (ВЕРХ) - здесь будет offset: 0
+            x1: 0,    // X конечной точки (тоже левая граница - градиент вертикальный)
+            y1: slotsBgHeight,  // Y конечной точки (НИЗ) - здесь будет offset: 1
+            stops: [
+                { offset: 0,    color: 0x222222 },   // Серый вверху
+                { offset: 0.25,  color: 0x777777 },   // Белый в середине
+                { offset: 0.75,  color: 0x777777 },   // Белый в середине
+                { offset: 1,    color: 0x222222 }    // Серый внизу
+            ]
+        }
+        const slotsBgTexture = getRecTexture(slotsBgWidth, slotsBgHeight, slotsBgFill)
+        this.slotsBg = new Sprite(slotsBgTexture)
+        this.slotsBg.position.set(SLOTS_LINES.positionsX[0], SLOTS_BORDER.offsetY)
+        this.gameContainer.addChild(this.slotsBg)
 
         this.lines = []
         for(let i = 0; i < 5; i++) {
@@ -124,7 +144,7 @@ export default class Slots extends Container {
         this.highlightMessageTimeout = SLOTS_HIGHLIGHT.duration + SLOTS_HIGHLIGHT.inOut * 2
         this.highlightTimeout = 300
 
-        this.autoSpinByKeySpace_bind = this.run.bind(this)
+        this.autoSpinByKeySpace_bind = this.getKeySpace.bind(this)
         document.addEventListener('keyup', this.autoSpinByKeySpace_bind)
 
         // done
@@ -173,6 +193,10 @@ export default class Slots extends Container {
         setHelpText('')
     }
 
+    getKeySpace(event) {
+        if (event.code === 'Space') this.run()
+    }
+
     setAutoSpin() {
         // stop auto spin
         if (this.isAutoSpinOn) {
@@ -187,7 +211,7 @@ export default class Slots extends Container {
     }
 
     run() {
-        if (this.linsRunningCount > 0 || !checkRunSlots()) {
+        if (this.linsRunningCount > 0 || checkRunSlots() === false) {
             this.isAutoSpinOn = false
             this.autoButton.setTexture('play')
             return 

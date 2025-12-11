@@ -78,10 +78,14 @@ export default class Wheel extends Container {
         )
         this.addChild(this.runButton)
 
-        this.runByKeySpace_bind = this.run.bind(this)
+        this.runByKeySpace_bind = this.getKeySpace.bind(this)
         document.addEventListener('keyup', this.runByKeySpace_bind )
 
         EventHub.on( events.updateLanguage, this.updateLanguage, this )
+    }
+
+    getKeySpace(event) {
+        if (event.code === 'Space') this.run()
     }
 
     run() {
