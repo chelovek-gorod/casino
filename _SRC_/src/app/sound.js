@@ -29,6 +29,7 @@ let musicAudio = null
 let musicList = null
 let musicIndex = 0
 let musicToken = 0 // use for remove unused music
+let musicSavedPosition = 0 // click-save in onFocus
 let currentLoadingMusic = null
 
 export function musicGetState() {
@@ -141,16 +142,37 @@ export function setMusicList(music, startIndex = null) {
 
 export function musicStop() {
     if (!musicAudio || musicAudio.paused) return
-
-    musicAudio.pause()
+    musicSavedPosition = musicAudio.seek || 0
+    //musicAudio.pause()
+    musicAudio.stop()
 }
 
+export function musicPlay() {
+    if (!state.isMusicOn || !isSoundAvailable || !musicList) return
+
+    if (!musicAudio) {
+        if (!currentLoadingMusic) loadBgMusic()
+        return
+    }
+
+    if (musicAudio.isPlaying) return
+
+    const duration = musicAudio.duration || 0
+    const startPos = Math.max(0, Math.min(musicSavedPosition, duration - 0.05))
+
+    musicInstance = musicAudio.play({
+        volume: state.musicVolume,
+        start: startPos
+    })
+}
+/*
 export function musicPlay() {
     if (!state.isMusicOn || !musicAudio || !musicList || !isSoundAvailable || musicAudio.isPlaying) return
 
     if (musicAudio.paused) musicAudio.resume()
     else musicAudio.play()
 }
+*/
 
 function loadBgMusic() {
     const token = musicToken
