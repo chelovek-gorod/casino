@@ -1,9 +1,10 @@
-import { Container, Sprite } from "pixi.js";
+import { Container, Sprite, Text } from "pixi.js";
 import { tickerAdd, tickerRemove } from "../../../app/application";
 import { images, sounds } from "../../../app/assets";
+import { styles } from "../../../app/styles";
 import { soundPlay, soundStop } from "../../../app/sound";
-import { getLinesIntersectionPoint, getRandom } from "../../../utils/functions";
-import { BUTTON_TEXT, GAME_CONTAINERS, HELP_TEXT, RESULTS } from "../../UI/constants";
+import { formatNumber, getLinesIntersectionPoint, getRandom } from "../../../utils/functions";
+import { BUTTON_TEXT, GAME_CONTAINERS, HELP_TEXT, LAST_WIN } from "../../UI/constants";
 import { WHEEL, BALL, NUMBERS, SHOW_RESULT_DELAY } from "./constants";
 import { isOnSpin, setSpin, setSpinResult } from "../../state";
 import Button from "../../UI/Button";
@@ -33,6 +34,9 @@ function normalizeAngleDiff(angle) {
 export default class Wheel extends Container {
     constructor() {
         super()
+
+        this.currentLanguage = getLanguage()
+        EventHub.on( events.updateLanguage, this.updateLanguage, this )
 
         this.wheel = new Container()
         this.wheel.position.set(
@@ -69,8 +73,14 @@ export default class Wheel extends Container {
         this.results.position.set(GAME_CONTAINERS.wheel.pointResults.x, GAME_CONTAINERS.wheel.pointResults.y)
         this.addChild(this.results)
 
+        this.resultSum = 0
+        this.resultsSumText = new Text({text: LAST_WIN[this.currentLanguage](this.resultSum), style: styles.rouletteLastWin})
+        this.resultsSumText.anchor.set(0.5, 0.8)
+        this.resultsSumText.position.set(GAME_CONTAINERS.wheel.pointResultsSum.x, GAME_CONTAINERS.wheel.pointResultsSum.y)
+        this.addChild(this.resultsSumText)
+
         this.runButton = new Button(
-            BUTTON_TEXT.spin[ getLanguage() ],
+            BUTTON_TEXT.spin[ this.currentLanguage ],
             GAME_CONTAINERS.wheel.pointButton.x, GAME_CONTAINERS.wheel.pointButton.y,
             this.run.bind(this),
             true,
@@ -81,7 +91,7 @@ export default class Wheel extends Container {
         this.runByKeySpace_bind = this.getKeySpace.bind(this)
         document.addEventListener('keyup', this.runByKeySpace_bind )
 
-        EventHub.on( events.updateLanguage, this.updateLanguage, this )
+        EventHub.on( events.updateRouletteSpinResults, this.updateWinResults, this )
     }
 
     getKeySpace(event) {
@@ -320,12 +330,21 @@ export default class Wheel extends Container {
         }
     }
 
+    updateWinResults(money) {
+        this.resultSum = formatNumber( money )
+        this.resultsSumText.text = LAST_WIN[this.currentLanguage](this.resultSum)
+    }
+
     updateLanguage(lang) {
-        this.runButton.setLabel( BUTTON_TEXT.spin[ lang ] )
+        this.currentLanguage = lang
+
+        this.runButton.setLabel( BUTTON_TEXT.spin[ this.currentLanguage ] )
+        this.resultsSumText.text = LAST_WIN[this.currentLanguage](this.resultSum)
     }
 
     kill() {
         document.removeEventListener('keyup', this.runByKeySpace_bind )
         EventHub.off( events.updateLanguage, this.updateLanguage, this )
+        EventHub.off( events.updateRouletteSpinResults, this.updateWinResults, this )
     }
 }

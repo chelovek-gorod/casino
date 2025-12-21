@@ -3,13 +3,12 @@ import { HELP_TEXT, UI, UI_TEXT } from "./constants";
 import { POPUP_TYPE } from "../popup/constants";
 import { SCENE_NAME } from "../scenes/constants";
 import ButtonUI from "./ButtonUI";
-import { betCurrent, betsTotal, checkBet, clearAllBetsData, currentScene } from "../state";
+import { betCurrent, betsTotal, checkBet, clearAllBetsData, repeatAllBetsData, currentScene, canRepeatBets } from "../state";
 import { styles } from "../../app/styles";
 import { atlases } from "../../app/assets";
 import { getRRTexture, getRRTextureWithShadow } from "../../utils/textureGenerator";
 import { EventHub, events, setHelpText, showPopup } from "../../app/events";
 import { formatNumber } from "../../utils/functions";
-import { tickerRemove } from "../../app/application";
 import { getLanguage } from "../localization";
 
 export default class RightMenu extends Container {
@@ -71,14 +70,21 @@ export default class RightMenu extends Container {
         if (currentScene === SCENE_NAME.Roulette) {
             this.cancelBeat = new ButtonUI('cancel', clearAllBetsData, true, HELP_TEXT.clearBets)
             this.cancelBeat.scale.set(UI.iconScale * 1.75)
-            this.cancelBeat.position.set(-UI.offset, -UI.offset - 56)
+            this.cancelBeat.position.set(-UI.offset, -UI.offset - 110)
             this.addChild(this.cancelBeat)
+
+            this.repeatBeat = new ButtonUI('repeat', repeatAllBetsData, true, HELP_TEXT.repeatBets)
+            this.repeatBeat.setActive( canRepeatBets().isActive )
+            this.repeatBeat.scale.set(UI.iconScale * 1.75)
+            this.repeatBeat.position.set(-UI.offset, -UI.offset - 60)
+            this.addChild(this.repeatBeat)
         }
 
         EventHub.on(events.updateBet, this.updateBet, this)
         EventHub.on(events.updateBetTotal, this.updateBetTotal, this)
         EventHub.on(events.startSpin, this.setDisableCancelButton, this)
         EventHub.on(events.addLog, this.setEnableCancelButton, this)
+        EventHub.on(events.updateRepeatBetsData, this.updateRepeatBetsData, this)
     }
 
     updateBet(bet) {
@@ -95,9 +101,18 @@ export default class RightMenu extends Container {
 
     setEnableCancelButton() {
         this.cancelBeat.setActive(true)
+        this.repeatBeat.setActive(true)
     }
     setDisableCancelButton() {
         this.cancelBeat.setActive(false)
+        this.repeatBeat.setActive(false)
+    }
+
+    updateRepeatBetsData(data) {
+        if ('repeatBeat' in this) {
+            this.repeatBeat.setActive(data.isActive)
+            this.repeatBeat.setHelpText(HELP_TEXT[data.helpTextKey])
+        }
     }
 
     updateLanguage(lang) {
@@ -114,6 +129,7 @@ export default class RightMenu extends Container {
         EventHub.off(events.updateBetTotal, this.updateBetTotal, this)
         EventHub.off(events.startSpin, this.setDisableCancelButton, this)
         EventHub.off(events.addLog, this.setEnableCancelButton, this)
+        EventHub.off(events.updateRepeatBetsData, this.updateRepeatBetsData, this)
 
         this.betsBg.eventMode = 'none'
         this.betsBg.off('pointerover', () => {

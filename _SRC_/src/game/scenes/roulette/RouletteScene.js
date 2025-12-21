@@ -65,6 +65,7 @@ export default class Roulette extends Container {
 
         // get sizes without UI
         const availableHeight = screenData.height - UI.size - UI.bets.height
+            - (screenData.isLandscape ? 0 : UI.bets.offset)
 
         const gameContainerY = availableHeight * 0.5 + UI.size - screenData.centerY
         this.gameContainer.position.set(0, gameContainerY)

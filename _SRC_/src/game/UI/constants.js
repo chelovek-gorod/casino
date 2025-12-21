@@ -5,10 +5,12 @@ const SPIEL_WIDTH = 1204
 const SPIEL_HEIGHT = 312
 export const RESULTS = {
     width: WHEEL_SIZE - 120,
-    height: 80,
-    borderRadius: 40,
+    height: 60,
+    borderRadius: 30,
     color: 0xffffff,
-    alpha: 0.4
+    alpha: 0.4,
+
+    winSumHeight: 40,
 }
 
 export const HELP_TEXT = {
@@ -264,6 +266,42 @@ export const HELP_TEXT = {
         id: 'Cadangan bank',
         ms: 'Simpanan bank'
     },
+    repeatBetsNotMoney: {
+        ru: 'Недостаточно средств!',
+        en: 'Not enough money!',
+        tr: 'Yetersiz bakiye!',
+        es: '¡Dinero insuficiente!',
+        de: 'Nicht genug Geld!',
+        pt: 'Dinheiro insuficiente!',
+        fr: 'Fonds insuffisants!',
+        pl: 'Niewystarczające środki!',
+        id: 'Uang tidak cukup!',
+        ms: 'Wang tidak cukup!'
+    },
+    repeatBetsExceedLimit: {
+        ru: 'Повтор превысит лимит ставки!',
+        en: 'Repeat would exceed bet limit!',
+        tr: 'Tekrar bahis limitini aşar!',
+        es: '¡La repetición superaría el límite de apuesta!',
+        de: 'Wiederholung würde Einsatzlimit überschreiten!',
+        pt: 'A repetição excederia o limite de aposta!',
+        fr: 'La répétition dépasserait la limite de pari!',
+        pl: 'Powtórzenie przekroczyłoby limit zakładu!',
+        id: 'Pengulangan akan melebihi batas taruhan!',
+        ms: 'Pengulangan akan melebihi had pertaruhan!'
+    },
+    repeatBetsNoPrevious: {
+        ru: 'Нет предыдущих ставок',
+        en: 'No previous bets',
+        tr: 'Önceki bahis yok',
+        es: 'No hay apuestas anteriores',
+        de: 'Keine vorherigen Einsätze',
+        pt: 'Sem apostas anteriores',
+        fr: 'Aucun pari précédent',
+        pl: 'Brak poprzednich zakładów',
+        id: 'Tidak ada taruhan sebelumnya',
+        ms: 'Tiada pertaruhan sebelumnya'
+    }
 }
 
 export const UI_TEXT = {
@@ -441,6 +479,19 @@ export const MESSAGE_TEXT = {
     },
 }
 
+export const LAST_WIN = {
+    ru: (sum) => `Выигрыш ${sum}`,
+    en: (sum) => `Win ${sum}`,
+    tr: (sum) => `Kazanç ${sum}`,
+    es: (sum) => `Ganancia ${sum}`,
+    de: (sum) => `Gewinn ${sum}`,
+    pt: (sum) => `Ganho ${sum}`,
+    fr: (sum) => `Gain ${sum}`,
+    pl: (sum) => `Wygrana ${sum}`,
+    id: (sum) => `Menang ${sum}`,
+    ms: (sum) => `Kemenangan ${sum}`
+}
+
 /*
 export const MESSAGE_TEXT = {
   lowMoney: {
@@ -506,6 +557,7 @@ export const UI = {
     bets: {
         width: 340,
         height: 40,
+        offset: 60,
         bg: 0x000000,
         alpha: 0.5,
         iconSize: 0,
@@ -522,8 +574,9 @@ export const GAME_OFFSET = 24 /* offset between screen borders and between game 
 export const GAME_CONTAINERS = {
     wheel: {
         width: Math.max(WHEEL_SIZE, BUTTON.width) + GAME_OFFSET * 2,
-        height: WHEEL_SIZE + BUTTON.height + RESULTS.height + GAME_OFFSET * 5,
+        height: WHEEL_SIZE + BUTTON.height + RESULTS.height + RESULTS.winSumHeight + GAME_OFFSET * 6,
         pointResults: {x: 0, y: 0},
+        pointResultsSum: {x: 0, y: 0},
         pointWheel: {x: 0, y: 0},
         pointButton: {x: 0, y: 0},
         scale: 1,
@@ -540,8 +593,9 @@ export const GAME_CONTAINERS = {
         scaledHeight: 1
     }
 }
-GAME_CONTAINERS.wheel.pointResults.y = GAME_CONTAINERS.wheel.height * -0.5 + RESULTS.height + GAME_OFFSET
-GAME_CONTAINERS.wheel.pointWheel.y = GAME_CONTAINERS.wheel.pointResults.y + WHEEL_SIZE * 0.5 + GAME_OFFSET
+GAME_CONTAINERS.wheel.pointResults.y = -GAME_CONTAINERS.wheel.height * 0.5 + RESULTS.height + GAME_OFFSET * 2
+GAME_CONTAINERS.wheel.pointResultsSum.y = GAME_CONTAINERS.wheel.pointResults.y + RESULTS.winSumHeight * 0.5 + GAME_OFFSET
+GAME_CONTAINERS.wheel.pointWheel.y = GAME_CONTAINERS.wheel.pointResultsSum.y + WHEEL_SIZE * 0.5 + GAME_OFFSET
 GAME_CONTAINERS.wheel.pointButton.y = GAME_CONTAINERS.wheel.height * 0.5 - BUTTON.height * 0.5 - GAME_OFFSET
 GAME_CONTAINERS.field.pointSpiel.x = -GAME_CONTAINERS.field.width * 0.5 + GAME_OFFSET
 GAME_CONTAINERS.field.pointSpiel.y = GAME_CONTAINERS.field.height * -0.5 + GAME_OFFSET

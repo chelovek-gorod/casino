@@ -32,6 +32,9 @@ export default class ButtonUI extends Container {
         this.isActive = isActive
         this.alpha = isActive ? 1 : 0.2
     }
+    setHelpText(helpText) {
+        this.helpText = helpText
+    }
 
     click() {
         if (!this.isActive) return

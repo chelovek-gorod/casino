@@ -18,6 +18,8 @@ export const events = {
     updateBetTotal: 'updateBetTotal',
     updateNearestNumber: 'updateNearestNumber',
 
+    updateRouletteSpinResults: 'updateRouletteSpinResults',
+
     startSpin: 'startSpin',
     addLog: 'addLog',
     showMessage: 'showMessage',
@@ -26,6 +28,9 @@ export const events = {
 
     clearOneBet: 'clearOneBet',
     clearAllBets: 'clearAllBets',
+
+    updateRepeatBetsData: 'updateRepeatBetsData',
+    repeatBetsForField: 'repeatBetsForField',
 }
 
 export function screenResize( data ) {
@@ -63,6 +68,10 @@ export function updateNearestNumber( number ) {
     EventHub.emit( events.updateNearestNumber, number )
 }
 
+export function updateRouletteSpinResults(money) {
+    EventHub.emit( events.updateRouletteSpinResults, money )
+}
+
 export function startSpin( ) {
     EventHub.emit( events.startSpin )
 }
@@ -82,4 +91,11 @@ export function clearOneBet() {
 }
 export function clearAllBets() {
     EventHub.emit( events.clearAllBets )
+}
+
+export function updateRepeatBetsData(data) {
+    EventHub.emit( events.updateRepeatBetsData, data )
+}
+export function repeatBetsForField(data) {
+    EventHub.emit( events.repeatBetsForField, data )
 }

@@ -190,6 +190,7 @@ export default class Field extends Container {
         EventHub.on(events.addLog, this.getSpinResult, this)
         EventHub.on(events.clearOneBet, this.clearOneBet, this)
         EventHub.on(events.clearAllBets, this.clearAllBets, this)
+        EventHub.on(events.repeatBetsForField, this.repeatBets, this)
     }
 
     addPoint(x, y, rowIndex, stepIndex, layer) {
@@ -470,6 +471,81 @@ export default class Field extends Container {
         this.fieldChips.removeChildren()
     }
 
+    setBetInFieldWithAmount(betData, amount) {
+        betData.chip.update(amount)
+        this.fieldChips.addChild(betData.chip)
+        if ('spielChip' in betData) {
+            this.spielChips.addChild(betData.spielChip)
+        }
+    }
+    
+    findSectionKey(numbers) {
+        const sortedNumbers = [...numbers].sort((a, b) => a - b)
+        
+        // Проверяем все секции из SECTOR_NUMBERS
+        for (const [section, sectionNumbers] of Object.entries(SECTOR_NUMBERS)) {
+            const sortedSection = [...sectionNumbers].sort((a, b) => a - b)
+            
+            // Сравниваем длины и значения
+            if (sortedNumbers.length === sortedSection.length && 
+                sortedNumbers.every((val, i) => val === sortedSection[i])) {
+                return section // "red", "black", "twelve1" и т.д.
+            }
+        }
+        
+        return null
+    }
+    
+    findBetObject(numbers) {
+        const key = [...numbers].sort((a, b) => a - b).join('_')
+        
+        // 1. Проверяем slotsList (для чисел 0-36)
+        if (key in this.slotsList) {
+            return this.slotsList[key]
+        }
+        
+        // 2. Проверяем pointsList (для сплитов, углов и т.д.)
+        for (const point of this.pointsList) {
+            const pointKey = [...point.numbers].sort((a, b) => a - b).join('_')
+            if (pointKey === key) {
+                return point
+            }
+        }
+        
+        // 3. Проверяем sectorsList (для спил-чисел)
+        if (numbers.length === 1 && numbers[0] in this.sectorsList) {
+            return this.sectorsList[numbers[0]]
+        }
+        
+        // 4. НОВОЕ: Проверяем, является ли это секцией (red, black, twelve1 и т.д.)
+        const sectionKey = this.findSectionKey(numbers)
+        if (sectionKey && sectionKey in this.slotsList) {
+            return this.slotsList[sectionKey]
+        }
+        
+        return null
+    }
+    
+    setBetInFieldWithAmount(betData, amount) {
+        betData.chip.update(amount)
+        this.fieldChips.addChild(betData.chip)
+        if ('spielChip' in betData) {
+            this.spielChips.addChild(betData.spielChip)
+        }
+    }
+    
+    repeatBets(repeatData) {
+        for (const [key, amount] of Object.entries(repeatData)) {
+            const numbers = key.split('_').map(Number)
+            const betObject = this.findBetObject(numbers)
+            if (betObject) {
+                this.setBetInFieldWithAmount(betObject, amount)
+            } else {
+                console.warn('Не найден объект для ставки:', numbers, key)
+            }
+        }
+    }
+
     updateLanguage(lang) {
         const isLangRu = lang === 'ru'
         this.spielTop.texture = isLangRu ? images.spiel_top_ru : images.spiel_top
@@ -482,5 +558,6 @@ export default class Field extends Container {
         EventHub.off(events.addLog, this.getSpinResult, this)
         EventHub.off(events.clearOneBet, this.clearOneBet, this)
         EventHub.off(events.clearAllBets, this.clearAllBets, this)
+        EventHub.off(events.repeatBetsForField, this.repeatBets, this)
     }
 }

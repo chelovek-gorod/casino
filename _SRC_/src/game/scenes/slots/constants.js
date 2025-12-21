@@ -1,5 +1,18 @@
 export const MAX_BET = 5000
 
+export const SPIN_WIN_TEXT = {
+    en: (sum) => `Spin win\n${sum}`,
+    ru: (sum) => `Выигрыш за спин\n${sum}`,
+    tr: (sum) => `Spin kazancı\n${sum}`,
+    es: (sum) => `Ganancia del giro\n${sum}`,
+    de: (sum) => `Drehgewinn\n${sum}`,
+    pt: (sum) => `Ganho do giro\n${sum}`,
+    fr: (sum) => `Gain du tour\n${sum}`,
+    pl: (sum) => `Wygrana za spin\n${sum}`,
+    id: (sum) => `Kemenangan putaran\n${sum}`,
+    ms: (sum) => `Kemenangan pusingan\n${sum}`
+}
+
 export const SLOTS_BORDER = {
     width: 0,
     height: 0,

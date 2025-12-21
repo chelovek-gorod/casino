@@ -71,7 +71,10 @@ export let styles = {
 
     chip: null,
 
+    rouletteLastWin: null,
+
     slotsCoins: null,
+    slotsWin: null,
 
     shopLabel: null,
     shopPrice: null,
@@ -266,6 +269,12 @@ export function initFontStyles() {
         fill: '#007700',
     })
 
+    styles.rouletteLastWin = new TextStyle({
+        fontFamily: fonts.Manrope600,
+        fontSize: 40,
+        fill: '#ffffff',
+    })
+
     styles.messageText = new TextStyle({
         fontFamily: fonts.Manrope600,
         fontSize: MESSAGE.fontSizeForText,
@@ -325,6 +334,19 @@ export function initFontStyles() {
         dropShadow: true,
         dropShadowColor: '#000000',
         dropShadowBlur: 12,
+        dropShadowAngle: 0,
+        dropShadowDistance: 0,
+    })
+
+    styles.slotsWin = new TextStyle({
+        fontFamily: fonts.Manrope700,
+        fontSize: 32,
+        fill: '#ffff00',
+        align: 'center',
+
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowBlur: 8,
         dropShadowAngle: 0,
         dropShadowDistance: 0,
     })

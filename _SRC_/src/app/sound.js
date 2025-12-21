@@ -80,7 +80,7 @@ let isSoundAvailable = false // is game in focus
 export function getFirstUserAction() {
 
     isSoundAvailable = true
-    musicPlay()
+    setTimeout( () => musicPlay(), 500 )
 }
 
 EventHub.on( events.changeFocus, changeFocus )
@@ -141,38 +141,30 @@ export function setMusicList(music, startIndex = null) {
 }
 
 export function musicStop() {
-    if (!musicAudio || musicAudio.paused) return
-    musicSavedPosition = musicAudio.seek || 0
-    //musicAudio.pause()
+    if (!musicAudio) return
+
+    if (musicInstance && musicInstance.progress) {
+        musicSavedPosition = musicInstance.progress * musicAudio.duration
+    }
     musicAudio.stop()
 }
 
 export function musicPlay() {
-    if (!state.isMusicOn || !isSoundAvailable || !musicList) return
-
-    if (!musicAudio) {
-        if (!currentLoadingMusic) loadBgMusic()
-        return
-    }
-
+    if (!state.isMusicOn || !isSoundAvailable || !musicAudio) return
     if (musicAudio.isPlaying) return
 
     const duration = musicAudio.duration || 0
-    const startPos = Math.max(0, Math.min(musicSavedPosition, duration - 0.05))
+    const startPos = musicSavedPosition > 0 && musicSavedPosition < duration - 0.05
+        ? musicSavedPosition
+        : 0
 
     musicInstance = musicAudio.play({
         volume: state.musicVolume,
         start: startPos
     })
-}
-/*
-export function musicPlay() {
-    if (!state.isMusicOn || !musicAudio || !musicList || !isSoundAvailable || musicAudio.isPlaying) return
 
-    if (musicAudio.paused) musicAudio.resume()
-    else musicAudio.play()
+    musicInstance.on('end', nextBgMusic)
 }
-*/
 
 function loadBgMusic() {
     const token = musicToken
@@ -181,7 +173,7 @@ function loadBgMusic() {
         currentLoadingMusic.destroy()
         currentLoadingMusic = null
     }
-    
+
     if (musicAudio) {
         musicAudio.stop()
         musicAudio.destroy()
@@ -192,27 +184,24 @@ function loadBgMusic() {
     currentLoadingMusic = Sound.from({
         url: musicList[musicIndex],
         preload: true,
-        loaded: function(err, music) {
+        loaded(err, music) {
             if (token !== musicToken) {
                 music?.destroy()
                 return
             }
+
             if (err) {
                 console.error('Music load error')
-
                 setTimeout(() => {
                     if (token === musicToken) nextBgMusic()
-                }, 0) // setTimeout спасает от зацикливания битого трека
-
-                return 
+                }, 0)
+                return
             }
 
             currentLoadingMusic = null
-
             musicAudio = music
-            musicInstance = music.play({ volume: 0 }).on('end', nextBgMusic)
-            if (!isSoundAvailable || !state.isMusicOn) musicStop()
-            musicInstance.volume = state.musicVolume
+
+            musicPlay()
         }
     })
 }
@@ -220,6 +209,7 @@ function loadBgMusic() {
 function nextBgMusic() {
     if (!musicList || !musicList.length) return
   
+    musicSavedPosition = 0
     musicIndex = (musicIndex + 1) % musicList.length
     musicToken++
     loadBgMusic()

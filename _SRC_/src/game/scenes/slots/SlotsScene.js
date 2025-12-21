@@ -2,7 +2,7 @@ import { Container, Sprite, Text } from 'pixi.js'
 import { images, music, sounds } from '../../../app/assets'
 import { soundPlay, setMusicList } from '../../../app/sound'
 import { BUTTON, BUTTON_TEXT, GAME_OFFSET, HELP_TEXT, MESSAGE_TEXT, UI } from '../../UI/constants'
-import { SLOTS_BORDER, SLOTS_LINES, SLOTS, SLOTS_LINES_DATA, SLOTS_HIGHLIGHT, MAX_BET } from './constants'
+import { SLOTS_BORDER, SLOTS_LINES, SLOTS, SLOTS_LINES_DATA, SLOTS_HIGHLIGHT, MAX_BET, SPIN_WIN_TEXT } from './constants'
 import Line from './Line'
 import Button from '../../UI/Button'
 import { checkRunSlots, resultSlots, resetState, returnBet, betsTotal, slotCoins, addSlotCoins, getSlotCoins, setMaxBet } from '../../state'
@@ -119,6 +119,12 @@ export default class Slots extends Container {
         )
         this.gameContainer.addChild(this.runButton)
 
+        this.spinTotalWin = 0
+        this.spinTotalWinText = new Text({text: SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin), style: styles.slotsWin})
+        this.spinTotalWinText.anchor.set(0, 0.5)
+        this.spinTotalWinText.position.set(1216, SLOTS_BORDER.height + BUTTON.height * 0.75)
+        this.gameContainer.addChild(this.spinTotalWinText)
+
         this.isAutoSpinOn = false
         this.autoSpinTimeout = null
         this.isSceneDestroyed = false
@@ -225,6 +231,9 @@ export default class Slots extends Container {
     lineStopped() {
         this.linsRunningCount -= 1
         if (this.linsRunningCount === 0) {
+            this.spinTotalWin = 0
+            this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
+
             this.checkSpinResults()
         }
     }
@@ -559,6 +568,9 @@ export default class Slots extends Container {
                     soundPlay(sounds.se_line)
                 }, SLOTS_HIGHLIGHT.inOut)
 
+                this.spinTotalWin += highlightData.winRate * betsTotal *this.bonusRate
+                this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
+
                 //testWinData[`lines_${highlightData.count}`].count++
                 //testWinData[`lines_${highlightData.count}`].money += highlightData.winRate * betsTotal *this.bonusRate 
             break;
@@ -589,6 +601,9 @@ export default class Slots extends Container {
                     soundPlay(sounds.se_jackpot)
                 }, SLOTS_HIGHLIGHT.inOut)
 
+                this.spinTotalWin += highlightData.winRate * betsTotal
+                this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
+
                 //testWinData.jackpot.count++
                 //testWinData.jackpot.money += highlightData.winRate * betsTotal
             break; 
@@ -606,6 +621,9 @@ export default class Slots extends Container {
                     soundPlay(sounds.se_set)
                 }, SLOTS_HIGHLIGHT.inOut)
 
+                this.spinTotalWin += highlightData.winRate * betsTotal
+                this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
+
                 //testWinData.sets.count++
                 //testWinData.sets.money += highlightData.winRate * betsTotal
             break;
@@ -622,6 +640,9 @@ export default class Slots extends Container {
                     if (this.isSceneDestroyed) return
                     soundPlay(sounds.se_fortuna)
                 }, SLOTS_HIGHLIGHT.inOut)
+
+                this.spinTotalWin += highlightData.winRate * betsTotal
+                this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
 
                 //testWinData.presents.count++
                 //testWinData.presents.money += highlightData.winRate * betsTotal
@@ -665,6 +686,9 @@ export default class Slots extends Container {
                     soundPlay(sounds.se_gold), SLOTS_HIGHLIGHT.inOut
                 })
 
+                this.spinTotalWin += getBank
+                this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
+
                 //testWinData.bank.count++
                 //testWinData.bank.money += getBank
             break;
@@ -680,6 +704,9 @@ export default class Slots extends Container {
                     if (this.isSceneDestroyed) return
                     soundPlay(sounds.se_clover)
                 }, SLOTS_HIGHLIGHT.inOut)
+
+                this.spinTotalWin = betsTotal
+                this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
             break; 
             default : 
         }

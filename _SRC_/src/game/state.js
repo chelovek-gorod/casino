@@ -1,6 +1,7 @@
 import { sounds } from "../app/assets"
 import { addLog, startSpin, updateBet, updateBetTotal, updateMoney, updateNearestNumber,
-    showMessage, clearOneBet, clearAllBets, EventHub, events} from "../app/events"
+    showMessage, clearOneBet, clearAllBets, repeatBetsForField, updateRepeatBetsData,
+    updateRouletteSpinResults, EventHub, events} from "../app/events"
 import { soundPlay } from "../app/sound"
 import { formatNumber } from "../utils/functions"
 import { MAX_BET_RATIO, BET_RATIO } from "./scenes/roulette/constants"
@@ -34,6 +35,7 @@ const betsData = {
     // key = "n1_n2_n3..."
     // value = money
 }
+let previousBetsData = {}
 // for edit bet in popup
 export let editedBetInfo = {
     key: '',
@@ -171,6 +173,10 @@ export function setNearest( isAdd = true ) {
 export function addMoney( sum ) {
     money += sum
     updateMoney(money)
+
+    if (currentScene === SCENE_NAME.Roulette) {
+        updateRepeatBetsData(canRepeatBets())
+    }
 }
 
 export function setSpin( isSpin ) {
@@ -191,7 +197,6 @@ export function setSpinResult( number ) {
     const numberStr = number.toString();
     
     Object.entries(betsData).forEach(([key, betAmount]) => {
-        // Быстрая проверка через includes строки (дешевле чем split+map)
         if (key.includes(numberStr)) {
             const numbers = key.split('_').map(Number);
             // Двойная проверка (на случай частичных совпадений типа "13" и "3")
@@ -206,13 +211,23 @@ export function setSpinResult( number ) {
         addMoney( winMoney )
     }
 
+    previousBetsData = {...betsData}
     for (const key in betsData) delete betsData[key]
+
+    if (currentScene === SCENE_NAME.Roulette) {
+        updateRepeatBetsData(canRepeatBets())
+        updateRouletteSpinResults(winMoney)
+    }
 }
 
 export function addBetData(numbers) {
     const key = [...numbers].sort((a, b) => a - b).join('_')
     if (key in betsData) betsData[key] += betCurrent
     else betsData[key] = betCurrent
+
+    if (currentScene === SCENE_NAME.Roulette) {
+        updateRepeatBetsData(canRepeatBets())
+    }
 }
 
 export function getBetDataValue(numbers) {
@@ -220,6 +235,69 @@ export function getBetDataValue(numbers) {
     if ( !(key in betsData) ) return 0
 
     return betsData[key]
+}
+
+export function canRepeatBets() {
+    if (currentScene !== SCENE_NAME.Roulette) {
+        return {isActive: false, helpTextKey: ''}
+    }
+
+    // Проверка 1: есть ли предыдущие ставки
+    if (Object.keys(previousBetsData).length === 0) {
+        return {isActive: false, helpTextKey: 'repeatBetsNoPrevious'}
+    }
+    
+    // Проверка 2: достаточно ли денег
+    const totalNeeded = Object.values(previousBetsData).reduce((a, b) => a + b, 0)
+    if (money < totalNeeded) {
+        return {isActive: false, helpTextKey: 'repeatBetsNotMoney'}
+    }
+    
+    // Проверка 3: не превышают ли ставки лимиты
+    for (const [key, amount] of Object.entries(previousBetsData)) {
+        const numbers = key.split('_').map(Number)
+        const currentAmount = getBetDataValue(numbers)
+        const maxAmount = MAX_BET_RATIO[numbers.length]
+        
+        if (currentAmount + amount > maxAmount) {
+            return {isActive: false, helpTextKey: 'repeatBetsExceedLimit'}
+        }
+    }
+    
+    // Все проверки пройдены
+    return {isActive: true, helpTextKey: 'repeatBets'}
+}
+
+export function repeatAllBetsData() {
+    if (currentScene !== SCENE_NAME.Roulette) return false
+
+    // Вызывается только если кнопка активна (canRepeatBets вернула true)
+    const repeatData = {...previousBetsData}
+    const totalAmount = Object.values(repeatData).reduce((a, b) => a + b, 0)
+    
+    // Вычитаем деньги
+    money -= totalAmount
+    betsTotal += totalAmount
+    
+    // Обновляем UI
+    updateMoney(money)
+    updateBetTotal(betsTotal)
+    
+    // Отправляем данные в Field для визуализации
+    repeatBetsForField(repeatData)
+    
+    // Обновляем betsData с правильными суммами
+    const originalBetCurrent = betCurrent
+    for (const [key, amount] of Object.entries(repeatData)) {
+        const numbers = key.split('_').map(Number)
+        betCurrent = amount
+        addBetData(numbers)
+    }
+    betCurrent = originalBetCurrent
+    updateBet(betCurrent)
+
+    updateRepeatBetsData(canRepeatBets())
+    return true
 }
 
 export function clearAllBetsData() {
@@ -230,6 +308,10 @@ export function clearAllBetsData() {
         delete betsData[key]
     }
     clearAllBets()
+
+    if (currentScene === SCENE_NAME.Roulette) {
+        updateRepeatBetsData(canRepeatBets())
+    }
 }
 
 export function removeBet(numbers) {
@@ -241,4 +323,8 @@ export function removeBet(numbers) {
     updateBetTotal(betsTotal)
     delete betsData[editedBetInfo.key]
     clearOneBet()
+
+    if (currentScene === SCENE_NAME.Roulette) {
+        updateRepeatBetsData(canRepeatBets())
+    }
 }
