@@ -614,7 +614,7 @@ GAME_CONTAINERS.wheel.scaledHeight = GAME_CONTAINERS.wheel.height * GAME_CONTAIN
 export const MESSAGE = {
     y: 0,
     height: 160,
-    fontSize: 120,
+    fontSize: 100,
     fontSizeForText: 48,
     bg: 0xffffff,
     alpha: 0.6,

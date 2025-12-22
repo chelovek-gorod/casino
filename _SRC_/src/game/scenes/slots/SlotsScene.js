@@ -22,7 +22,7 @@ import { getLanguage } from '../../localization'
 import CoinToBank from './CoinToBank'
 import { tickerAdd, tickerRemove } from '../../../app/application'
 
-/*
+/*  */
 const testWinData = {
     spins: 0,
     lines_3: {count: 0, money: 0},
@@ -34,7 +34,7 @@ const testWinData = {
     bank: {count: 0, money: 0},
     presents: {count: 0, money: 0},
 }
-*/
+/* */
 
 export default class Slots extends Container {
     constructor() {
@@ -162,7 +162,7 @@ export default class Slots extends Container {
         setMusicList([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
 
         // test
-        //this.test()
+        // this.test()
     }
 
     screenResize(screenData) {
@@ -543,11 +543,11 @@ export default class Slots extends Container {
                 if (this.isAutoSpinOn) this.run()
             }, 300)
 
-            /*
+            /* */
             console.clear()
             testWinData.spins++
             console.log(testWinData)
-            */
+            /**/
 
             return
         }
@@ -576,8 +576,8 @@ export default class Slots extends Container {
                 this.spinTotalWin += highlightData.winRate * betsTotal *this.bonusRate
                 this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
 
-                //testWinData[`lines_${highlightData.count}`].count++
-                //testWinData[`lines_${highlightData.count}`].money += highlightData.winRate * betsTotal *this.bonusRate 
+                testWinData[`lines_${highlightData.count}`].count++
+                testWinData[`lines_${highlightData.count}`].money += highlightData.winRate * betsTotal *this.bonusRate 
             break;
             case 'BONUS' :
                 messageText = MESSAGE_TEXT['BONUS'][ this.currentLanguage ]
@@ -609,8 +609,8 @@ export default class Slots extends Container {
                 this.spinTotalWin += highlightData.winRate * betsTotal
                 this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
 
-                //testWinData.jackpot.count++
-                //testWinData.jackpot.money += highlightData.winRate * betsTotal
+                testWinData.jackpot.count++
+                testWinData.jackpot.money += highlightData.winRate * betsTotal
             break; 
             case 'SET' :
                 resultSlots(highlightData.winRate)
@@ -629,8 +629,8 @@ export default class Slots extends Container {
                 this.spinTotalWin += highlightData.winRate * betsTotal
                 this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
 
-                //testWinData.sets.count++
-                //testWinData.sets.money += highlightData.winRate * betsTotal
+                testWinData.sets.count++
+                testWinData.sets.money += highlightData.winRate * betsTotal
             break;
             case 'PRESENT' :
                 resultSlots(highlightData.winRate)
@@ -649,8 +649,8 @@ export default class Slots extends Container {
                 this.spinTotalWin += highlightData.winRate * betsTotal
                 this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
 
-                //testWinData.presents.count++
-                //testWinData.presents.money += highlightData.winRate * betsTotal
+                testWinData.presents.count++
+                testWinData.presents.money += highlightData.winRate * betsTotal
             break;
             case 'COIN' :
                 messageText = MESSAGE_TEXT['COIN'][this.currentLanguage]
@@ -694,8 +694,8 @@ export default class Slots extends Container {
                 this.spinTotalWin += getBank
                 this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
 
-                //testWinData.bank.count++
-                //testWinData.bank.money += getBank
+                testWinData.bank.count++
+                testWinData.bank.money += getBank
             break;
             case 'CLOVER' :
                 messageText = MESSAGE_TEXT['CLOVER'][this.currentLanguage]
@@ -785,7 +785,7 @@ export default class Slots extends Container {
     test() {
         const startTime = Date.now()
 
-        const spins = 100_000_000
+        const spins = 10_000_000
         const test_bet = 10
 
         let test_money = spins * test_bet

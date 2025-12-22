@@ -78,6 +78,9 @@ export let styles = {
 
     shopLabel: null,
     shopPrice: null,
+
+    rulesHalf: null,
+    rulesFull: null,
 }
 
 export function initFontStyles() {
@@ -370,6 +373,21 @@ export function initFontStyles() {
         fontFamily: fonts.Manrope600,
         fontSize: 16,
         fill: 0x000000,
+    })
+
+    styles.rulesHalf = new TextStyle({
+        fontFamily: fonts.Manrope400,
+        fontSize: 16,
+        fill: '#ffffff',
+        wordWrap: true,
+        wordWrapWidth: 200,
+    })
+    styles.rulesFull = new TextStyle({
+        fontFamily: fonts.Manrope400,
+        fontSize: 16,
+        fill: '#ffffff',
+        wordWrap: true,
+        wordWrapWidth: 400,
     })
 
     styles.isReady = true

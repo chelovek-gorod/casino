@@ -60,6 +60,7 @@ export const atlases = {
    button_lamps: 'button_lamps.json',
    for_bg: 'for_bg.json',
    options: 'options.json',
+   rules_slots: 'rules_slots.json',
 }
 export const sounds = {
     se_swipe: 'se_swipe.mp3',
