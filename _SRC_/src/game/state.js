@@ -211,7 +211,8 @@ export function setSpinResult( number ) {
         addMoney( winMoney )
     }
 
-    previousBetsData = {...betsData}
+    if (Object.keys(betsData).length > 0) previousBetsData = {...betsData}
+
     for (const key in betsData) delete betsData[key]
 
     if (currentScene === SCENE_NAME.Roulette) {

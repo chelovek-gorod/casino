@@ -9,8 +9,8 @@ export const SPIN_WIN_TEXT = {
     pt: (sum) => `Ganho do giro\n${sum}`,
     fr: (sum) => `Gain du tour\n${sum}`,
     pl: (sum) => `Wygrana za spin\n${sum}`,
-    id: (sum) => `Kemenangan putaran\n${sum}`,
-    ms: (sum) => `Kemenangan pusingan\n${sum}`
+    id: (sum) => `Menang putar\n${sum}`,
+    ms: (sum) => `Menang pusing\n${sum}`
 }
 
 export const SLOTS_BORDER = {

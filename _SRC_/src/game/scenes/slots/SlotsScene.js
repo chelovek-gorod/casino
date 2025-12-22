@@ -19,6 +19,8 @@ import { formatNumber, removeCursorPointer, setCursorPointer } from '../../../ut
 import Coins from '../../effects/Coins'
 import { getRecTexture } from '../../../utils/textureGenerator'
 import { getLanguage } from '../../localization'
+import CoinToBank from './CoinToBank'
+import { tickerAdd, tickerRemove } from '../../../app/application'
 
 /*
 const testWinData = {
@@ -96,6 +98,9 @@ export default class Slots extends Container {
         this.bankIcon.anchor.set(0.5)
         this.bankIcon.scale.set(0.75)
         this.bankIcon.position.set(260, SLOTS_BORDER.height + BUTTON.height * 0.75)
+        this.bankIconRotationsCount = 3
+        this.bankIconRotationsSpeed = 0.006
+        this.bankIconIsScaleUp = false
 
         this.bankText = new Text({text: formatNumber(slotCoins), style: styles.slotsCoins})
         this.bankText.anchor.set(0, 0.5)
@@ -121,8 +126,8 @@ export default class Slots extends Container {
 
         this.spinTotalWin = 0
         this.spinTotalWinText = new Text({text: SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin), style: styles.slotsWin})
-        this.spinTotalWinText.anchor.set(0, 0.5)
-        this.spinTotalWinText.position.set(1216, SLOTS_BORDER.height + BUTTON.height * 0.75)
+        this.spinTotalWinText.anchor.set(0.5)
+        this.spinTotalWinText.position.set(1354, SLOTS_BORDER.height + BUTTON.height * 0.72)
         this.gameContainer.addChild(this.spinTotalWinText)
 
         this.isAutoSpinOn = false
@@ -715,6 +720,25 @@ export default class Slots extends Container {
             setTimeout( () => {
                 if (this.isSceneDestroyed) return
                 line.highlight(highlightData.highlight[index], this.highlightCallback.bind(this))
+
+
+                if (highlightData.key === 'COIN') {
+                    for(let i = 0; i < highlightData.highlight.length; i++) {
+                        if (highlightData.highlight[index][i] === 1) {
+                            const start = line.visibleImages[i + 1].position
+                            const x = start.x + line.x
+                            const y = start.y + line.y
+                            this.gameContainer.addChild(
+                                new CoinToBank(x, y, this.bankIcon.x, this.bankIcon.y)
+                            )
+                        }
+                    }
+                }
+
+                if (highlightData.key === 'GOLD') {
+                    tickerAdd(this)
+                }
+                
             }, this.highlightTimeout)
         })
     }
@@ -722,6 +746,26 @@ export default class Slots extends Container {
     updateLanguage(lang) {
         this.currentLanguage = lang
         this.runButton.setLabel( BUTTON_TEXT.spin[ this.currentLanguage ] )
+        this.spinTotalWinText.text = SPIN_WIN_TEXT[this.currentLanguage](this.spinTotalWin)
+    }
+
+    tick(time) {
+        const scaleSpeed = this.bankIconRotationsSpeed * time.deltaMS
+
+        if (this.bankIconIsScaleUp) {
+            this.bankIcon.scale.x = Math.min(0.75, this.bankIcon.scale.x + scaleSpeed)
+            if (this.bankIcon.scale.x === 0.75) {
+                this.bankIconIsScaleUp = false
+                this.bankIconRotationsCount--
+                if (this.bankIconRotationsCount === 0) {
+                    tickerRemove(this)
+                    this.bankIconRotationsCount = 3
+                }
+            } 
+        } else {
+            this.bankIcon.scale.x = Math.max(0.1, this.bankIcon.scale.x - scaleSpeed)
+            if (this.bankIcon.scale.x === 0.1) this.bankIconIsScaleUp = true
+        }
     }
 
     kill() {

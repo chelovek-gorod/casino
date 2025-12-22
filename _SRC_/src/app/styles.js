@@ -270,7 +270,7 @@ export function initFontStyles() {
     })
 
     styles.rouletteLastWin = new TextStyle({
-        fontFamily: fonts.Manrope600,
+        fontFamily: fonts.Manrope400,
         fontSize: 40,
         fill: '#ffffff',
     })

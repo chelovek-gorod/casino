@@ -70,17 +70,17 @@ export function turnSpriteToTarget(sprite, target, turnAngle) {
 
 export function moveToTarget( sprite, target, pathSize ) {
     const distance = getDistance(sprite, target)
-    
+
     if (distance <= pathSize) {
-        sprite.position.x = target.position.x
-        sprite.position.y = target.position.y
+        sprite.x = target.x
+        sprite.y = target.y
 
         return true
     }
 
     const moveRate = pathSize / distance
-    sprite.position.x += moveRate * (target.position.x - sprite.position.x)
-    sprite.position.y += moveRate * (target.position.y - sprite.position.y)
+    sprite.x += moveRate * (target.x - sprite.x)
+    sprite.y += moveRate * (target.y - sprite.y)
 
     return false
 }
