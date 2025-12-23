@@ -162,7 +162,7 @@ export default class Slots extends Container {
         setMusicList([music.bgm_0, music.bgm_1, music.bgm_2, music.bgm_3, music.bgm_4, music.bgm_5])
 
         // test
-        // this.test()
+        this.test()
     }
 
     screenResize(screenData) {
@@ -785,7 +785,7 @@ export default class Slots extends Container {
     test() {
         const startTime = Date.now()
 
-        const spins = 10_000_000
+        const spins = 100_000_000
         const test_bet = 10
 
         let test_money = spins * test_bet
